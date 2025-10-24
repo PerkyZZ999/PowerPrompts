@@ -1,0 +1,2474 @@
+---
+alwaysApply: true
+---
+
+## Python 3.14 New Features
+
+### Deferred Evaluation of Annotations (PEP 649)
+
+Python 3.14 now defers annotation evaluation by default, eliminating performance overhead and removing the need for forward reference quotes.
+
+```python
+# Python 3.14 - No quotes needed for forward references
+def process_user(user: User) -> dict:
+    return {"name": user.name}
+
+class User:
+    name: str
+```
+
+### Template String Literals (t-strings, PEP 750)
+
+T-strings provide safer string processing by separating static text from dynamic content, preventing injection attacks.
+
+```python
+from string.templatelib import Interpolation
+
+def sql_safe(template):
+    parts = []
+    for part in template:
+        if isinstance(part, Interpolation):
+            parts.append(escape_sql(str(part.value)))
+        else:
+            parts.append(part)
+    return ''.join(parts)
+
+username = request.get('username')
+query = sql_safe(t"SELECT * FROM users WHERE name = '{username}'")
+```
+
+### Multiple Interpreters in Standard Library (PEP 734)
+
+Python 3.14 allows creating multiple Python interpreters within a single process for better concurrency.
+
+```python
+from concurrent.futures import InterpreterPoolExecutor
+
+with InterpreterPoolExecutor() as executor:
+    results = executor.map(process_data, data_sources)
+```
+
+### Simplified Exception Handling (PEP 758)
+
+Parentheses are now optional when catching multiple exceptions without the 'as' keyword.
+
+```python
+# Python 3.14 - Cleaner syntax
+try:
+    risky_operation()
+except ValueError, TypeError:
+    handle_error()
+```
+
+### Enhanced REPL Experience
+
+- Syntax highlighting with configurable color themes
+- Improved tab completion for import statements
+- Better error messages with keyword suggestions
+- Color support in unittest, argparse, and json modules
+
+### Free-Threaded Python (PEP 779)
+
+Python 3.14 officially supports free-threaded builds, allowing true multithreading by disabling the GIL.
+
+### Experimental JIT Compiler
+
+Official builds for Windows and macOS include an experimental JIT compiler for significant performance improvements on long-running tasks.
+
+### Pathlib Enhancements
+
+New copy and move methods eliminate the need for shutil in many cases.
+
+```python
+from pathlib import Path
+
+source = Path("file.txt")
+source.copy("backup.txt")
+source.move("archive/file.txt")
+```
+
+### UUID 7 Support
+
+UUID version 7 provides sortable UUIDs based on creation time.
+
+```python
+import uuid
+
+# UUID7 is sortable by creation time
+id1 = uuid.uuid7()
+id2 = uuid.uuid7()
+assert id1 < id2  # True
+```
+
+---
+
+## Code Style and Formatting
+
+### PEP 8 Compliance
+
+Follow PEP 8 as the official Python style guide. It ensures consistency and readability across Python codebases.
+
+### Indentation
+
+Use 4 spaces for indentation. Never mix tabs and spaces.
+
+```python
+# Good
+def calculate_total(items):
+    total = 0
+    for item in items:
+        total += item.price
+    return total
+
+# Bad - inconsistent indentation
+def calculate_total(items):
+  total = 0
+  for item in items:
+      total += item.price
+  return total
+```
+
+### Line Length
+
+Limit lines to 79 characters for code and 72 for comments and docstrings.
+
+```python
+# Good - using implicit line continuation
+def long_function_name(
+    parameter_one, parameter_two,
+    parameter_three, parameter_four
+):
+    return parameter_one
+
+# Good - breaking before binary operators
+total = (first_variable
+         + second_variable
+         - third_variable)
+```
+
+### Blank Lines
+
+- Two blank lines between top-level functions and classes
+- One blank line between methods inside a class
+- Use blank lines sparingly within functions to indicate logical sections
+
+```python
+class MyClass:
+    def __init__(self):
+        self.value = 0
+    
+    def method_one(self):
+        pass
+    
+    def method_two(self):
+        pass
+
+
+def standalone_function():
+    pass
+
+
+def another_function():
+    pass
+```
+
+### Imports
+
+Organize imports in three groups separated by blank lines: standard library, third-party, and local imports.
+
+```python
+# Standard library imports
+import os
+import sys
+from datetime import datetime
+
+# Third-party imports
+import numpy as np
+import pandas as pd
+from flask import Flask
+
+# Local application imports
+from myapp.models import User
+from myapp.utils import helper_function
+```
+
+Import one module per line for clarity:
+
+```python
+# Good
+import os
+import sys
+
+# Bad
+import os, sys
+```
+
+### Whitespace
+
+Avoid extraneous whitespace in the following situations:
+
+```python
+# Good
+spam(ham[1], {eggs: 2})
+if x == 4:
+    print(x, y)
+    x, y = y, x
+
+# Bad
+spam( ham[ 1 ], { eggs: 2 } )
+if x == 4 :
+    print(x , y)
+    x , y = y , x
+```
+
+---
+
+## Naming Conventions
+
+### General Rules
+
+- Use descriptive names that convey meaning
+- Avoid single-letter names except for counters or iterators
+- Never use 'l', 'O', or 'I' as single-character names
+- Use English words for identifiers
+
+### Variables and Functions
+
+Use snake_case for variables and functions.
+
+```python
+# Good
+user_count = 10
+total_amount = 100.50
+
+def calculate_total_price(items):
+    return sum(item.price for item in items)
+
+# Bad
+userCount = 10
+TotalAmount = 100.50
+
+def CalculateTotalPrice(items):
+    return sum(item.price for item in items)
+```
+
+### Classes
+
+Use PascalCase (also called CapWords) for class names.
+
+```python
+# Good
+class UserAccount:
+    pass
+
+class OrderProcessor:
+    pass
+
+# Bad
+class user_account:
+    pass
+
+class orderProcessor:
+    pass
+```
+
+### Constants
+
+Use UPPERCASE with underscores for constants.
+
+```python
+# Good
+MAX_CONNECTIONS = 100
+DEFAULT_TIMEOUT = 30
+API_BASE_URL = "https://api.example.com"
+
+# Bad
+maxConnections = 100
+default_timeout = 30
+```
+
+### Modules and Packages
+
+Use short, lowercase names for modules. Underscores can be used if it improves readability.
+
+```python
+# Good module names
+import user_manager
+import data_processor
+import utils
+
+# Good package names (no underscores preferred)
+import mypackage
+import datatools
+```
+
+### Private and Protected Members
+
+Use a single leading underscore for non-public methods and instance variables.
+
+```python
+class MyClass:
+    def __init__(self):
+        self._internal_value = 0  # Protected
+        self.__private_value = 1  # Name mangled
+    
+    def public_method(self):
+        return self._internal_value
+    
+    def _protected_method(self):
+        pass
+```
+
+### Method and Function Arguments
+
+Always use 'self' for the first argument to instance methods and 'cls' for class methods.
+
+```python
+class MyClass:
+    def instance_method(self, value):
+        self.value = value
+    
+    @classmethod
+    def class_method(cls, value):
+        return cls(value)
+    
+    @staticmethod
+    def static_method(value):
+        return value * 2
+```
+
+---
+
+## Type Hints and Annotations
+
+### Python 3.14 Deferred Annotations
+
+With Python 3.14, annotations are deferred by default, making type hints more efficient.
+
+```python
+from typing import List, Dict, Optional, Union
+
+def process_data(
+    items: List[str],
+    config: Dict[str, int],
+    timeout: Optional[float] = None
+) -> Dict[str, List[int]]:
+    """Process data with type hints."""
+    result: Dict[str, List[int]] = {}
+    for item in items:
+        result[item] = [config.get(item, 0)]
+    return result
+```
+
+### Modern Type Hints (Python 3.10+)
+
+Use the pipe operator for Union types:
+
+```python
+# Python 3.10+ syntax
+def process_value(value: int | str) -> str:
+    if isinstance(value, int):
+        return f"Number: {value}"
+    return f"String: {value}"
+
+# Instead of
+from typing import Union
+def process_value(value: Union[int, str]) -> str:
+    pass
+```
+
+### Type Aliases
+
+Create type aliases for complex types:
+
+```python
+from typing import Dict, List, Tuple
+
+# Type aliases
+UserId = int
+UserData = Dict[str, str]
+Coordinates = Tuple[float, float]
+
+def get_user(user_id: UserId) -> UserData:
+    return {"name": "John", "email": "john@example.com"}
+```
+
+### Generic Types
+
+Use generics for reusable type-safe code:
+
+```python
+from typing import TypeVar, Generic, List
+
+T = TypeVar('T')
+
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._items: List[T] = []
+    
+    def push(self, item: T) -> None:
+        self._items.append(item)
+    
+    def pop(self) -> T:
+        return self._items.pop()
+```
+
+### Protocol and Structural Subtyping
+
+Use Protocol for structural typing:
+
+```python
+from typing import Protocol
+
+class Drawable(Protocol):
+    def draw(self) -> None:
+        ...
+
+def render(obj: Drawable) -> None:
+    obj.draw()
+```
+
+### Type Checking Best Practices
+
+- Be consistent: Apply type hints throughout your codebase
+- Use them for documentation: Type hints aid understanding
+- Avoid over-complication: Keep type hints simple and readable
+- Use mypy or pyright for static type checking
+
+```python
+# Run mypy for type checking
+# mypy your_module.py
+```
+
+---
+
+## Documentation and Comments
+
+### Docstrings
+
+Use docstrings for all public modules, functions, classes, and methods. Python 3.14 works well with modern documentation tools.
+
+#### Google Style Docstrings
+
+```python
+def fetch_data(user_id: int, include_metadata: bool = False) -> dict:
+    """
+    Fetch user data from the database.
+    
+    Args:
+        user_id (int): The ID of the user to fetch.
+        include_metadata (bool, optional): Whether to include metadata.
+            Defaults to False.
+    
+    Returns:
+        dict: A dictionary containing user data.
+    
+    Raises:
+        ValueError: If user_id is negative.
+        DatabaseError: If database connection fails.
+    
+    Example:
+        >>> fetch_data(123)
+        {'name': 'John', 'email': 'john@example.com'}
+    """
+    if user_id < 0:
+        raise ValueError("user_id must be positive")
+    return {"name": "John", "email": "john@example.com"}
+```
+
+#### NumPy Style Docstrings
+
+```python
+def calculate_statistics(data: list[float]) -> dict:
+    """
+    Calculate statistical measures for a dataset.
+    
+    Parameters
+    ----------
+    data : list of float
+        A list of numerical values.
+    
+    Returns
+    -------
+    dict
+        A dictionary containing mean, median, and std deviation.
+    
+    Examples
+    --------
+    >>> calculate_statistics([1, 2, 3, 4, 5])
+    {'mean': 3.0, 'median': 3.0, 'std': 1.41}
+    """
+    import statistics
+    return {
+        'mean': statistics.mean(data),
+        'median': statistics.median(data),
+        'std': statistics.stdev(data)
+    }
+```
+
+### Inline Comments
+
+Use comments to explain the "why", not the "what". Comments should be complete sentences.
+
+```python
+# Good - Explains why
+# Use binary search for performance on large sorted datasets
+result = binary_search(sorted_list, target)
+
+# Bad - States the obvious
+# Call binary search function
+result = binary_search(sorted_list, target)
+```
+
+### Comment Best Practices
+
+1. **Avoid the obvious**: Don't state what the code does if it's clear
+2. **Keep comments short and sweet**: Be concise
+3. **Use identifiers carefully**: Match variable names in comments
+4. **DRY and WET**: Don't repeat yourself; avoid redundant comments
+5. **Consistent indentation**: Indent comments at the same level as code
+6. **Update comments**: Keep them current with code changes
+
+```python
+# Good
+def calculate_discount(price: float, customer_type: str) -> float:
+    """Calculate discount based on customer tier."""
+    # Premium customers get 20% off to encourage loyalty
+    if customer_type == "premium":
+        return price * 0.8
+    return price
+
+# Bad
+def calculate_discount(price: float, customer_type: str) -> float:
+    """Calculate discount based on customer tier."""
+    # Check if customer is premium
+    if customer_type == "premium":
+        # Multiply price by 0.8
+        return price * 0.8
+    # Return original price
+    return price
+```
+
+---
+
+## Error Handling and Exceptions
+
+### Specific Exception Handling
+
+Catch specific exceptions rather than generic ones.
+
+```python
+# Good - Specific exceptions
+try:
+    with open("file.txt") as f:
+        data = f.read()
+    value = int(data)
+except FileNotFoundError:
+    print("File not found")
+except ValueError:
+    print("Invalid data format")
+except PermissionError:
+    print("Permission denied")
+
+# Bad - Too generic
+try:
+    with open("file.txt") as f:
+        data = f.read()
+    value = int(data)
+except Exception:
+    print("Something went wrong")
+```
+
+### Python 3.14 Exception Syntax
+
+Take advantage of Python 3.14's simplified exception syntax:
+
+```python
+# Python 3.14 - No parentheses needed
+try:
+    risky_operation()
+except ValueError, TypeError, KeyError:
+    handle_error()
+
+# With variable binding - parentheses still required
+try:
+    risky_operation()
+except (ValueError, TypeError) as e:
+    print(f"Error: {e}")
+```
+
+### Exception Chaining
+
+Use exception chaining to preserve context:
+
+```python
+# Good - Preserve exception chain
+try:
+    process_data(raw_data)
+except ValueError as e:
+    raise ProcessingError("Failed to process data") from e
+
+# Good - Suppress chaining when appropriate
+try:
+    process_data(raw_data)
+except ValueError:
+    raise ProcessingError("Failed to process data") from None
+```
+
+### Custom Exceptions
+
+Create custom exceptions for domain-specific errors:
+
+```python
+class ValidationError(Exception):
+    """Raised when data validation fails."""
+    pass
+
+class DatabaseError(Exception):
+    """Raised when database operations fail."""
+    pass
+
+def validate_user_data(data: dict) -> None:
+    if "email" not in data:
+        raise ValidationError("Email is required")
+    if "@" not in data["email"]:
+        raise ValidationError("Invalid email format")
+```
+
+### Best Practices
+
+- **Favor specific exceptions**: Use the most specific exception type
+- **Provide informative messages**: Include context in error messages
+- **Raise exceptions early**: Check error conditions as soon as possible
+- **Clean up resources**: Use finally or context managers
+- **Don't suppress exceptions**: Unless absolutely necessary
+
+```python
+def safe_divide(a: float, b: float) -> float:
+    """Divide two numbers with proper error handling."""
+    if b == 0:
+        raise ValueError("Division by zero is not allowed")
+    return a / b
+
+# Using finally for cleanup
+def process_file(filename: str) -> None:
+    f = None
+    try:
+        f = open(filename)
+        data = f.read()
+        process(data)
+    except FileNotFoundError:
+        print(f"File {filename} not found")
+    finally:
+        if f:
+            f.close()
+```
+
+---
+
+## Testing Best Practices
+
+### pytest - The Modern Choice
+
+pytest is the recommended testing framework for Python 3.14 projects due to its simplicity and powerful features.
+
+```python
+# test_calculator.py
+import pytest
+
+def add(a: int, b: int) -> int:
+    return a + b
+
+def test_add_positive_numbers():
+    assert add(2, 3) == 5
+
+def test_add_negative_numbers():
+    assert add(-1, -1) == -2
+
+def test_add_mixed_numbers():
+    assert add(-1, 1) == 0
+
+# Parameterized tests
+@pytest.mark.parametrize("a,b,expected", [
+    (2, 3, 5),
+    (-1, -1, -2),
+    (0, 0, 0),
+    (100, 200, 300),
+])
+def test_add_parametrized(a, b, expected):
+    assert add(a, b) == expected
+```
+
+### pytest Fixtures
+
+Use fixtures for reusable setup and teardown:
+
+```python
+import pytest
+
+@pytest.fixture
+def database():
+    """Create a test database."""
+    db = create_test_database()
+    yield db
+    db.close()
+
+@pytest.fixture
+def sample_data():
+    """Provide sample test data."""
+    return {
+        "users": [
+            {"id": 1, "name": "Alice"},
+            {"id": 2, "name": "Bob"},
+        ]
+    }
+
+def test_database_query(database, sample_data):
+    database.insert(sample_data["users"])
+    result = database.query("SELECT * FROM users")
+    assert len(result) == 2
+```
+
+### unittest - Built-in Framework
+
+unittest remains a solid choice for standard testing:
+
+```python
+import unittest
+
+class TestCalculator(unittest.TestCase):
+    def setUp(self):
+        """Run before each test."""
+        self.calc = Calculator()
+    
+    def tearDown(self):
+        """Run after each test."""
+        self.calc = None
+    
+    def test_addition(self):
+        self.assertEqual(self.calc.add(2, 3), 5)
+    
+    def test_division(self):
+        self.assertEqual(self.calc.divide(10, 2), 5)
+    
+    def test_division_by_zero(self):
+        with self.assertRaises(ValueError):
+            self.calc.divide(10, 0)
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+### Testing Best Practices
+
+1. **Keep tests simple and focused**: One test should test one thing
+2. **Use descriptive test names**: Names should describe what is being tested
+3. **Follow AAA pattern**: Arrange, Act, Assert
+4. **Test edge cases**: Include boundary conditions
+5. **Use mocks for external dependencies**: Isolate units under test
+6. **Maintain test independence**: Tests shouldn't depend on each other
+7. **Aim for high coverage**: But focus on meaningful tests
+
+```python
+# AAA Pattern Example
+def test_user_creation():
+    # Arrange
+    username = "testuser"
+    email = "test@example.com"
+    
+    # Act
+    user = User.create(username, email)
+    
+    # Assert
+    assert user.username == username
+    assert user.email == email
+    assert user.is_active is True
+```
+
+### Mocking
+
+Use unittest.mock or pytest-mock for testing with mocks:
+
+```python
+from unittest.mock import Mock, patch
+
+def test_api_call():
+    # Mock external API
+    with patch('requests.get') as mock_get:
+        mock_get.return_value.json.return_value = {'data': 'test'}
+        mock_get.return_value.status_code = 200
+        
+        result = fetch_data_from_api()
+        
+        assert result == {'data': 'test'}
+        mock_get.assert_called_once()
+```
+
+---
+
+## Security Best Practices
+
+### Keep Dependencies Updated
+
+Always use the latest stable versions of Python and libraries to protect against known vulnerabilities.
+
+```bash
+# Update Python packages
+pip install --upgrade pip
+pip list --outdated
+pip install --upgrade package_name
+
+# Use security scanning tools
+pip install pip-audit
+pip-audit
+```
+
+### Protect Sensitive Information
+
+Never hardcode secrets or credentials in your code.
+
+```python
+# Bad - Hardcoded secrets
+API_KEY = "sk_live_abc123xyz789"
+DATABASE_URL = "postgresql://user:password@localhost/db"
+
+# Good - Use environment variables
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not API_KEY:
+    raise ValueError("API_KEY environment variable not set")
+```
+
+### Validate and Sanitize User Input
+
+Always validate and sanitize user input to prevent injection attacks.
+
+```python
+import re
+
+def validate_email(email: str) -> bool:
+    """Validate email format."""
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(pattern, email))
+
+def sanitize_input(user_input: str) -> str:
+    """Remove potentially dangerous characters."""
+    # Remove HTML tags
+    sanitized = re.sub(r'<[^>]*>', '', user_input)
+    # Escape special characters
+    sanitized = sanitized.replace('&', '&amp;')
+    sanitized = sanitized.replace('<', '&lt;')
+    sanitized = sanitized.replace('>', '&gt;')
+    return sanitized
+```
+
+### Use Parameterized Queries
+
+Prevent SQL injection with parameterized queries:
+
+```python
+import sqlite3
+
+# Bad - SQL injection vulnerable
+def get_user_bad(username: str):
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    query = f"SELECT * FROM users WHERE username = '{username}'"
+    cursor.execute(query)  # Dangerous!
+    return cursor.fetchone()
+
+# Good - Parameterized query
+def get_user_good(username: str):
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    query = "SELECT * FROM users WHERE username = ?"
+    cursor.execute(query, (username,))
+    return cursor.fetchone()
+```
+
+### Secure File Operations
+
+Validate file paths to prevent directory traversal attacks:
+
+```python
+from pathlib import Path
+
+def safe_file_read(filename: str, base_dir: str) -> str:
+    """Safely read a file within a base directory."""
+    base_path = Path(base_dir).resolve()
+    file_path = (base_path / filename).resolve()
+    
+    # Ensure file is within base directory
+    if not file_path.is_relative_to(base_path):
+        raise ValueError("Invalid file path")
+    
+    with open(file_path, 'r') as f:
+        return f.read()
+```
+
+### Use HTTPS for Network Communications
+
+Always use HTTPS for secure communication:
+
+```python
+import requests
+
+# Good - Verify SSL certificates
+response = requests.get('https://api.example.com/data', verify=True)
+
+# Bad - Disabling SSL verification
+response = requests.get('https://api.example.com/data', verify=False)
+```
+
+### Handle Errors Wisely
+
+Don't expose sensitive information in error messages:
+
+```python
+# Bad - Exposes internal details
+try:
+    connect_to_database(username, password, host)
+except Exception as e:
+    return f"Database connection failed: {e}"  # Leaks details
+
+# Good - Generic error message
+try:
+    connect_to_database(username, password, host)
+except Exception as e:
+    logger.error(f"Database error: {e}")  # Log internally
+    return "Service temporarily unavailable"  # Generic message
+```
+
+---
+
+## Performance Optimization
+
+### Choose the Right Data Structures
+
+Select appropriate data structures for optimal performance.
+
+```python
+# Lists for ordered sequences
+items = [1, 2, 3, 4, 5]
+
+# Sets for fast membership testing (O(1))
+valid_ids = {1, 2, 3, 4, 5}
+if user_id in valid_ids:  # Fast lookup
+    process_user(user_id)
+
+# Dictionaries for key-value mappings (O(1))
+user_cache = {"user1": data1, "user2": data2}
+user_data = user_cache.get("user1")  # Fast retrieval
+
+# Tuples for immutable data (faster than lists)
+coordinates = (10.5, 20.3)
+```
+
+### Use Generators for Memory Efficiency
+
+Generators produce values on-demand, saving memory:
+
+```python
+# Bad - Creates entire list in memory
+def get_numbers(n):
+    return [i * i for i in range(n)]
+
+numbers = get_numbers(1000000)  # Uses lots of memory
+
+# Good - Generator yields values one at a time
+def get_numbers_gen(n):
+    for i in range(n):
+        yield i * i
+
+numbers = get_numbers_gen(1000000)  # Memory efficient
+```
+
+### Optimize Loops
+
+Avoid repeated computations in loops:
+
+```python
+# Bad - Repeated function call
+for i in range(10000):
+    result = expensive_function()  # Called 10000 times
+    process(result)
+
+# Good - Call once and cache
+cached_result = expensive_function()
+for i in range(10000):
+    process(cached_result)
+```
+
+### Use List Comprehensions
+
+List comprehensions are faster than traditional loops:
+
+```python
+# Traditional loop
+squares = []
+for i in range(10):
+    squares.append(i * i)
+
+# List comprehension (faster and more Pythonic)
+squares = [i * i for i in range(10)]
+```
+
+### String Optimization
+
+Use join() instead of concatenation:
+
+```python
+# Bad - Multiple temporary strings created
+words = ["Hello", "world", "Python"]
+sentence = ""
+for word in words:
+    sentence += word + " "
+
+# Good - Efficient string joining
+sentence = " ".join(words)
+```
+
+Use f-strings for formatting (Python 3.6+):
+
+```python
+name = "Alice"
+age = 30
+
+# Good - Fast and readable
+message = f"Name: {name}, Age: {age}"
+
+# Older methods (slower)
+message = "Name: {}, Age: {}".format(name, age)
+message = "Name: %s, Age: %d" % (name, age)
+```
+
+### Use Built-in Functions
+
+Built-in functions are optimized in C and faster than Python loops:
+
+```python
+# Good - Using built-in functions
+numbers = [1, 2, 3, 4, 5]
+total = sum(numbers)
+maximum = max(numbers)
+minimum = min(numbers)
+
+# Less efficient - Manual implementation
+total = 0
+for num in numbers:
+    total += num
+```
+
+### Profile Your Code
+
+Use profiling tools to identify bottlenecks:
+
+```python
+import cProfile
+import pstats
+
+def main():
+    # Your code here
+    pass
+
+# Profile the code
+cProfile.run('main()', 'profile_stats')
+
+# Analyze results
+stats = pstats.Stats('profile_stats')
+stats.sort_stats('cumulative')
+stats.print_stats(10)  # Top 10 functions
+```
+
+---
+
+## Asynchronous Programming
+
+### Python 3.14 Asyncio Best Practices
+
+Use asyncio for I/O-bound operations to improve performance.
+
+```python
+import asyncio
+
+async def fetch_data(source: str) -> str:
+    """Fetch data asynchronously."""
+    print(f"Fetching data from {source}...")
+    await asyncio.sleep(2)  # Simulate I/O operation
+    print(f"Done fetching from {source}")
+    return f"Data from {source}"
+
+async def main():
+    """Run multiple async operations concurrently."""
+    # Create tasks
+    task1 = asyncio.create_task(fetch_data("source_1"))
+    task2 = asyncio.create_task(fetch_data("source_2"))
+    task3 = asyncio.create_task(fetch_data("source_3"))
+    
+    # Wait for all tasks
+    results = await asyncio.gather(task1, task2, task3)
+    print(f"Results: {results}")
+
+# Run the async program
+asyncio.run(main())
+```
+
+### Async Context Managers
+
+Use async context managers for proper resource management:
+
+```python
+class AsyncDatabase:
+    async def __aenter__(self):
+        print("Connecting to database...")
+        await asyncio.sleep(1)
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print("Closing database connection...")
+        await asyncio.sleep(1)
+    
+    async def query(self, sql: str):
+        return f"Result for: {sql}"
+
+async def use_database():
+    async with AsyncDatabase() as db:
+        result = await db.query("SELECT * FROM users")
+        print(result)
+```
+
+### Async Generators
+
+Use async generators for streaming data:
+
+```python
+async def data_generator(count: int):
+    """Generate data asynchronously."""
+    for i in range(count):
+        await asyncio.sleep(0.1)
+        yield f"Item {i}"
+
+async def consume_data():
+    """Consume async generator."""
+    async for item in data_generator(5):
+        print(f"Received: {item}")
+
+asyncio.run(consume_data())
+```
+
+### Handle Cancellation Gracefully
+
+Always handle task cancellation properly:
+
+```python
+async def cancellable_task():
+    try:
+        while True:
+            await asyncio.sleep(1)
+            print("Working...")
+    except asyncio.CancelledError:
+        print("Task cancelled, cleaning up...")
+        # Perform cleanup
+        raise  # Re-raise to propagate cancellation
+
+async def main():
+    task = asyncio.create_task(cancellable_task())
+    await asyncio.sleep(3)
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        print("Task cancelled successfully")
+```
+
+### Best Practices
+
+1. **Use asyncio.run()**: Always use it as your main entry point
+2. **Always await coroutines**: Don't forget to await async functions
+3. **Prefer async context managers**: Use 'async with' when available
+4. **Don't block the event loop**: Avoid CPU-intensive operations
+5. **Handle exceptions**: Use try-except in async functions
+
+```python
+# Good async pattern
+async def fetch_api_data(url: str) -> dict:
+    """Fetch data from API with proper error handling."""
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                return await response.json()
+    except aiohttp.ClientError as e:
+        print(f"API request failed: {e}")
+        return {}
+```
+
+---
+
+## Logging Best Practices
+
+### Configure Logging Properly
+
+Set up logging at the application level:
+
+```python
+import logging
+import logging.config
+
+# Basic configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+# Get logger
+logger = logging.getLogger(__name__)
+
+def process_data(data):
+    logger.info("Starting data processing")
+    try:
+        result = complex_operation(data)
+        logger.info(f"Processing completed: {len(result)} items")
+        return result
+    except Exception as e:
+        logger.error(f"Processing failed: {e}", exc_info=True)
+        raise
+```
+
+### Use Appropriate Log Levels
+
+Choose the right log level for each message:
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+# DEBUG: Detailed information for diagnosing problems
+logger.debug("User input validation started")
+
+# INFO: Confirmation that things are working as expected
+logger.info("User logged in successfully")
+
+# WARNING: Something unexpected but the program can continue
+logger.warning("API rate limit approaching")
+
+# ERROR: A serious problem, function cannot perform its task
+logger.error("Failed to connect to database")
+
+# CRITICAL: Very serious error, program may not continue
+logger.critical("System out of memory")
+```
+
+### Use Logging Factory Method
+
+Use getLogger() to create loggers:
+
+```python
+import logging
+
+# Create module-specific logger
+logger = logging.getLogger(__name__)
+
+def my_function():
+    logger.info("Function called")
+```
+
+### Structured Logging
+
+Use structured logging for better log analysis:
+
+```python
+import logging
+from pythonjsonlogger import jsonlogger
+
+# Configure JSON logging
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+
+logger = logging.getLogger()
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
+
+# Log structured data
+logger.info("User action", extra={
+    "user_id": 123,
+    "action": "login",
+    "ip_address": "192.168.1.1"
+})
+```
+
+### Logging Best Practices
+
+1. **Use logger.getLogger(__name__)**: Creates module-specific loggers
+2. **Log exceptions with context**: Use exc_info=True parameter
+3. **Don't log sensitive data**: Avoid passwords, tokens, etc.
+4. **Use appropriate levels**: Don't overuse INFO or DEBUG
+5. **Configure centrally**: Set up logging configuration once
+6. **Use lazy formatting**: Let the logger handle string formatting
+
+```python
+# Good - Lazy formatting (only formatted if logged)
+logger.info("Processing item %s", item_id)
+
+# Bad - Always formats string even if not logged
+logger.info(f"Processing item {item_id}")
+```
+
+---
+
+## Project Structure and Organization
+
+### Standard Python Project Layout
+
+Follow a consistent project structure:
+
+```
+my-project/
+├── src/
+│   └── myproject/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── user.py
+│       ├── services/
+│       │   ├── __init__.py
+│       │   └── auth.py
+│       └── utils/
+│           ├── __init__.py
+│           └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_models.py
+│   └── test_services.py
+├── docs/
+│   └── README.md
+├── .gitignore
+├── .python-version
+├── pyproject.toml
+├── README.md
+└── LICENSE
+```
+
+### Use src/ Layout
+
+Place your package code inside a src/ directory:
+
+Benefits:
+- Prevents accidentally importing from the wrong location
+- Makes packaging cleaner
+- Separates source from tests and configuration
+
+```python
+# myproject/src/myproject/__init__.py
+"""MyProject package."""
+
+__version__ = "0.1.0"
+
+from .main import main_function
+
+__all__ = ["main_function"]
+```
+
+### Organize Code by Feature
+
+Group related functionality together:
+
+```
+myproject/
+├── users/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── services.py
+│   └── views.py
+├── products/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── services.py
+│   └── views.py
+└── common/
+    ├── __init__.py
+    └── utils.py
+```
+
+### Essential Project Files
+
+#### README.md
+
+Provide clear project documentation:
+
+```markdown
+# Project Name
+
+Brief description of the project.
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+```python
+from myproject import main_function
+main_function()
+```
+
+## Development
+
+```bash
+# Setup
+python -m venv venv
+source venv/bin/activate
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Run linters
+ruff check .
+mypy .
+```
+
+## License
+
+MIT License
+```
+
+#### .gitignore
+
+Exclude unnecessary files from version control:
+
+```
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+```
+
+---
+
+## Dependency Management
+
+### Modern Tools for 2025
+
+Python 3.14 works excellently with modern dependency managers.
+
+### uv - The Fastest Option
+
+uv is the newest and fastest Python package manager:
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create new project
+uv init myproject
+cd myproject
+
+# Add dependencies
+uv add django
+uv add ruff --dev
+
+# Run commands
+uv run python main.py
+
+# Sync dependencies
+uv sync
+```
+
+### Poetry - Feature-Rich Manager
+
+Poetry provides excellent dependency management:
+
+```bash
+# Install Poetry
+pipx install poetry
+
+# Create new project
+poetry new myproject
+cd myproject
+
+# Add dependencies
+poetry add requests
+poetry add pytest --group dev
+
+# Install dependencies
+poetry install
+
+# Run commands
+poetry run python main.py
+```
+
+### pip-tools - Simple and Effective
+
+pip-tools compiles requirements files:
+
+```bash
+# Install pip-tools
+pip install pip-tools
+
+# Create requirements.in
+echo "django>=4.0" > requirements.in
+echo "requests" >> requirements.in
+
+# Compile to requirements.txt
+pip-compile requirements.in
+
+# Install dependencies
+pip-sync requirements.txt
+```
+
+### pyproject.toml
+
+Use pyproject.toml for project configuration:
+
+```toml
+[project]
+name = "myproject"
+version = "0.1.0"
+description = "A sample Python project"
+readme = "README.md"
+requires-python = ">=3.14"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "you@example.com"}
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+```
+
+---
+
+## Virtual Environments
+
+### Why Use Virtual Environments
+
+Virtual environments isolate project dependencies:
+- Prevent version conflicts
+- Maintain project-specific dependencies
+- Keep global Python installation clean
+- Enable reproducible environments
+
+### venv - Built-in Module
+
+Python's built-in virtual environment:
+
+```bash
+# Create virtual environment
+python3.14 -m venv venv
+
+# Activate (Linux/Mac)
+source venv/bin/activate
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Install packages
+pip install requests
+
+# Deactivate
+deactivate
+```
+
+### virtualenv - More Flexible
+
+Third-party tool with additional features:
+
+```bash
+# Install virtualenv
+pip install virtualenv
+
+# Create environment
+virtualenv myenv
+
+# Create with specific Python version
+virtualenv -p python3.14 myenv
+
+# Activate
+source myenv/bin/activate
+```
+
+### Best Practices
+
+1. **One environment per project**: Isolate each project
+2. **Use requirements.txt**: Document dependencies
+3. **Add venv/ to .gitignore**: Don't commit environments
+4. **Activate before working**: Always activate the environment
+5. **Use .python-version**: Specify Python version
+
+```bash
+# Create .python-version file
+echo "3.14.0" > .python-version
+
+# Generate requirements
+pip freeze > requirements.txt
+
+# Install from requirements
+pip install -r requirements.txt
+```
+
+---
+
+## Data Classes and Pydantic
+
+### Python Dataclasses
+
+Use dataclasses for simple data containers:
+
+```python
+from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class User:
+    """User data class."""
+    id: int
+    name: str
+    email: str
+    is_active: bool = True
+    tags: List[str] = field(default_factory=list)
+    
+    def __post_init__(self):
+        """Validate after initialization."""
+        if "@" not in self.email:
+            raise ValueError("Invalid email")
+
+# Usage
+user = User(id=1, name="Alice", email="alice@example.com")
+print(user)  # User(id=1, name='Alice', email='alice@example.com', ...)
+```
+
+### Pydantic - Validation and Parsing
+
+Use Pydantic for data validation:
+
+```python
+from pydantic import BaseModel, Field, EmailStr, validator
+from typing import List
+
+class User(BaseModel):
+    """User model with validation."""
+    id: int = Field(gt=0)
+    name: str = Field(min_length=1, max_length=100)
+    email: EmailStr
+    age: int = Field(ge=0, le=150)
+    tags: List[str] = []
+    
+    @validator('name')
+    def name_must_be_capitalized(cls, v):
+        if not v[0].isupper():
+            raise ValueError('Name must be capitalized')
+        return v
+    
+    class Config:
+        validate_assignment = True
+
+# Usage with validation
+try:
+    user = User(
+        id=1,
+        name="alice",  # Validation error: not capitalized
+        email="alice@example.com",
+        age=30
+    )
+except ValueError as e:
+    print(f"Validation error: {e}")
+
+# Correct usage
+user = User(
+    id=1,
+    name="Alice",
+    email="alice@example.com",
+    age=30
+)
+
+# JSON serialization
+json_data = user.model_dump_json()
+```
+
+### When to Use Each
+
+**Use dataclasses when:**
+- You control all input sources
+- You need a simple data container
+- Performance is critical
+- You don't need validation
+
+**Use Pydantic when:**
+- Handling external data (APIs, user input)
+- You need validation
+- You need JSON serialization
+- Working with web frameworks (FastAPI)
+
+---
+
+## Comprehensions and Generators
+
+### List Comprehensions
+
+Use list comprehensions for concise, readable list creation:
+
+```python
+# Good - List comprehension
+squares = [x * x for x in range(10)]
+
+# Traditional loop (more verbose)
+squares = []
+for x in range(10):
+    squares.append(x * x)
+
+# With filtering
+even_squares = [x * x for x in range(10) if x % 2 == 0]
+
+# Nested comprehension
+matrix = [[i + j for j in range(3)] for i in range(3)]
+```
+
+### Dictionary Comprehensions
+
+Create dictionaries concisely:
+
+```python
+# Dictionary comprehension
+squares_dict = {x: x * x for x in range(5)}
+
+# With filtering
+even_squares = {x: x * x for x in range(10) if x % 2 == 0}
+
+# Transform dictionary
+prices = {'apple': 1.0, 'banana': 0.5}
+discounted = {k: v * 0.9 for k, v in prices.items()}
+```
+
+### Set Comprehensions
+
+Create sets efficiently:
+
+```python
+# Set comprehension
+unique_lengths = {len(word) for word in ['hello', 'world', 'python']}
+
+# Remove duplicates
+numbers = [1, 2, 2, 3, 3, 3, 4]
+unique = {x for x in numbers}
+```
+
+### Generator Expressions
+
+Use generators for memory efficiency:
+
+```python
+# Generator expression (memory efficient)
+gen = (x * x for x in range(1000000))
+
+# List comprehension (uses more memory)
+lst = [x * x for x in range(1000000)]
+
+# Use in functions that accept iterables
+total = sum(x * x for x in range(1000000))
+```
+
+### Best Practices
+
+1. **Keep comprehensions simple**: If too complex, use regular loops
+2. **Use meaningful variable names**: Make intent clear
+3. **Add whitespace**: Improve readability for long comprehensions
+4. **Avoid multiple levels of nesting**: Hard to read
+5. **Use generators for large datasets**: Save memory
+
+```python
+# Good - Simple and readable
+result = [
+    process_item(item)
+    for item in items
+    if item.is_valid()
+]
+
+# Bad - Too complex
+result = [
+    (item.value * 2 if item.type == 'A' else item.value / 2)
+    if item.is_active()
+    else 0
+    for item in items
+    if item.category in valid_categories
+]
+
+# Better - Use regular loop for complex logic
+result = []
+for item in items:
+    if item.category not in valid_categories:
+        continue
+    
+    if item.is_active():
+        value = item.value * 2 if item.type == 'A' else item.value / 2
+    else:
+        value = 0
+    
+    result.append(value)
+```
+
+---
+
+## Context Managers
+
+### The with Statement
+
+Use context managers for resource management:
+
+```python
+# File handling with context manager
+with open('file.txt', 'r') as f:
+    data = f.read()
+    # File automatically closed after block
+
+# Multiple resources
+with open('input.txt', 'r') as infile, open('output.txt', 'w') as outfile:
+    data = infile.read()
+    outfile.write(data.upper())
+```
+
+### Creating Custom Context Managers
+
+#### Class-Based Context Manager
+
+```python
+class DatabaseConnection:
+    """Context manager for database connections."""
+    
+    def __init__(self, host: str, port: int):
+        self.host = host
+        self.port = port
+        self.connection = None
+    
+    def __enter__(self):
+        """Set up resource."""
+        print(f"Connecting to {self.host}:{self.port}")
+        self.connection = self.connect()
+        return self.connection
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Clean up resource."""
+        print("Closing connection")
+        if self.connection:
+            self.connection.close()
+        return False  # Don't suppress exceptions
+    
+    def connect(self):
+        # Actual connection logic
+        return "connection"
+
+# Usage
+with DatabaseConnection('localhost', 5432) as conn:
+    # Use connection
+    pass
+```
+
+#### Function-Based Context Manager
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def file_handler(filename: str, mode: str = 'r'):
+    """Context manager for file handling."""
+    f = None
+    try:
+        f = open(filename, mode)
+        yield f
+    except Exception as e:
+        print(f"Error: {e}")
+        raise
+    finally:
+        if f:
+            f.close()
+
+# Usage
+with file_handler('data.txt') as f:
+    data = f.read()
+```
+
+### Context Manager Best Practices
+
+1. **Use for resource management**: Files, locks, connections
+2. **Always implement cleanup**: In __exit__ or finally
+3. **Return resources from __enter__**: Make them available
+4. **Handle exceptions properly**: Decide whether to suppress
+5. **Use contextlib for simple cases**: Decorator approach
+
+```python
+from contextlib import contextmanager
+import time
+
+@contextmanager
+def timer(name: str):
+    """Context manager for timing code blocks."""
+    start = time.time()
+    try:
+        yield
+    finally:
+        end = time.time()
+        print(f"{name} took {end - start:.2f} seconds")
+
+# Usage
+with timer("Data processing"):
+    process_large_dataset()
+```
+
+---
+
+## SOLID Principles
+
+### Single Responsibility Principle (SRP)
+
+A class should have only one reason to change.
+
+```python
+# Bad - Multiple responsibilities
+class User:
+    def __init__(self, name: str):
+        self.name = name
+    
+    def save_to_database(self):
+        # Database logic
+        pass
+    
+    def send_email(self):
+        # Email logic
+        pass
+
+# Good - Separated responsibilities
+class User:
+    def __init__(self, name: str):
+        self.name = name
+
+class UserRepository:
+    def save(self, user: User):
+        # Database logic
+        pass
+
+class EmailService:
+    def send_to_user(self, user: User):
+        # Email logic
+        pass
+```
+
+### Open-Closed Principle (OCP)
+
+Classes should be open for extension but closed for modification.
+
+```python
+from abc import ABC, abstractmethod
+
+# Good - Open for extension
+class PaymentProcessor(ABC):
+    @abstractmethod
+    def process_payment(self, amount: float):
+        pass
+
+class CreditCardProcessor(PaymentProcessor):
+    def process_payment(self, amount: float):
+        print(f"Processing credit card payment: ${amount}")
+
+class PayPalProcessor(PaymentProcessor):
+    def process_payment(self, amount: float):
+        print(f"Processing PayPal payment: ${amount}")
+
+# New processors can be added without modifying existing code
+class CryptoProcessor(PaymentProcessor):
+    def process_payment(self, amount: float):
+        print(f"Processing crypto payment: ${amount}")
+```
+
+### Liskov Substitution Principle (LSP)
+
+Derived classes must be substitutable for their base classes.
+
+```python
+class Bird:
+    def move(self):
+        print("Moving")
+
+class FlyingBird(Bird):
+    def fly(self):
+        print("Flying")
+
+class Penguin(Bird):
+    # Penguin can still move, just not fly
+    def swim(self):
+        print("Swimming")
+
+# Good - All birds can move
+def let_bird_move(bird: Bird):
+    bird.move()  # Works for all birds
+```
+
+### Interface Segregation Principle (ISP)
+
+Clients shouldn't depend on interfaces they don't use.
+
+```python
+# Bad - Fat interface
+class Worker:
+    def work(self):
+        pass
+    
+    def eat(self):
+        pass
+
+# Good - Segregated interfaces
+class Workable:
+    def work(self):
+        pass
+
+class Eatable:
+    def eat(self):
+        pass
+
+class Human(Workable, Eatable):
+    def work(self):
+        print("Working")
+    
+    def eat(self):
+        print("Eating")
+
+class Robot(Workable):
+    def work(self):
+        print("Working")
+    # Robot doesn't need eat()
+```
+
+### Dependency Inversion Principle (DIP)
+
+Depend on abstractions, not concretions.
+
+```python
+from abc import ABC, abstractmethod
+
+# Good - Depend on abstraction
+class Database(ABC):
+    @abstractmethod
+    def save(self, data: dict):
+        pass
+
+class PostgreSQL(Database):
+    def save(self, data: dict):
+        print(f"Saving to PostgreSQL: {data}")
+
+class MongoDB(Database):
+    def save(self, data: dict):
+        print(f"Saving to MongoDB: {data}")
+
+class UserService:
+    def __init__(self, database: Database):
+        self.database = database  # Depends on abstraction
+    
+    def create_user(self, user_data: dict):
+        self.database.save(user_data)
+
+# Can swap implementations easily
+service = UserService(PostgreSQL())
+service = UserService(MongoDB())
+```
+
+---
+
+## Design Patterns
+
+### Creational Patterns
+
+#### Singleton Pattern
+
+Ensure a class has only one instance:
+
+```python
+class Singleton:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+# Usage
+s1 = Singleton()
+s2 = Singleton()
+assert s1 is s2  # Same instance
+```
+
+#### Factory Pattern
+
+Create objects without specifying exact classes:
+
+```python
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    @abstractmethod
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+class AnimalFactory:
+    @staticmethod
+    def create_animal(animal_type: str) -> Animal:
+        if animal_type == "dog":
+            return Dog()
+        elif animal_type == "cat":
+            return Cat()
+        raise ValueError(f"Unknown animal type: {animal_type}")
+
+# Usage
+animal = AnimalFactory.create_animal("dog")
+print(animal.speak())  # Woof!
+```
+
+### Structural Patterns
+
+#### Adapter Pattern
+
+Make incompatible interfaces work together:
+
+```python
+class OldSystem:
+    def old_method(self):
+        return "Old system data"
+
+class NewSystem:
+    def new_method(self):
+        return "New system data"
+
+class Adapter:
+    def __init__(self, old_system: OldSystem):
+        self.old_system = old_system
+    
+    def new_method(self):
+        # Adapt old interface to new
+        return self.old_system.old_method()
+
+# Usage
+old = OldSystem()
+adapter = Adapter(old)
+print(adapter.new_method())  # Works with new interface
+```
+
+#### Decorator Pattern
+
+Add functionality to objects dynamically:
+
+```python
+from abc import ABC, abstractmethod
+
+class Coffee(ABC):
+    @abstractmethod
+    def cost(self) -> float:
+        pass
+
+class SimpleCoffee(Coffee):
+    def cost(self) -> float:
+        return 5.0
+
+class CoffeeDecorator(Coffee):
+    def __init__(self, coffee: Coffee):
+        self._coffee = coffee
+    
+    def cost(self) -> float:
+        return self._coffee.cost()
+
+class Milk(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 1.5
+
+class Sugar(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 0.5
+
+# Usage
+coffee = SimpleCoffee()
+coffee = Milk(coffee)
+coffee = Sugar(coffee)
+print(f"Total cost: ${coffee.cost()}")  # $7.0
+```
+
+### Behavioral Patterns
+
+#### Strategy Pattern
+
+Define a family of algorithms:
+
+```python
+from abc import ABC, abstractmethod
+
+class SortStrategy(ABC):
+    @abstractmethod
+    def sort(self, data: list) -> list:
+        pass
+
+class QuickSort(SortStrategy):
+    def sort(self, data: list) -> list:
+        # Quick sort implementation
+        return sorted(data)
+
+class MergeSort(SortStrategy):
+    def sort(self, data: list) -> list:
+        # Merge sort implementation
+        return sorted(data)
+
+class Sorter:
+    def __init__(self, strategy: SortStrategy):
+        self.strategy = strategy
+    
+    def sort_data(self, data: list) -> list:
+        return self.strategy.sort(data)
+
+# Usage
+data = [3, 1, 4, 1, 5, 9, 2, 6]
+sorter = Sorter(QuickSort())
+sorted_data = sorter.sort_data(data)
+```
+
+#### Observer Pattern
+
+Define one-to-many dependency:
+
+```python
+from abc import ABC, abstractmethod
+from typing import List
+
+class Observer(ABC):
+    @abstractmethod
+    def update(self, message: str):
+        pass
+
+class Subject:
+    def __init__(self):
+        self._observers: List[Observer] = []
+    
+    def attach(self, observer: Observer):
+        self._observers.append(observer)
+    
+    def notify(self, message: str):
+        for observer in self._observers:
+            observer.update(message)
+
+class ConcreteObserver(Observer):
+    def __init__(self, name: str):
+        self.name = name
+    
+    def update(self, message: str):
+        print(f"{self.name} received: {message}")
+
+# Usage
+subject = Subject()
+observer1 = ConcreteObserver("Observer 1")
+observer2 = ConcreteObserver("Observer 2")
+
+subject.attach(observer1)
+subject.attach(observer2)
+subject.notify("Event occurred")
+```
+
+---
+
+## Code Quality Tools
+
+### Ruff - Fast Linter and Formatter
+
+Ruff is the fastest Python linter and formatter for Python 3.14:
+
+```bash
+# Install Ruff
+pip install ruff
+
+# Check code
+ruff check .
+
+# Format code
+ruff format .
+
+# Fix issues automatically
+ruff check --fix .
+```
+
+Configuration in pyproject.toml:
+
+```toml
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+```
+
+### Black - Code Formatter
+
+Black formats Python code automatically:
+
+```bash
+# Install Black
+pip install black
+
+# Format files
+black myproject/
+
+# Check without modifying
+black --check myproject/
+```
+
+### Mypy - Static Type Checker
+
+Mypy checks type hints:
+
+```bash
+# Install Mypy
+pip install mypy
+
+# Check types
+mypy myproject/
+
+# Strict mode
+mypy --strict myproject/
+```
+
+Configuration in pyproject.toml:
+
+```toml
+[tool.mypy]
+python_version = "3.14"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+```
+
+### Pre-commit Hooks
+
+Automate code quality checks:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.0
+    hooks:
+      - id: mypy
+```
+
+Install and use:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install hooks
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
+
+---
+
+## Conclusion
+
+This comprehensive guide covers the best practices and coding standards for Python 3.14.0 development. By following these guidelines, you'll write clean, maintainable, and professional Python code that leverages the latest features and follows industry standards.
+
+Remember:
+- Write readable code that others (and your future self) can understand
+- Use type hints and documentation to make your code self-documenting
+- Test your code thoroughly with pytest
+- Use modern tools like Ruff, Mypy, and uv for efficiency
+- Follow PEP 8 and SOLID principles
+- Keep learning and stay updated with Python's evolution
+
+Happy coding with Python 3.14! 🐍✨
