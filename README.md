@@ -123,7 +123,7 @@ npm install
 npm run dev
 
 # In a separate terminal
-cd ../prompt-optimizer-frontend
+cd ../frontend
 npm install
 npm run dev
 ```
@@ -136,7 +136,7 @@ pnpm install
 pnpm dev
 
 # Frontend
-cd ../prompt-optimizer-frontend
+cd ../frontend
 pnpm install
 pnpm dev
 ```
@@ -149,7 +149,7 @@ bun install
 bun run dev
 
 # Frontend
-cd ../prompt-optimizer-frontend
+cd ../frontend
 bun install
 bun run dev
 ```
