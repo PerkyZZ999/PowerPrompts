@@ -1,5 +1,3 @@
-GitHub Copilot Chat Assistant
-
 # PowerPrompts
 
 [![Build](https://img.shields.io/github/actions/workflow/status/PerkyZZ999/PowerPrompts/ci.yml?branch=main&label=build&logo=github)](https://github.com/PerkyZZ999/PowerPrompts/actions)
