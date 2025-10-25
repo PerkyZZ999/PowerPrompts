@@ -2,9 +2,9 @@
  * ChromaDB Vector Store for RAG
  */
 
-import { ChromaClient, Collection } from 'chromadb';
-import { appConfig } from '../config.js';
-import { llmClient } from './llm-client.js';
+import { ChromaClient, Collection } from "chromadb";
+import { appConfig } from "../config.js";
+import { llmClient } from "./llm-client.js";
 
 /**
  * Vector store document
@@ -52,7 +52,7 @@ export class VectorStore {
       // Try to get existing collection
       const collection = await this.client.getOrCreateCollection({
         name,
-        metadata: { 'hnsw:space': 'cosine' },
+        metadata: { "hnsw:space": "cosine" },
       });
 
       // Cache the collection
@@ -61,7 +61,10 @@ export class VectorStore {
       console.log(`[VECTOR STORE] Collection "${name}" ready`);
       return collection;
     } catch (error) {
-      console.error(`[VECTOR STORE ERROR] Failed to get/create collection "${name}":`, error);
+      console.error(
+        `[VECTOR STORE ERROR] Failed to get/create collection "${name}":`,
+        error,
+      );
       throw error;
     }
   }
@@ -71,7 +74,7 @@ export class VectorStore {
    */
   async addDocuments(
     collectionName: string,
-    documents: VectorDocument[]
+    documents: VectorDocument[],
   ): Promise<void> {
     if (documents.length === 0) {
       return;
@@ -96,12 +99,12 @@ export class VectorStore {
       });
 
       console.log(
-        `[VECTOR STORE] Added ${documents.length} documents to collection "${collectionName}"`
+        `[VECTOR STORE] Added ${documents.length} documents to collection "${collectionName}"`,
       );
     } catch (error) {
       console.error(
         `[VECTOR STORE ERROR] Failed to add documents to collection "${collectionName}":`,
-        error
+        error,
       );
       throw error;
     }
@@ -116,7 +119,7 @@ export class VectorStore {
     options: {
       topK?: number;
       filter?: Record<string, any>;
-    } = {}
+    } = {},
   ): Promise<QueryResult[]> {
     const { topK = 5, filter } = options;
 
@@ -140,22 +143,23 @@ export class VectorStore {
         for (let i = 0; i < results.ids[0].length; i++) {
           formattedResults.push({
             id: results.ids[0][i] as string,
-            text: (results.documents?.[0]?.[i] as string) || '',
-            metadata: (results.metadatas?.[0]?.[i] as Record<string, any>) || {},
+            text: (results.documents?.[0]?.[i] as string) || "",
+            metadata:
+              (results.metadatas?.[0]?.[i] as Record<string, any>) || {},
             distance: (results.distances?.[0]?.[i] as number) || 0,
           });
         }
       }
 
       console.log(
-        `[VECTOR STORE] Query returned ${formattedResults.length} results from collection "${collectionName}"`
+        `[VECTOR STORE] Query returned ${formattedResults.length} results from collection "${collectionName}"`,
       );
 
       return formattedResults;
     } catch (error) {
       console.error(
         `[VECTOR STORE ERROR] Failed to query collection "${collectionName}":`,
-        error
+        error,
       );
       throw error;
     }
@@ -164,10 +168,7 @@ export class VectorStore {
   /**
    * Delete documents from collection
    */
-  async deleteDocuments(
-    collectionName: string,
-    ids: string[]
-  ): Promise<void> {
+  async deleteDocuments(collectionName: string, ids: string[]): Promise<void> {
     if (ids.length === 0) {
       return;
     }
@@ -180,12 +181,12 @@ export class VectorStore {
       });
 
       console.log(
-        `[VECTOR STORE] Deleted ${ids.length} documents from collection "${collectionName}"`
+        `[VECTOR STORE] Deleted ${ids.length} documents from collection "${collectionName}"`,
       );
     } catch (error) {
       console.error(
         `[VECTOR STORE ERROR] Failed to delete documents from collection "${collectionName}":`,
-        error
+        error,
       );
       throw error;
     }
@@ -198,12 +199,12 @@ export class VectorStore {
     try {
       const collections = await this.client.listCollections();
       return collections.map((c) => {
-        if (typeof c === 'string') return c;
-        if (c && typeof c === 'object' && 'name' in c) return (c as any).name;
+        if (typeof c === "string") return c;
+        if (c && typeof c === "object" && "name" in c) return (c as any).name;
         return String(c);
       });
     } catch (error) {
-      console.error('[VECTOR STORE ERROR] Failed to list collections:', error);
+      console.error("[VECTOR STORE ERROR] Failed to list collections:", error);
       throw error;
     }
   }
@@ -219,7 +220,7 @@ export class VectorStore {
     } catch (error) {
       console.error(
         `[VECTOR STORE ERROR] Failed to delete collection "${name}":`,
-        error
+        error,
       );
       throw error;
     }
@@ -237,7 +238,7 @@ export class VectorStore {
     } catch (error) {
       console.error(
         `[VECTOR STORE ERROR] Failed to get count for collection "${collectionName}":`,
-        error
+        error,
       );
       throw error;
     }
@@ -248,4 +249,3 @@ export class VectorStore {
  * Global vector store instance
  */
 export const vectorStore = new VectorStore();
-

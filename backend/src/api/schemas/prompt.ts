@@ -2,24 +2,24 @@
  * Zod schemas for prompt optimization requests and responses
  */
 
-import { z } from 'zod';
-import { appConfig } from '../../config.js';
+import { z } from "zod";
+import { appConfig } from "../../config.js";
 
 /**
  * Framework enum
  */
-export const FrameworkSchema = z.enum(['RACE', 'COSTAR', 'APE', 'CREATE']);
+export const FrameworkSchema = z.enum(["RACE", "COSTAR", "APE", "CREATE"]);
 
 /**
  * Technique enum
  */
 export const TechniqueSchema = z.enum([
-  'cot',
-  'self_consistency',
-  'tot',
-  'rsip',
-  'rag',
-  'prompt_chaining',
+  "cot",
+  "self_consistency",
+  "tot",
+  "rsip",
+  "rag",
+  "prompt_chaining",
 ]);
 
 /**
@@ -29,9 +29,7 @@ export const LLMParametersSchema = z.object({
   temperature: z.number().min(0).max(2).default(0.7),
   top_p: z.number().min(0).max(1).default(1.0),
   max_tokens: z.number().int().min(1).max(128000).default(16000), // High default for modern models
-  model: z
-    .string()
-    .default(appConfig.defaultModel),
+  model: z.string().default(appConfig.defaultModel),
 });
 
 /**
@@ -40,8 +38,8 @@ export const LLMParametersSchema = z.object({
 export const DatasetConfigSchema = z.object({
   example_count: z.number().int().min(5).max(50).default(15),
   difficulty_levels: z
-    .array(z.enum(['easy', 'medium', 'hard']))
-    .default(['easy', 'medium', 'hard']),
+    .array(z.enum(["easy", "medium", "hard"]))
+    .default(["easy", "medium", "hard"]),
 });
 
 /**
@@ -61,4 +59,3 @@ export type Framework = z.infer<typeof FrameworkSchema>;
 export type Technique = z.infer<typeof TechniqueSchema>;
 export type LLMParameters = z.infer<typeof LLMParametersSchema>;
 export type DatasetConfig = z.infer<typeof DatasetConfigSchema>;
-

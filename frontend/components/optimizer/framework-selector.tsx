@@ -17,7 +17,8 @@ const FRAMEWORK_METADATA = {
   [Framework.RACE]: {
     name: "RACE",
     description: "Role, Action, Context, Example",
-    details: "Structured framework focusing on role definition, specific actions, contextual information, and concrete examples.",
+    details:
+      "Structured framework focusing on role definition, specific actions, contextual information, and concrete examples.",
     useCases: ["Technical", "Documentation", "Code Generation"],
     complexity: "Simple" as Complexity,
     recommended: "Clear, step-by-step instructions with examples",
@@ -29,10 +30,12 @@ const FRAMEWORK_METADATA = {
   [Framework.COSTAR]: {
     name: "CO-STAR",
     description: "Context, Objective, Style, Tone, Audience, Response",
-    details: "Comprehensive framework covering all aspects of prompt engineering including context, objectives, and audience considerations.",
+    details:
+      "Comprehensive framework covering all aspects of prompt engineering including context, objectives, and audience considerations.",
     useCases: ["Creative", "Marketing", "Content Writing"],
     complexity: "Advanced" as Complexity,
-    recommended: "Nuanced content requiring specific tone and audience awareness",
+    recommended:
+      "Nuanced content requiring specific tone and audience awareness",
     structure: `<context>Background information</context>
 <objective>What you want to achieve</objective>
 <style>Writing style preferences</style>
@@ -43,7 +46,8 @@ const FRAMEWORK_METADATA = {
   [Framework.APE]: {
     name: "APE",
     description: "Action, Purpose, Expectation",
-    details: "Simple yet effective framework emphasizing clear actions, defined purposes, and explicit expectations.",
+    details:
+      "Simple yet effective framework emphasizing clear actions, defined purposes, and explicit expectations.",
     useCases: ["General", "Quick Tasks", "Q&A"],
     complexity: "Simple" as Complexity,
     recommended: "Quick, focused tasks with clear outcomes",
@@ -54,7 +58,8 @@ const FRAMEWORK_METADATA = {
   [Framework.CREATE]: {
     name: "CREATE",
     description: "Character, Request, Examples, Adjustments, Type, Extras",
-    details: "Detailed framework for creating rich, multi-dimensional prompts with character definition and iterative refinement.",
+    details:
+      "Detailed framework for creating rich, multi-dimensional prompts with character definition and iterative refinement.",
     useCases: ["Roleplay", "Storytelling", "Complex Analysis"],
     complexity: "Moderate" as Complexity,
     recommended: "Rich narratives and character-driven responses",
@@ -109,7 +114,7 @@ export function FrameworkSelector() {
           const isSelected = framework === key;
           const isHovered = hoveredFramework === key;
           const complexityBars = getComplexityBars(info.complexity);
-          
+
           return (
             <div key={key} className="relative">
               <button
@@ -123,23 +128,25 @@ export function FrameworkSelector() {
                   "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
                   isSelected
                     ? "border-primary/50 bg-primary/10 shadow-neon-sm"
-                    : "border-zinc-700 bg-elevated/30 hover:border-zinc-600"
+                    : "border-zinc-700 bg-elevated/30 hover:border-zinc-600",
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h4 className={cn(
-                        "font-semibold font-space-grotesk",
-                        isSelected ? "text-primary" : "text-zinc-200"
-                      )}>
+                      <h4
+                        className={cn(
+                          "font-semibold font-space-grotesk",
+                          isSelected ? "text-primary" : "text-zinc-200",
+                        )}
+                      >
                         {info.name}
                       </h4>
                       {isSelected && (
                         <CheckCircle2 className="w-4 h-4 text-primary animate-pulse-glow" />
                       )}
                     </div>
-                    
+
                     {/* Use Case Badges */}
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       {info.useCases.map((useCase) => (
@@ -163,7 +170,10 @@ export function FrameworkSelector() {
                     <div className="flex items-start gap-1.5 text-xs text-zinc-500">
                       <Info className="w-3 h-3 flex-shrink-0 mt-0.5" />
                       <span className="leading-tight">
-                        <span className="font-semibold text-white">Best for:</span> {info.recommended}
+                        <span className="font-semibold text-white">
+                          Best for:
+                        </span>{" "}
+                        {info.recommended}
                       </span>
                     </div>
                   </div>
@@ -184,7 +194,7 @@ export function FrameworkSelector() {
                             "w-1.5 h-6 rounded-full transition-colors",
                             i < complexityBars
                               ? getComplexityColor(info.complexity)
-                              : "bg-zinc-700"
+                              : "bg-zinc-700",
                           )}
                         />
                       ))}
@@ -199,7 +209,9 @@ export function FrameworkSelector() {
                   <div className="text-xs">
                     <div className="flex items-center gap-2 mb-2">
                       <Layers className="w-3.5 h-3.5 text-primary" />
-                      <span className="font-semibold text-white">Framework Structure</span>
+                      <span className="font-semibold text-white">
+                        Framework Structure
+                      </span>
                     </div>
                     <pre className="text-[10px] text-zinc-400 leading-relaxed font-mono whitespace-pre-wrap">
                       {info.structure}
@@ -214,4 +226,3 @@ export function FrameworkSelector() {
     </Card>
   );
 }
-
