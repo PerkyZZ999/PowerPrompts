@@ -9,6 +9,7 @@ I've added **comprehensive logging** to help diagnose why the backend isn't rece
 ## 🎯 What To Do Now
 
 ### **1. Hard Refresh Browser**
+
 - **Windows**: `Ctrl + Shift + R`
 - **Mac**: `Cmd + Shift + R`
 
@@ -19,6 +20,7 @@ I've added **comprehensive logging** to help diagnose why the backend isn't rece
 ### **4. Check Console Output**
 
 You should now see detailed logs like:
+
 ```
 === STARTING OPTIMIZATION ===
 URL: http://localhost:8000/api/optimize
@@ -40,11 +42,13 @@ SSE connection opened
 **Console shows NOTHING** (not even "=== STARTING OPTIMIZATION ===")
 
 **Possible causes:**
+
 - Validation error in prompt/framework
 - Button click not working
 - State not updating
 
 **Solution:**
+
 - Check if button is disabled
 - Try entering a simple prompt: "Hello world"
 - Select framework: RACE
@@ -55,12 +59,14 @@ SSE connection opened
 ### **Scenario B: Request Fails Immediately**
 
 **Console shows:**
+
 ```
 === STARTING OPTIMIZATION ===
 ❌ Request failed: ...
 ```
 
 **Possible causes:**
+
 - API key mismatch
 - Backend not running
 - CORS issue
@@ -73,17 +79,20 @@ Share the exact error message with me!
 ### **Scenario C: Request Hangs**
 
 **Console shows:**
+
 ```
 🔌 Connecting to SSE: ...
 (then nothing)
 ```
 
 **Possible causes:**
+
 - Backend crashed
 - Backend stuck processing
 - Network timeout
 
 **Solution:**
+
 1. Check backend terminal for errors
 2. Check Network tab (F12 → Network)
 3. Look for `/api/optimize` request
@@ -94,17 +103,20 @@ Share the exact error message with me!
 ### **Scenario D: Backend Receives But Doesn't Respond**
 
 **Backend terminal shows:**
+
 ```
 INFO: POST /api/optimize
 (then hangs)
 ```
 
 **Possible causes:**
+
 - Missing OpenAI API key
 - OpenAI API error
 - Backend service crash
 
 **Solution:**
+
 - Check if `OPENAI_API_KEY` is set in `backend/.env`
 - Look for Python errors in backend terminal
 
@@ -119,6 +131,7 @@ INFO: POST /api/optimize
 5. Click on it
 
 **Check:**
+
 - **Status**: Should be `200 OK` or pending
 - **Type**: Should be `text/event-stream`
 - **Headers**: Check `X-API-Key` is sent
@@ -131,6 +144,7 @@ INFO: POST /api/optimize
 ### **Issue #1: Missing OpenAI API Key**
 
 **If you see in backend terminal:**
+
 ```
 pydantic_core._pydantic_core.ValidationError: 1 validation error for Settings
 openai_api_key
@@ -139,6 +153,7 @@ openai_api_key
 
 **Solution:**
 Edit `backend/.env` and add your OpenAI API key:
+
 ```env
 OPENAI_API_KEY=sk-your-actual-key-here
 ```
@@ -150,12 +165,14 @@ Then restart backend.
 ### **Issue #2: API Key Mismatch**
 
 **If console shows:**
+
 ```
 📡 Response Status: 401 Unauthorized
 ```
 
 **Solution:**
 Check keys match:
+
 - Frontend `.env.local`: `cG93ZXJwcm9tcHRz`
 - Backend `.env`: `cG93ZXJwcm9tcHRz`
 
@@ -188,14 +205,17 @@ Try this simple test in browser console (F12):
 
 ```javascript
 // Test 1: Check if fetch works
-fetch('http://localhost:8000/health')
-  .then(r => r.json())
-  .then(d => console.log('✓ Backend reachable:', d))
-  .catch(e => console.error('✗ Backend unreachable:', e));
+fetch("http://localhost:8000/health")
+  .then((r) => r.json())
+  .then((d) => console.log("✓ Backend reachable:", d))
+  .catch((e) => console.error("✗ Backend unreachable:", e));
 
 // Test 2: Check environment variables
-console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
-console.log('API Key:', process.env.NEXT_PUBLIC_API_KEY ? '✓ Set' : '✗ Missing');
+console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+console.log(
+  "API Key:",
+  process.env.NEXT_PUBLIC_API_KEY ? "✓ Set" : "✗ Missing",
+);
 ```
 
 ---
@@ -203,4 +223,3 @@ console.log('API Key:', process.env.NEXT_PUBLIC_API_KEY ? '✓ Set' : '✗ Missi
 **The new logging will help us see EXACTLY where things are failing!**
 
 After you refresh and try again, share the console output with me! 🔍
-

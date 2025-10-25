@@ -14,10 +14,7 @@ export function wrapTag(tag: string, content: string): string {
  */
 export function extractTag(xml: string, tag: string): string | null {
   // Create regex pattern to match tag
-  const pattern = new RegExp(
-    `<${tag}>([\\s\\S]*?)<\\/${tag}>`,
-    'i'
-  );
+  const pattern = new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, "i");
 
   const match = xml.match(pattern);
 
@@ -32,10 +29,7 @@ export function extractTag(xml: string, tag: string): string | null {
  * Extract all occurrences of a tag
  */
 export function extractAllTags(xml: string, tag: string): string[] {
-  const pattern = new RegExp(
-    `<${tag}>([\\s\\S]*?)<\\/${tag}>`,
-    'gi'
-  );
+  const pattern = new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, "gi");
 
   const matches: string[] = [];
   let match;
@@ -65,8 +59,8 @@ export function validateXml(xml: string): { valid: boolean; errors: string[] } {
   while ((match = tagPattern.exec(xml)) !== null) {
     const tag = match[1];
     if (!tag) continue; // Skip if no tag name found
-    
-    const isClosing = match[0].startsWith('</');
+
+    const isClosing = match[0].startsWith("</");
 
     if (isClosing) {
       if (openTags.length === 0) {
@@ -74,13 +68,15 @@ export function validateXml(xml: string): { valid: boolean; errors: string[] } {
       } else if (openTags[openTags.length - 1] !== tag) {
         // Only error if the closing tag doesn't match the most recent open tag
         // This catches actual mistakes like <role>...</expectation>
-        errors.push(`Mismatched closing tag: expected </${openTags[openTags.length - 1]}>, got </${tag}>`);
+        errors.push(
+          `Mismatched closing tag: expected </${openTags[openTags.length - 1]}>, got </${tag}>`,
+        );
       } else {
         openTags.pop();
       }
     } else {
       // Skip self-closing tags
-      if (!match[0].endsWith('/>')) {
+      if (!match[0].endsWith("/>")) {
         openTags.push(tag);
       }
     }
@@ -102,12 +98,9 @@ export function validateXml(xml: string): { valid: boolean; errors: string[] } {
 export function replaceTag(
   xml: string,
   tag: string,
-  newContent: string
+  newContent: string,
 ): string {
-  const pattern = new RegExp(
-    `<${tag}>[\\s\\S]*?<\\/${tag}>`,
-    'i'
-  );
+  const pattern = new RegExp(`<${tag}>[\\s\\S]*?<\\/${tag}>`, "i");
 
   return xml.replace(pattern, wrapTag(tag, newContent));
 }
@@ -122,10 +115,10 @@ export function parseRaceFramework(xml: string): {
   expectation?: string;
 } {
   return {
-    role: extractTag(xml, 'role') || undefined,
-    action: extractTag(xml, 'action') || undefined,
-    context: extractTag(xml, 'context') || undefined,
-    expectation: extractTag(xml, 'expectation') || undefined,
+    role: extractTag(xml, "role") || undefined,
+    action: extractTag(xml, "action") || undefined,
+    context: extractTag(xml, "context") || undefined,
+    expectation: extractTag(xml, "expectation") || undefined,
   };
 }
 
@@ -141,12 +134,12 @@ export function parseCostarFramework(xml: string): {
   response?: string;
 } {
   return {
-    context: extractTag(xml, 'context') || undefined,
-    objective: extractTag(xml, 'objective') || undefined,
-    style: extractTag(xml, 'style') || undefined,
-    tone: extractTag(xml, 'tone') || undefined,
-    audience: extractTag(xml, 'audience') || undefined,
-    response: extractTag(xml, 'response') || undefined,
+    context: extractTag(xml, "context") || undefined,
+    objective: extractTag(xml, "objective") || undefined,
+    style: extractTag(xml, "style") || undefined,
+    tone: extractTag(xml, "tone") || undefined,
+    audience: extractTag(xml, "audience") || undefined,
+    response: extractTag(xml, "response") || undefined,
   };
 }
 
@@ -159,9 +152,9 @@ export function parseApeFramework(xml: string): {
   expectation?: string;
 } {
   return {
-    action: extractTag(xml, 'action') || undefined,
-    purpose: extractTag(xml, 'purpose') || undefined,
-    expectation: extractTag(xml, 'expectation') || undefined,
+    action: extractTag(xml, "action") || undefined,
+    purpose: extractTag(xml, "purpose") || undefined,
+    expectation: extractTag(xml, "expectation") || undefined,
   };
 }
 
@@ -177,12 +170,12 @@ export function parseCreateFramework(xml: string): {
   extras?: string;
 } {
   return {
-    character: extractTag(xml, 'character') || undefined,
-    request: extractTag(xml, 'request') || undefined,
-    examples: extractTag(xml, 'examples') || undefined,
-    adjustments: extractTag(xml, 'adjustments') || undefined,
-    type: extractTag(xml, 'type') || undefined,
-    extras: extractTag(xml, 'extras') || undefined,
+    character: extractTag(xml, "character") || undefined,
+    request: extractTag(xml, "request") || undefined,
+    examples: extractTag(xml, "examples") || undefined,
+    adjustments: extractTag(xml, "adjustments") || undefined,
+    type: extractTag(xml, "type") || undefined,
+    extras: extractTag(xml, "extras") || undefined,
   };
 }
 
@@ -191,8 +184,7 @@ export function parseCreateFramework(xml: string): {
  */
 export function cleanXml(xml: string): string {
   return xml
-    .replace(/>\s+</g, '>\n<') // Normalize whitespace between tags
-    .replace(/\n{3,}/g, '\n\n') // Remove excessive newlines
+    .replace(/>\s+</g, ">\n<") // Normalize whitespace between tags
+    .replace(/\n{3,}/g, "\n\n") // Remove excessive newlines
     .trim();
 }
-
