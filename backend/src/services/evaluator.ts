@@ -3,12 +3,12 @@
  * Calculates evaluation metrics for prompt outputs
  */
 
-import { llmClient } from '../core/llm-client.js';
+import { llmClient } from "../core/llm-client.js";
 import {
   RELEVANCE_EVALUATION_PROMPT,
   ACCURACY_EVALUATION_PROMPT,
   READABILITY_EVALUATION_PROMPT,
-} from '../prompts/evaluation-prompts.js';
+} from "../prompts/evaluation-prompts.js";
 
 /**
  * Metrics interface
@@ -40,12 +40,12 @@ export class Evaluator {
    */
   private async calculateRelevance(
     input: string,
-    output: string
+    output: string,
   ): Promise<number> {
-    const prompt = RELEVANCE_EVALUATION_PROMPT.replace('{input}', input).replace(
-      '{output}',
-      output
-    );
+    const prompt = RELEVANCE_EVALUATION_PROMPT.replace(
+      "{input}",
+      input,
+    ).replace("{output}", output);
 
     try {
       const response = await llmClient.complete(prompt, {
@@ -56,7 +56,7 @@ export class Evaluator {
       const score = parseFloat(response.trim());
       return isNaN(score) ? 50 : Math.min(100, Math.max(0, score));
     } catch (error) {
-      console.error('[EVALUATOR] Relevance calculation failed:', error);
+      console.error("[EVALUATOR] Relevance calculation failed:", error);
       return 50;
     }
   }
@@ -67,11 +67,11 @@ export class Evaluator {
   private async calculateAccuracy(
     input: string,
     expectedOutput: string,
-    actualOutput: string
+    actualOutput: string,
   ): Promise<number> {
-    const prompt = ACCURACY_EVALUATION_PROMPT.replace('{input}', input)
-      .replace('{expected_output}', expectedOutput)
-      .replace('{actual_output}', actualOutput);
+    const prompt = ACCURACY_EVALUATION_PROMPT.replace("{input}", input)
+      .replace("{expected_output}", expectedOutput)
+      .replace("{actual_output}", actualOutput);
 
     try {
       const response = await llmClient.complete(prompt, {
@@ -82,7 +82,7 @@ export class Evaluator {
       const score = parseFloat(response.trim());
       return isNaN(score) ? 50 : Math.min(100, Math.max(0, score));
     } catch (error) {
-      console.error('[EVALUATOR] Accuracy calculation failed:', error);
+      console.error("[EVALUATOR] Accuracy calculation failed:", error);
       return 50;
     }
   }
@@ -142,7 +142,7 @@ export class Evaluator {
    * Calculate readability score using LLM-as-judge
    */
   private async calculateReadability(output: string): Promise<number> {
-    const prompt = READABILITY_EVALUATION_PROMPT.replace('{output}', output);
+    const prompt = READABILITY_EVALUATION_PROMPT.replace("{output}", output);
 
     try {
       const response = await llmClient.complete(prompt, {
@@ -153,7 +153,7 @@ export class Evaluator {
       const score = parseFloat(response.trim());
       return isNaN(score) ? 50 : Math.min(100, Math.max(0, score));
     } catch (error) {
-      console.error('[EVALUATOR] Readability calculation failed:', error);
+      console.error("[EVALUATOR] Readability calculation failed:", error);
       return 50;
     }
   }
@@ -161,7 +161,9 @@ export class Evaluator {
   /**
    * Calculate aggregate score (weighted average)
    */
-  private calculateAggregateScore(metrics: Omit<Metrics, 'aggregate_score'>): number {
+  private calculateAggregateScore(
+    metrics: Omit<Metrics, "aggregate_score">,
+  ): number {
     const weights = {
       relevance: 1.2,
       accuracy: 1.5,
@@ -195,9 +197,9 @@ export class Evaluator {
     input: string,
     expectedOutput: string,
     actualOutput: string,
-    allOutputs: string[] = [actualOutput]
+    allOutputs: string[] = [actualOutput],
   ): Promise<Metrics> {
-    console.log('[EVALUATOR] Evaluating example...');
+    console.log("[EVALUATOR] Evaluating example...");
 
     // Calculate all metrics
     const [relevance, accuracy, readability] = await Promise.all([
@@ -209,7 +211,7 @@ export class Evaluator {
     const consistency = this.calculateConsistency(allOutputs);
     const efficiency = this.calculateEfficiency(prompt, actualOutput);
 
-    const metrics: Omit<Metrics, 'aggregate_score'> = {
+    const metrics: Omit<Metrics, "aggregate_score"> = {
       relevance,
       accuracy,
       consistency,
@@ -234,7 +236,7 @@ export class Evaluator {
       input: string;
       expectedOutput: string;
       actualOutput: string;
-    }>
+    }>,
   ): Promise<{ metrics: Metrics; evaluations: ExampleEvaluation[] }> {
     console.log(`[EVALUATOR] Evaluating ${examples.length} examples...`);
 
@@ -246,7 +248,7 @@ export class Evaluator {
         prompt,
         example.input,
         example.expectedOutput,
-        example.actualOutput
+        example.actualOutput,
       );
 
       evaluations.push({
@@ -280,13 +282,14 @@ export class Evaluator {
     avgMetrics.accuracy = Math.round((avgMetrics.accuracy / count) * 10) / 10;
     avgMetrics.consistency =
       Math.round((avgMetrics.consistency / count) * 10) / 10;
-    avgMetrics.efficiency = Math.round((avgMetrics.efficiency / count) * 10) / 10;
+    avgMetrics.efficiency =
+      Math.round((avgMetrics.efficiency / count) * 10) / 10;
     avgMetrics.readability =
       Math.round((avgMetrics.readability / count) * 10) / 10;
     avgMetrics.aggregate_score =
       Math.round((avgMetrics.aggregate_score / count) * 10) / 10;
 
-    console.log('[EVALUATOR] Average metrics:', avgMetrics);
+    console.log("[EVALUATOR] Average metrics:", avgMetrics);
 
     return {
       metrics: avgMetrics,
@@ -299,4 +302,3 @@ export class Evaluator {
  * Global evaluator instance
  */
 export const evaluator = new Evaluator();
-
