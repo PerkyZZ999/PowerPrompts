@@ -20,7 +20,7 @@ export class SSEClient {
     private requestBody: string,
     private onEvent: (event: SSEEvent) => void,
     private onError: (error: Error) => void,
-    private onComplete: () => void
+    private onComplete: () => void,
   ) {}
 
   /**
@@ -51,12 +51,17 @@ export class SSEClient {
       });
 
       console.log("📡 Response Status:", response.status, response.statusText);
-      console.log("📋 Response Headers:", Object.fromEntries(response.headers.entries()));
+      console.log(
+        "📋 Response Headers:",
+        Object.fromEntries(response.headers.entries()),
+      );
 
       if (!response.ok) {
         const errorBody = await response.text();
         console.error("❌ Request failed:", errorBody);
-        throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorBody}`);
+        throw new Error(
+          `HTTP ${response.status}: ${response.statusText} - ${errorBody}`,
+        );
       }
 
       if (!response.body) {
@@ -102,13 +107,20 @@ export class SSEClient {
               this.onEvent({ type: eventType, data } as SSEEvent);
 
               // Close connection on completion or error
-              if (eventType === "optimization_complete" || eventType === "error") {
+              if (
+                eventType === "optimization_complete" ||
+                eventType === "error"
+              ) {
                 this.disconnect();
                 this.onComplete();
                 return;
               }
             } catch (error) {
-              console.error(`Failed to parse SSE event: ${eventType}`, error, eventData);
+              console.error(
+                `Failed to parse SSE event: ${eventType}`,
+                error,
+                eventData,
+              );
             }
 
             // Reset for next event
@@ -122,9 +134,9 @@ export class SSEClient {
         console.log("SSE connection aborted");
         return;
       }
-      
+
       console.error("SSE connection error:", error);
-      
+
       if (!this.isIntentionallyClosed) {
         this.handleError(error);
       }
@@ -137,12 +149,18 @@ export class SSEClient {
   private handleError(error: Error) {
     console.error("SSE connection error:", error);
 
-    if (this.reconnectAttempts < this.maxReconnectAttempts && !this.isIntentionallyClosed) {
+    if (
+      this.reconnectAttempts < this.maxReconnectAttempts &&
+      !this.isIntentionallyClosed
+    ) {
       this.reconnectAttempts++;
-      const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
-      
-      console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
-      
+      const delay =
+        this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+
+      console.log(
+        `Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`,
+      );
+
       setTimeout(() => {
         if (!this.isIntentionallyClosed) {
           this.disconnect();
@@ -160,7 +178,7 @@ export class SSEClient {
    */
   disconnect() {
     this.isIntentionallyClosed = true;
-    
+
     if (this.abortController) {
       this.abortController.abort();
       this.abortController = null;
@@ -174,4 +192,3 @@ export class SSEClient {
     return this.abortController !== null && !this.isIntentionallyClosed;
   }
 }
-

@@ -1,4 +1,5 @@
 <!-- 4525de87-3302-49e6-b5a2-3b07ba92d5cb a2224df8-720c-40c6-9d00-f12a78620645 -->
+
 # Node.js/TypeScript Backend Migration Plan
 
 ## Phase 1: Project Setup and Infrastructure (Days 1-2)
@@ -223,7 +224,6 @@ backend/
 - Implement `OptimizationService` class:
   - `optimize(request: OptimizeRequest, eventQueue: EventQueue): Promise<OptimizationComplete>`
 - 5-iteration loop:
-
   1. Apply framework structure (iteration 0)
   2. Execute against dataset
   3. Calculate metrics via Evaluator
@@ -343,7 +343,6 @@ backend/
 ### End-to-End Testing
 
 - Test full optimization flow:
-
   1. Enter prompt in frontend
   2. Select framework and techniques
   3. Start optimization

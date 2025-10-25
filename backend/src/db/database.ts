@@ -2,12 +2,12 @@
  * Database management using sql.js (pure JavaScript SQLite)
  */
 
-import initSqlJs, { Database } from 'sql.js';
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-import { appConfig } from '../config.js';
+import initSqlJs, { Database } from "sql.js";
+import { readFile, writeFile, mkdir } from "fs/promises";
+import { existsSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+import { appConfig } from "../config.js";
 
 let dbInstance: Database | null = null;
 
@@ -34,21 +34,23 @@ export async function initDatabase(): Promise<Database> {
     if (existsSync(appConfig.databasePath)) {
       const buffer = await readFile(appConfig.databasePath);
       db = new SQL.Database(buffer);
-      console.log(`[DATABASE] Loaded existing database from: ${appConfig.databasePath}`);
+      console.log(
+        `[DATABASE] Loaded existing database from: ${appConfig.databasePath}`,
+      );
     } else {
       db = new SQL.Database();
-      console.log('[DATABASE] Created new database');
+      console.log("[DATABASE] Created new database");
     }
 
     // Read and execute schema
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
-    const schemaPath = join(__dirname, 'schema.sql');
-    const schema = await readFile(schemaPath, 'utf-8');
+    const schemaPath = join(__dirname, "schema.sql");
+    const schema = await readFile(schemaPath, "utf-8");
 
     // Execute schema (create tables if they don't exist)
     db.exec(schema);
-    console.log('[DATABASE] Schema initialized successfully');
+    console.log("[DATABASE] Schema initialized successfully");
 
     // Save database to disk
     await saveDatabase(db);
@@ -56,7 +58,7 @@ export async function initDatabase(): Promise<Database> {
     dbInstance = db;
     return db;
   } catch (error) {
-    console.error('[DATABASE ERROR] Failed to initialize database:', error);
+    console.error("[DATABASE ERROR] Failed to initialize database:", error);
     throw error;
   }
 }
@@ -77,7 +79,7 @@ export async function getDatabase(): Promise<Database> {
 export async function saveDatabase(db?: Database): Promise<void> {
   const database = db || dbInstance;
   if (!database) {
-    throw new Error('No database instance to save');
+    throw new Error("No database instance to save");
   }
 
   try {
@@ -85,7 +87,7 @@ export async function saveDatabase(db?: Database): Promise<void> {
     const buffer = Buffer.from(data);
     await writeFile(appConfig.databasePath, buffer);
   } catch (error) {
-    console.error('[DATABASE ERROR] Failed to save database:', error);
+    console.error("[DATABASE ERROR] Failed to save database:", error);
     throw error;
   }
 }
@@ -98,7 +100,7 @@ export async function closeDatabase(): Promise<void> {
     await saveDatabase();
     dbInstance.close();
     dbInstance = null;
-    console.log('[DATABASE] Database closed');
+    console.log("[DATABASE] Database closed");
   }
 }
 
@@ -107,7 +109,7 @@ export async function closeDatabase(): Promise<void> {
  */
 export async function query<T = any>(
   sql: string,
-  params: any[] = []
+  params: any[] = [],
 ): Promise<T[]> {
   const db = await getDatabase();
 
@@ -124,9 +126,9 @@ export async function query<T = any>(
     stmt.free();
     return results;
   } catch (error) {
-    console.error('[DATABASE ERROR] Query failed:', error);
-    console.error('SQL:', sql);
-    console.error('Params:', params);
+    console.error("[DATABASE ERROR] Query failed:", error);
+    console.error("SQL:", sql);
+    console.error("Params:", params);
     throw error;
   }
 }
@@ -141,9 +143,9 @@ export async function execute(sql: string, params: any[] = []): Promise<void> {
     db.run(sql, params);
     await saveDatabase(db);
   } catch (error) {
-    console.error('[DATABASE ERROR] Execute failed:', error);
-    console.error('SQL:', sql);
-    console.error('Params:', params);
+    console.error("[DATABASE ERROR] Execute failed:", error);
+    console.error("SQL:", sql);
+    console.error("Params:", params);
     throw error;
   }
 }
@@ -152,19 +154,18 @@ export async function execute(sql: string, params: any[] = []): Promise<void> {
  * Execute multiple statements in a transaction
  */
 export async function transaction(
-  callback: (db: Database) => Promise<void>
+  callback: (db: Database) => Promise<void>,
 ): Promise<void> {
   const db = await getDatabase();
 
   try {
-    db.run('BEGIN TRANSACTION');
+    db.run("BEGIN TRANSACTION");
     await callback(db);
-    db.run('COMMIT');
+    db.run("COMMIT");
     await saveDatabase(db);
   } catch (error) {
-    db.run('ROLLBACK');
-    console.error('[DATABASE ERROR] Transaction failed:', error);
+    db.run("ROLLBACK");
+    console.error("[DATABASE ERROR] Transaction failed:", error);
     throw error;
   }
 }
-

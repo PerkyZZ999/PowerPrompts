@@ -94,17 +94,53 @@ export interface OptimizationComplete {
 // SSE Event Types (Discriminated Union) - Matches Backend
 export type SSEEvent =
   | { type: "optimization_start"; data: { total_iterations: number } }
-  | { type: "dataset_generated"; data: { example_count: number; domain: string } }
+  | {
+      type: "dataset_generated";
+      data: { example_count: number; domain: string };
+    }
   | { type: "iteration_start"; data: { iteration: number; prompt: string } }
   | { type: "executing_tests"; data: { count: number; iteration: number } }
-  | { type: "test_progress"; data: { current: number; total: number; iteration: number } }
-  | { type: "applying_technique"; data: { technique: string; iteration: number } }
+  | {
+      type: "test_progress";
+      data: { current: number; total: number; iteration: number };
+    }
+  | {
+      type: "applying_technique";
+      data: { technique: string; iteration: number };
+    }
   | { type: "evaluating_metrics"; data: { iteration: number } }
-  | { type: "metrics_calculated"; data: { metrics: Metrics; iteration: number } }
+  | {
+      type: "metrics_calculated";
+      data: { metrics: Metrics; iteration: number };
+    }
   | { type: "applying_rsip"; data: { iteration: number } }
-  | { type: "prompt_improved"; data: { iteration: number; critique: string; improved_prompt: string } }
-  | { type: "iteration_complete"; data: { iteration: number; prompt_version: string; metrics: Metrics; evaluation_details: any; techniques: string[]; duration_seconds: number } }
-  | { type: "optimization_complete"; data: { best_version: { iteration: number; prompt: string; metrics: Metrics }; all_versions: Array<{ iteration: number; prompt: string; metrics: Metrics }>; total_time_seconds: number } }
+  | {
+      type: "prompt_improved";
+      data: { iteration: number; critique: string; improved_prompt: string };
+    }
+  | {
+      type: "iteration_complete";
+      data: {
+        iteration: number;
+        prompt_version: string;
+        metrics: Metrics;
+        evaluation_details: any;
+        techniques: string[];
+        duration_seconds: number;
+      };
+    }
+  | {
+      type: "optimization_complete";
+      data: {
+        best_version: { iteration: number; prompt: string; metrics: Metrics };
+        all_versions: Array<{
+          iteration: number;
+          prompt: string;
+          metrics: Metrics;
+        }>;
+        total_time_seconds: number;
+      };
+    }
   | { type: "error"; data: { message: string; details?: any } };
 
 // Framework Info
@@ -130,4 +166,3 @@ export interface TechniqueInfo {
   };
   use_cases: string[];
 }
-

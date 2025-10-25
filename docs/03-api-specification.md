@@ -10,21 +10,26 @@
 All API endpoints (except `/health`) require authentication via API key.
 
 **Header:**
+
 ```
 X-API-Key: <your-api-key>
 ```
 
 **Error Responses:**
+
 - `401 Unauthorized`: Missing or invalid API key
 - `403 Forbidden`: API key lacks required permissions
 
 ## 2. Common Response Formats
 
 ### Success Response
+
 ```json
 {
   "success": true,
-  "data": { /* response data */ },
+  "data": {
+    /* response data */
+  },
   "meta": {
     "timestamp": "2025-10-19T12:00:00Z",
     "request_id": "uuid-v4"
@@ -33,6 +38,7 @@ X-API-Key: <your-api-key>
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -52,6 +58,7 @@ X-API-Key: <your-api-key>
 ```
 
 ### Error Codes
+
 - `AUTHENTICATION_ERROR`: Invalid or missing API key
 - `VALIDATION_ERROR`: Request validation failed
 - `NOT_FOUND`: Resource not found
@@ -68,6 +75,7 @@ X-API-Key: <your-api-key>
 **Description:** Check system health and service availability
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -98,6 +106,7 @@ X-API-Key: <your-api-key>
 ```
 
 **Status Codes:**
+
 - `200 OK`: All services operational
 - `503 Service Unavailable`: One or more critical services down
 
@@ -110,6 +119,7 @@ X-API-Key: <your-api-key>
 **Description:** Start prompt optimization with real-time SSE streaming
 
 **Request Body:**
+
 ```json
 {
   "prompt": "Write a blog post about AI",
@@ -129,6 +139,7 @@ X-API-Key: <your-api-key>
 ```
 
 **Request Schema:**
+
 - `prompt` (string, required): User's original prompt (10-10,000 chars)
 - `framework` (enum, required): One of `"RACE"`, `"COSTAR"`, `"APE"`, `"CREATE"`
 - `techniques` (array, optional): Array of technique IDs
@@ -140,6 +151,7 @@ X-API-Key: <your-api-key>
 **SSE Event Types:**
 
 **1. `dataset_generated`**
+
 ```
 event: dataset_generated
 data: {
@@ -156,6 +168,7 @@ data: {
 ```
 
 **2. `iteration_start`**
+
 ```
 event: iteration_start
 data: {
@@ -165,6 +178,7 @@ data: {
 ```
 
 **3. `metrics_calculated`**
+
 ```
 event: metrics_calculated
 data: {
@@ -191,6 +205,7 @@ data: {
 ```
 
 **4. `prompt_improved`**
+
 ```
 event: prompt_improved
 data: {
@@ -206,6 +221,7 @@ data: {
 ```
 
 **5. `iteration_complete`**
+
 ```
 event: iteration_complete
 data: {
@@ -218,6 +234,7 @@ data: {
 ```
 
 **6. `optimization_complete`**
+
 ```
 event: optimization_complete
 data: {
@@ -257,6 +274,7 @@ data: {
 ```
 
 **7. `error`**
+
 ```
 event: error
 data: {
@@ -269,23 +287,25 @@ data: {
 ```
 
 **Status Codes:**
+
 - `200 OK`: SSE stream started
 - `400 Bad Request`: Invalid request parameters
 - `401 Unauthorized`: Missing or invalid API key
 - `429 Too Many Requests`: Rate limit exceeded
 
 **Client Implementation Example:**
+
 ```typescript
-const eventSource = new EventSource('/api/optimize', {
-  headers: { 'X-API-Key': apiKey }
+const eventSource = new EventSource("/api/optimize", {
+  headers: { "X-API-Key": apiKey },
 });
 
-eventSource.addEventListener('iteration_complete', (event) => {
+eventSource.addEventListener("iteration_complete", (event) => {
   const data = JSON.parse(event.data);
   updateProgress(data);
 });
 
-eventSource.addEventListener('optimization_complete', (event) => {
+eventSource.addEventListener("optimization_complete", (event) => {
   const data = JSON.parse(event.data);
   showResults(data);
   eventSource.close();
@@ -301,6 +321,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Generate synthetic dataset for prompt testing
 
 **Request Body:**
+
 ```json
 {
   "prompt": "Write a blog post about AI",
@@ -311,6 +332,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -365,6 +387,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Status Codes:**
+
 - `200 OK`: Dataset generated successfully
 - `400 Bad Request`: Invalid parameters
 - `401 Unauthorized`: Missing API key
@@ -379,20 +402,26 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Retrieve existing dataset
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "dataset_id": "ds_abc123",
     "prompt_id": "prm_xyz789",
-    "examples": [ /* array of examples */ ],
-    "criteria": [ /* array of criteria */ ],
+    "examples": [
+      /* array of examples */
+    ],
+    "criteria": [
+      /* array of criteria */
+    ],
     "generated_at": "2025-10-19T12:00:00Z"
   }
 }
 ```
 
 **Status Codes:**
+
 - `200 OK`: Dataset found
 - `404 Not Found`: Dataset does not exist
 - `401 Unauthorized`: Missing API key
@@ -406,6 +435,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Evaluate a prompt against a dataset
 
 **Request Body:**
+
 ```json
 {
   "prompt": "<role>You are an expert AI researcher...</role>...",
@@ -419,6 +449,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -456,6 +487,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Status Codes:**
+
 - `200 OK`: Evaluation complete
 - `400 Bad Request`: Invalid parameters
 - `404 Not Found`: Dataset not found
@@ -470,6 +502,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Get all available frameworks with metadata
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -486,7 +519,14 @@ eventSource.addEventListener('optimization_complete', (event) => {
     {
       "id": "COSTAR",
       "name": "COSTAR Framework",
-      "sections": ["context", "objective", "style", "tone", "audience", "response"],
+      "sections": [
+        "context",
+        "objective",
+        "style",
+        "tone",
+        "audience",
+        "response"
+      ],
       "description": "Detailed guidance for content creation tasks",
       "use_case": "Content creation, marketing, creative writing",
       "complexity": "high",
@@ -504,7 +544,14 @@ eventSource.addEventListener('optimization_complete', (event) => {
     {
       "id": "CREATE",
       "name": "CREATE Framework",
-      "sections": ["character", "request", "examples", "adjustments", "type", "extras"],
+      "sections": [
+        "character",
+        "request",
+        "examples",
+        "adjustments",
+        "type",
+        "extras"
+      ],
       "description": "Most comprehensive structure for complex tasks",
       "use_case": "Complex, comprehensive content generation",
       "complexity": "high",
@@ -515,6 +562,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Status Codes:**
+
 - `200 OK`: Frameworks retrieved
 - `401 Unauthorized`: Missing API key
 
@@ -527,6 +575,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Get all available techniques with compatibility info
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -570,7 +619,12 @@ eventSource.addEventListener('optimization_complete', (event) => {
       "name": "Tree of Thoughts",
       "description": "Explore multiple reasoning branches with backtracking",
       "improvement": "Best for combinatorial solution spaces",
-      "compatible_tasks": ["problem_solving", "planning", "strategy", "puzzles"],
+      "compatible_tasks": [
+        "problem_solving",
+        "planning",
+        "strategy",
+        "puzzles"
+      ],
       "incompatible_with": [],
       "requires": ["cot"],
       "parameters": {
@@ -593,7 +647,12 @@ eventSource.addEventListener('optimization_complete', (event) => {
       "name": "Recursive Self-Improvement Prompting",
       "description": "3-iteration self-critique loop for quality improvement",
       "improvement": "Significantly improved output quality",
-      "compatible_tasks": ["writing", "creative", "technical", "quality_critical"],
+      "compatible_tasks": [
+        "writing",
+        "creative",
+        "technical",
+        "quality_critical"
+      ],
       "incompatible_with": [],
       "requires": [],
       "parameters": {
@@ -610,7 +669,12 @@ eventSource.addEventListener('optimization_complete', (event) => {
       "name": "Retrieval-Augmented Generation",
       "description": "Vector database retrieval before generation",
       "improvement": "-42-68% hallucinations, up to 89% factual accuracy",
-      "compatible_tasks": ["factual", "knowledge", "research", "domain_specific"],
+      "compatible_tasks": [
+        "factual",
+        "knowledge",
+        "research",
+        "domain_specific"
+      ],
       "incompatible_with": [],
       "requires": [],
       "parameters": {
@@ -650,6 +714,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Status Codes:**
+
 - `200 OK`: Techniques retrieved
 - `401 Unauthorized`: Missing API key
 
@@ -662,10 +727,12 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Get all versions for a specific prompt
 
 **Query Parameters:**
+
 - `include_metrics` (boolean, default: true): Include evaluation metrics
 - `include_critique` (boolean, default: false): Include RSIP critiques
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -708,6 +775,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Status Codes:**
+
 - `200 OK`: Versions retrieved
 - `404 Not Found`: Prompt does not exist
 - `401 Unauthorized`: Missing API key
@@ -721,6 +789,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Export a prompt version in specified format
 
 **Request Body:**
+
 ```json
 {
   "version_id": "ver_abc123",
@@ -735,11 +804,13 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Request Schema:**
+
 - `version_id` (string, required): Version to export
 - `format` (enum, required): One of `"json"`, `"markdown"`, `"text"`
 - `include` (object, optional): What to include in export
 
 **Response (JSON format):**
+
 ```json
 {
   "success": true,
@@ -751,9 +822,13 @@ eventSource.addEventListener('optimization_complete', (event) => {
       "iteration": 3,
       "framework": "RACE",
       "prompt": "<role>...</role>...",
-      "metrics": { /* ... */ },
+      "metrics": {
+        /* ... */
+      },
       "critique": "...",
-      "parameters": { /* ... */ },
+      "parameters": {
+        /* ... */
+      },
       "exported_at": "2025-10-19T12:00:00Z"
     }
   }
@@ -761,6 +836,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Response (Markdown format):**
+
 ```json
 {
   "success": true,
@@ -773,6 +849,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Response (Plain Text format):**
+
 ```json
 {
   "success": true,
@@ -785,6 +862,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 ```
 
 **Status Codes:**
+
 - `200 OK`: Export successful
 - `404 Not Found`: Version does not exist
 - `400 Bad Request`: Invalid format
@@ -799,6 +877,7 @@ eventSource.addEventListener('optimization_complete', (event) => {
 **Description:** Upload documents to RAG knowledge base
 
 **Request Body (multipart/form-data):**
+
 ```
 files: [File, File, ...] (max 10 files, 5MB each)
 collection_name: string (optional)
@@ -806,6 +885,7 @@ metadata: { source: string, domain: string } (optional)
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -820,6 +900,7 @@ metadata: { source: string, domain: string } (optional)
 ```
 
 **Status Codes:**
+
 - `200 OK`: Documents uploaded successfully
 - `400 Bad Request`: Invalid file format or size
 - `413 Payload Too Large`: File exceeds size limit
@@ -834,6 +915,7 @@ metadata: { source: string, domain: string } (optional)
 **Description:** Delete a RAG knowledge base collection
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -846,6 +928,7 @@ metadata: { source: string, domain: string } (optional)
 ```
 
 **Status Codes:**
+
 - `200 OK`: Collection deleted
 - `404 Not Found`: Collection does not exist
 - `401 Unauthorized`: Missing API key
@@ -855,9 +938,11 @@ metadata: { source: string, domain: string } (optional)
 ## 4. Rate Limiting
 
 **Current Limits (Local Deployment):**
+
 - No rate limiting enforced (single-user)
 
 **Future Considerations:**
+
 - If multi-user: 100 requests per minute per API key
 - LLM API rate limits handled by OpenAI SDK with automatic retry
 
@@ -868,16 +953,20 @@ metadata: { source: string, domain: string } (optional)
 **For endpoints returning lists (future enhancement):**
 
 **Query Parameters:**
+
 - `page` (integer, default: 1): Page number
 - `limit` (integer, default: 20, max: 100): Items per page
 - `sort` (string, default: "created_at"): Sort field
 - `order` (enum, default: "desc"): `"asc"` or `"desc"`
 
 **Response:**
+
 ```json
 {
   "success": true,
-  "data": [ /* items */ ],
+  "data": [
+    /* items */
+  ],
   "pagination": {
     "page": 1,
     "limit": 20,
@@ -898,6 +987,7 @@ metadata: { source: string, domain: string } (optional)
 **Endpoint:** `ws://localhost:8000/ws/optimize`
 
 **Client Send:**
+
 ```json
 {
   "action": "pause_optimization",
@@ -906,10 +996,13 @@ metadata: { source: string, domain: string } (optional)
 ```
 
 **Server Send:**
+
 ```json
 {
   "event": "iteration_complete",
-  "data": { /* same as SSE data */ }
+  "data": {
+    /* same as SSE data */
+  }
 }
 ```
 
@@ -917,4 +1010,3 @@ metadata: { source: string, domain: string } (optional)
 
 **Document Status:** Approved for Implementation  
 **Next Steps:** Review data models and implement API routes
-
