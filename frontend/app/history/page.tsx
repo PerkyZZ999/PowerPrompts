@@ -6,7 +6,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { History, Copy, CheckCircle2, Clock, TrendingUp, ChevronRight, ArrowLeft } from "lucide-react";
+import {
+  History,
+  Copy,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
+  ChevronRight,
+  ArrowLeft,
+} from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/stores/toast-store";
 import { cn } from "@/lib/utils";
@@ -53,20 +61,20 @@ export default function HistoryPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8888";
       const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
-      
+
       const response = await fetch(`${apiUrl}/api/history`, {
         headers: {
           "X-API-Key": apiKey,
         },
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch history");
       }
-      
+
       const data = await response.json();
       setHistory(data.history || []);
     } catch (err) {
@@ -82,17 +90,17 @@ export default function HistoryPage() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8888";
       const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
-      
+
       const response = await fetch(`${apiUrl}/api/history/${id}`, {
         headers: {
           "X-API-Key": apiKey,
         },
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch optimization detail");
       }
-      
+
       const data = await response.json();
       setSelectedItem(data);
     } catch (err) {
@@ -166,7 +174,9 @@ export default function HistoryPage() {
             {history.length === 0 ? (
               <div className="glass p-8 rounded-lg border border-zinc-700/50 text-center">
                 <History className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-                <p className="text-zinc-500 mb-2">No optimization history yet</p>
+                <p className="text-zinc-500 mb-2">
+                  No optimization history yet
+                </p>
                 <p className="text-sm text-zinc-600">
                   Run your first optimization to see it here
                 </p>
@@ -180,7 +190,7 @@ export default function HistoryPage() {
                     "w-full glass p-4 rounded-lg border transition-all text-left",
                     selectedItem?.id === item.id
                       ? "border-primary bg-primary/5"
-                      : "border-zinc-700/50 hover:border-primary/30"
+                      : "border-zinc-700/50 hover:border-primary/30",
                   )}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -195,11 +205,13 @@ export default function HistoryPage() {
                     <ChevronRight
                       className={cn(
                         "w-5 h-5 flex-shrink-0 transition-colors",
-                        selectedItem?.id === item.id ? "text-primary" : "text-zinc-600"
+                        selectedItem?.id === item.id
+                          ? "text-primary"
+                          : "text-zinc-600",
                       )}
                     />
                   </div>
-                  
+
                   <div className="flex items-center gap-4 mt-3">
                     <div className="flex items-center gap-1">
                       <TrendingUp className="w-4 h-4 text-primary" />
@@ -209,7 +221,9 @@ export default function HistoryPage() {
                     </div>
                     <div className="flex items-center gap-1 text-zinc-500">
                       <Clock className="w-4 h-4" />
-                      <span className="text-xs">{item.duration_seconds.toFixed(0)}s</span>
+                      <span className="text-xs">
+                        {item.duration_seconds.toFixed(0)}s
+                      </span>
                     </div>
                     <span className="text-xs px-2 py-0.5 bg-zinc-800 rounded text-zinc-400">
                       {item.framework}
@@ -256,7 +270,9 @@ export default function HistoryPage() {
 
                 {/* Versions */}
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-white">All Iterations</h3>
+                  <h3 className="text-lg font-semibold text-white">
+                    All Iterations
+                  </h3>
                   {selectedItem.versions
                     .sort((a, b) => a.iteration - b.iteration)
                     .map((version) => (
@@ -270,19 +286,21 @@ export default function HistoryPage() {
                               Iteration {version.iteration}
                             </h4>
                             <p className="text-xs text-zinc-500 mt-1">
-                              Score: {version.metrics.aggregate_score.toFixed(1)}/100
+                              Score:{" "}
+                              {version.metrics.aggregate_score.toFixed(1)}/100
                             </p>
                           </div>
                           <button
                             onClick={() =>
                               handleCopyPrompt(
                                 version.prompt,
-                                `${selectedItem.id}-${version.iteration}`
+                                `${selectedItem.id}-${version.iteration}`,
                               )
                             }
                             className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-md transition-colors text-sm"
                           >
-                            {copiedId === `${selectedItem.id}-${version.iteration}` ? (
+                            {copiedId ===
+                            `${selectedItem.id}-${version.iteration}` ? (
                               <>
                                 <CheckCircle2 className="w-4 h-4" />
                                 Copied
@@ -335,4 +353,3 @@ export default function HistoryPage() {
     </div>
   );
 }
-

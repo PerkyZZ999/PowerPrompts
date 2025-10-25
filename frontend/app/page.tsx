@@ -51,7 +51,9 @@ export default function Home() {
                 <span className="text-xs text-white uppercase tracking-wider font-semibold">
                   AI Optimizer
                 </span>
-                <span className="ml-2 text-xs text-primary font-mono">v1.0</span>
+                <span className="ml-2 text-xs text-primary font-mono">
+                  v1.0
+                </span>
               </div>
             </div>
           </div>
@@ -88,7 +90,7 @@ export default function Home() {
                   "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium",
                   activeTab === "metrics"
                     ? "bg-primary/10 text-primary border border-primary/30 shadow-neon-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-elevated/50"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-elevated/50",
                 )}
               >
                 <BarChart3 className="w-4 h-4" />
@@ -100,7 +102,7 @@ export default function Home() {
                   "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium",
                   activeTab === "comparison"
                     ? "bg-primary/10 text-primary border border-primary/30 shadow-neon-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-elevated/50"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-elevated/50",
                 )}
               >
                 <GitCompare className="w-4 h-4" />
@@ -112,7 +114,7 @@ export default function Home() {
                   "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium",
                   activeTab === "export"
                     ? "bg-primary/10 text-primary border border-primary/30 shadow-neon-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-elevated/50"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-elevated/50",
                 )}
               >
                 <Download className="w-4 h-4" />
@@ -132,4 +134,3 @@ export default function Home() {
     </main>
   );
 }
-

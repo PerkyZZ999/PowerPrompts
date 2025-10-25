@@ -7,7 +7,13 @@
 
 import { useOptimizationStore } from "@/stores/optimization-store";
 import { useOptimization } from "@/hooks/use-optimization";
-import { Activity, CheckCircle2, Loader2, AlertCircle, Zap } from "lucide-react";
+import {
+  Activity,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
+  Zap,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function OptimizationProgress() {
@@ -54,7 +60,7 @@ export function OptimizationProgress() {
             "flex items-center justify-center gap-2",
             canStartOptimization
               ? "bg-primary text-black hover:bg-primary/90 animated-border"
-              : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+              : "bg-zinc-800 text-zinc-500 cursor-not-allowed",
           )}
         >
           <Zap className="w-5 h-5" />
@@ -89,7 +95,7 @@ export function OptimizationProgress() {
               <Loader2 className="w-5 h-5 text-primary animate-spin mt-0.5" />
               <div className="flex-1">
                 <p className="text-white font-medium">{currentStep}</p>
-                
+
                 {/* Test Progress Bar */}
                 {testProgress && testProgress.total > 0 && (
                   <div className="mt-2 space-y-1">
@@ -115,7 +121,8 @@ export function OptimizationProgress() {
                   <div className="mt-2 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-primary" />
                     <span className="text-sm text-zinc-400">
-                      Technique: <span className="text-white">{currentTechnique}</span>
+                      Technique:{" "}
+                      <span className="text-white">{currentTechnique}</span>
                     </span>
                   </div>
                 )}
@@ -129,7 +136,11 @@ export function OptimizationProgress() {
               <div className="flex items-center gap-2 text-sm text-zinc-400">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
                 <span>
-                  Dataset: <span className="text-white">{datasetInfo.count} examples</span> ({datasetInfo.domain})
+                  Dataset:{" "}
+                  <span className="text-white">
+                    {datasetInfo.count} examples
+                  </span>{" "}
+                  ({datasetInfo.domain})
                 </span>
               </div>
             </div>
@@ -140,7 +151,9 @@ export function OptimizationProgress() {
       {/* Completed Iterations */}
       {iterations.length > 0 && (
         <div className="space-y-3">
-          <h3 className="text-sm font-medium text-zinc-400">Completed Iterations</h3>
+          <h3 className="text-sm font-medium text-zinc-400">
+            Completed Iterations
+          </h3>
           <div className="space-y-2">
             {iterations.map((iter) => (
               <div
@@ -150,7 +163,9 @@ export function OptimizationProgress() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-primary" />
-                    <span className="text-white font-medium">Iteration {iter.iteration}</span>
+                    <span className="text-white font-medium">
+                      Iteration {iter.iteration}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-zinc-400">Score:</span>
@@ -159,20 +174,26 @@ export function OptimizationProgress() {
                     </span>
                   </div>
                 </div>
-                
+
                 {/* Mini metrics */}
                 <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
                   <div className="flex items-center justify-between px-2 py-1 bg-zinc-800/50 rounded">
                     <span className="text-zinc-500">Rel</span>
-                    <span className="text-white font-mono">{iter.metrics.relevance.toFixed(0)}</span>
+                    <span className="text-white font-mono">
+                      {iter.metrics.relevance.toFixed(0)}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between px-2 py-1 bg-zinc-800/50 rounded">
                     <span className="text-zinc-500">Acc</span>
-                    <span className="text-white font-mono">{iter.metrics.accuracy.toFixed(0)}</span>
+                    <span className="text-white font-mono">
+                      {iter.metrics.accuracy.toFixed(0)}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between px-2 py-1 bg-zinc-800/50 rounded">
                     <span className="text-zinc-500">Cons</span>
-                    <span className="text-white font-mono">{iter.metrics.consistency.toFixed(0)}</span>
+                    <span className="text-white font-mono">
+                      {iter.metrics.consistency.toFixed(0)}
+                    </span>
                   </div>
                 </div>
               </div>

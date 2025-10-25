@@ -7,17 +7,20 @@ PowerPrompts is configured to automatically select the **fastest and most cost-e
 ## Current Strategy: High Throughput + Mid-Price
 
 ### **Optimization Goals**
+
 ✅ **High Throughput** - Prioritize providers with highest tokens per second (TPS)  
 ✅ **Mid-Range Pricing** - Cap costs to avoid expensive providers  
-✅ **Fallback Support** - Allow backup providers for reliability  
+✅ **Fallback Support** - Allow backup providers for reliability
 
 ### **Provider Routing Configuration**
 
 #### Sort Strategy
+
 - **`sort: 'throughput'`** - Providers are ranked by their throughput (TPS) first
 - OpenRouter will automatically select the fastest available provider that meets the price cap
 
 #### Price Caps (Default Values)
+
 ```env
 OPENROUTER_MAX_PROMPT_PRICE=0.20    # $0.20 per 1M input tokens
 OPENROUTER_MAX_COMPLETION_PRICE=1.00 # $1.00 per 1M output tokens
@@ -32,6 +35,7 @@ These caps are designed to target providers like:
 Based on the current price caps, OpenRouter will prioritize:
 
 ### **1. Google Vertex** ⭐ (Recommended)
+
 - **Input Price**: $0.15 per 1M tokens
 - **Output Price**: $0.60 per 1M tokens
 - **Throughput**: 547.8 TPS
@@ -39,6 +43,7 @@ Based on the current price caps, OpenRouter will prioritize:
 - **Status**: ✅ Within price cap
 
 ### **2. Groq**
+
 - **Input Price**: $0.15 per 1M tokens
 - **Output Price**: $0.60 per 1M tokens
 - **Throughput**: 674.3 TPS
@@ -46,6 +51,7 @@ Based on the current price caps, OpenRouter will prioritize:
 - **Status**: ✅ Within price cap
 
 ### **3. SambaNova**
+
 - **Input Price**: $0.14 per 1M tokens
 - **Output Price**: $0.95 per 1M tokens
 - **Throughput**: 811.6 TPS
@@ -53,6 +59,7 @@ Based on the current price caps, OpenRouter will prioritize:
 - **Status**: ✅ Within price cap
 
 ### **4. Cerebras**
+
 - **Input Price**: $0.35 per 1M tokens
 - **Output Price**: $0.75 per 1M tokens
 - **Throughput**: 4,053 TPS
@@ -64,6 +71,7 @@ Based on the current price caps, OpenRouter will prioritize:
 ### Backend Implementation
 
 #### 1. **Configuration** (`backend/src/config.ts`)
+
 ```typescript
 const ConfigSchema = z.object({
   // ...
@@ -74,19 +82,23 @@ const ConfigSchema = z.object({
 ```
 
 #### 2. **LLM Client** (`backend/src/core/llm-client.ts`)
+
 ```typescript
-const providerPreferences = appConfig.llmProvider === 'openrouter' ? {
-  sort: 'throughput', // Prioritize high throughput
-  allow_fallbacks: true, // Allow backup providers for reliability
-  max_price: {
-    prompt: appConfig.openrouterMaxPromptPrice,
-    completion: appConfig.openrouterMaxCompletionPrice,
-  },
-} : undefined;
+const providerPreferences =
+  appConfig.llmProvider === "openrouter"
+    ? {
+        sort: "throughput", // Prioritize high throughput
+        allow_fallbacks: true, // Allow backup providers for reliability
+        max_price: {
+          prompt: appConfig.openrouterMaxPromptPrice,
+          completion: appConfig.openrouterMaxCompletionPrice,
+        },
+      }
+    : undefined;
 
 const response = await this.client.chat.completions.create({
   model,
-  messages: [{ role: 'user', content: prompt }],
+  messages: [{ role: "user", content: prompt }],
   // ... other options
   ...(providerPreferences && { provider: providerPreferences }),
 });
@@ -96,14 +108,15 @@ const response = await this.client.chat.completions.create({
 
 ### With GPT-OSS-120B + Google Vertex Provider:
 
-| Task                      | Estimated Time | Previous (GPT-5) |
-|---------------------------|----------------|------------------|
-| **Dataset Generation**    | ~15-30s        | ~2 min           |
-| **Framework Building**    | ~10-20s        | ~1 min           |
-| **Single Technique**      | ~30s-1min      | ~5-10 min        |
-| **Full Optimization (1 iteration)** | **~2-5 min**  | **~15-20 min**  |
+| Task                                | Estimated Time | Previous (GPT-5) |
+| ----------------------------------- | -------------- | ---------------- |
+| **Dataset Generation**              | ~15-30s        | ~2 min           |
+| **Framework Building**              | ~10-20s        | ~1 min           |
+| **Single Technique**                | ~30s-1min      | ~5-10 min        |
+| **Full Optimization (1 iteration)** | **~2-5 min**   | **~15-20 min**   |
 
 ### Throughput Comparison:
+
 - **Google Vertex**: 547.8 TPS
 - **Groq**: 674.3 TPS
 - **SambaNova**: 811.6 TPS
@@ -129,10 +142,12 @@ To target only specific providers, you can modify the `provider` preferences in 
 
 ```typescript
 const providerPreferences = {
-  sort: 'throughput',
+  sort: "throughput",
   allow_fallbacks: true,
-  only: ['google-vertex', 'groq'], // Only use these providers
-  max_price: { /* ... */ },
+  only: ["google-vertex", "groq"], // Only use these providers
+  max_price: {
+    /* ... */
+  },
 };
 ```
 
@@ -173,7 +188,7 @@ OpenRouter returns provider information in the response:
 
 ```typescript
 // Check which provider was used
-const provider = response.headers['x-provider']; // e.g., "google-vertex"
+const provider = response.headers["x-provider"]; // e.g., "google-vertex"
 ```
 
 ## 📚 References
@@ -194,4 +209,3 @@ const provider = response.headers['x-provider']; // e.g., "google-vertex"
 
 **Last Updated**: January 2025  
 **PowerPrompts Version**: 1.0.0
-

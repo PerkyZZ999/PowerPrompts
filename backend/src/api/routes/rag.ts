@@ -2,9 +2,9 @@
  * RAG API routes
  */
 
-import { FastifyInstance } from 'fastify';
-import { ragService } from '../../services/rag-service.js';
-import { z } from 'zod';
+import { FastifyInstance } from "fastify";
+import { ragService } from "../../services/rag-service.js";
+import { z } from "zod";
 
 const UploadDocumentSchema = z.object({
   collection_name: z.string().min(1),
@@ -27,7 +27,7 @@ export async function ragRoutes(server: FastifyInstance) {
    * POST /api/rag/upload
    * Upload a document to a collection
    */
-  server.post('/api/rag/upload', async (request, reply) => {
+  server.post("/api/rag/upload", async (request, reply) => {
     try {
       const data = UploadDocumentSchema.parse(request.body);
 
@@ -35,17 +35,17 @@ export async function ragRoutes(server: FastifyInstance) {
         data.collection_name,
         data.title,
         data.content,
-        data.metadata
+        data.metadata,
       );
 
       return {
         success: true,
         document_id: documentId,
-        message: 'Document uploaded successfully',
+        message: "Document uploaded successfully",
       };
     } catch (error: any) {
       return reply.code(400).send({
-        error: 'Bad Request',
+        error: "Bad Request",
         message: error.message,
       });
     }
@@ -55,14 +55,14 @@ export async function ragRoutes(server: FastifyInstance) {
    * POST /api/rag/search
    * Search documents in a collection
    */
-  server.post('/api/rag/search', async (request, reply) => {
+  server.post("/api/rag/search", async (request, reply) => {
     try {
       const data = SearchDocumentsSchema.parse(request.body);
 
       const results = await ragService.search(
         data.collection_name,
         data.query,
-        data.top_k
+        data.top_k,
       );
 
       return {
@@ -71,7 +71,7 @@ export async function ragRoutes(server: FastifyInstance) {
       };
     } catch (error: any) {
       return reply.code(400).send({
-        error: 'Bad Request',
+        error: "Bad Request",
         message: error.message,
       });
     }
@@ -81,7 +81,7 @@ export async function ragRoutes(server: FastifyInstance) {
    * GET /api/rag/collections
    * List all collections
    */
-  server.get('/api/rag/collections', async () => {
+  server.get("/api/rag/collections", async () => {
     try {
       const collections = await ragService.listCollections();
 
@@ -104,7 +104,7 @@ export async function ragRoutes(server: FastifyInstance) {
    */
   server.get<{
     Params: { collectionName: string };
-  }>('/api/rag/collections/:collectionName/documents', async (request) => {
+  }>("/api/rag/collections/:collectionName/documents", async (request) => {
     const { collectionName } = request.params;
 
     const documents = await ragService.listDocuments(collectionName);
@@ -115,4 +115,3 @@ export async function ragRoutes(server: FastifyInstance) {
     };
   });
 }
-
