@@ -27,6 +27,7 @@
 ### **Backend (Python FastAPI)** 🐍
 
 #### **Core Services**
+
 - ✅ **Optimization Service** - Complete 5-iteration pipeline with all techniques integrated
 - ✅ **Framework Builder** - RACE, COSTAR, APE, CREATE with XML structuring
 - ✅ **Dataset Generator** - Synthetic test data generation with difficulty levels
@@ -41,6 +42,7 @@
 - ✅ **RAG Service** - Document chunking, embedding, vector storage, and retrieval
 
 #### **Infrastructure**
+
 - ✅ **SQLite Database** - Schema with prompts, versions, datasets, documents, chunks
 - ✅ **ChromaDB Vector Store** - For RAG document embeddings
 - ✅ **LLM Client** - OpenAI API wrapper with retry logic
@@ -52,6 +54,7 @@
 - ✅ **Input Validation** - Comprehensive validation functions
 
 #### **API Endpoints**
+
 - ✅ `POST /api/optimize` - Main optimization endpoint with SSE streaming
 - ✅ `GET /api/frameworks` - List available frameworks
 - ✅ `GET /api/techniques` - List available techniques with compatibility info
@@ -69,6 +72,7 @@
 ### **Frontend (Next.js 15 + TypeScript)** ⚛️
 
 #### **Core Components**
+
 - ✅ **PromptInput** - Autosave, validation, clear button, keyboard shortcuts, rotating examples
 - ✅ **FrameworkSelector** - Use case badges, complexity indicators, hover tooltips
 - ✅ **TechniqueToggles** - Advanced parameters (temp, top-p, max tokens, model), compatibility warnings
@@ -79,12 +83,14 @@
 - ✅ **ToastContainer** - Beautiful toast notification system
 
 #### **State Management**
+
 - ✅ **Optimization Store (Zustand)** - Complete state with localStorage persistence
 - ✅ **Toast Store (Zustand)** - Toast notification management
 - ✅ **SSE Client** - Auto-reconnect, event handling, error recovery
 - ✅ **API Client** - Type-safe methods with retry logic
 
 #### **UI/UX Features**
+
 - ✅ **Dark Mode** - True dark gray (#0a0a0a) background
 - ✅ **Lime Green Primary** - (#bfff45) with neon glow effects
 - ✅ **Glassmorphism** - Frosted glass cards with backdrop blur
@@ -207,21 +213,21 @@
 
 ### **13 Toast Notifications**
 
-| # | Event | Type | Title | Duration |
-|---|-------|------|-------|----------|
-| 1 | Dataset Generated | ✅ Success | "Dataset Generated" | 3s |
-| 2 | Applying Framework | ℹ️ Info | "Applying Framework" | 2s |
-| 3 | Framework Applied | ✅ Success | "Framework Applied" | 2s |
-| 4 | Applying Technique | ℹ️ Info | "Applying Technique" | 2s |
-| 5 | Iteration Complete | ✅ Success | "Iteration X Complete" | 2s |
-| 6 | Prompt Improved | ✅ Success | "Prompt Improved" | 2s |
-| 7 | Optimization Complete | ✅ Success | "Optimization Complete! 🎉" | 5s |
-| 8 | Optimization Failed | ❌ Error | "Optimization Failed" | 5s |
-| 9 | Connection Error | ❌ Error | "Connection Error" | 5s |
-| 10 | Export JSON | ✅ Success | "Exported as JSON" | 3s |
-| 11 | Export Markdown | ✅ Success | "Exported as Markdown" | 3s |
-| 12 | Export Text | ✅ Success | "Exported as Text" | 3s |
-| 13 | Prompt Cleared | ℹ️ Info | "Prompt Cleared" | 2s |
+| #   | Event                 | Type       | Title                       | Duration |
+| --- | --------------------- | ---------- | --------------------------- | -------- |
+| 1   | Dataset Generated     | ✅ Success | "Dataset Generated"         | 3s       |
+| 2   | Applying Framework    | ℹ️ Info    | "Applying Framework"        | 2s       |
+| 3   | Framework Applied     | ✅ Success | "Framework Applied"         | 2s       |
+| 4   | Applying Technique    | ℹ️ Info    | "Applying Technique"        | 2s       |
+| 5   | Iteration Complete    | ✅ Success | "Iteration X Complete"      | 2s       |
+| 6   | Prompt Improved       | ✅ Success | "Prompt Improved"           | 2s       |
+| 7   | Optimization Complete | ✅ Success | "Optimization Complete! 🎉" | 5s       |
+| 8   | Optimization Failed   | ❌ Error   | "Optimization Failed"       | 5s       |
+| 9   | Connection Error      | ❌ Error   | "Connection Error"          | 5s       |
+| 10  | Export JSON           | ✅ Success | "Exported as JSON"          | 3s       |
+| 11  | Export Markdown       | ✅ Success | "Exported as Markdown"      | 3s       |
+| 12  | Export Text           | ✅ Success | "Exported as Text"          | 3s       |
+| 13  | Prompt Cleared        | ℹ️ Info    | "Prompt Cleared"            | 2s       |
 
 ---
 
@@ -389,6 +395,7 @@ npm run dev
 ## ✅ What's Working
 
 ### **Backend** ✅
+
 - ✅ All 4 frameworks implemented and working
 - ✅ All 6 techniques integrated into optimization loop
 - ✅ RAG service with ChromaDB working
@@ -399,6 +406,7 @@ npm run dev
 - ✅ All services properly wired together
 
 ### **Frontend** ✅
+
 - ✅ All components render without errors
 - ✅ SSE client connects and receives events
 - ✅ Zustand stores manage state correctly
@@ -409,6 +417,7 @@ npm run dev
 - ✅ Theme perfectly matches lime green + dark gray
 
 ### **Integration** ✅
+
 - ✅ Backend properly sends all required event data
 - ✅ Frontend receives and processes all events
 - ✅ Iteration results populate correctly
@@ -422,6 +431,7 @@ npm run dev
 ## 📊 Code Statistics
 
 ### **Backend**
+
 - **Python Files**: 35+
 - **Lines of Code**: ~6,000+
 - **API Endpoints**: 12
@@ -429,6 +439,7 @@ npm run dev
 - **Tests**: 3 test files
 
 ### **Frontend**
+
 - **TypeScript Files**: 20+
 - **Lines of Code**: ~4,500+
 - **React Components**: 15+
@@ -436,6 +447,7 @@ npm run dev
 - **Toast Notifications**: 13
 
 ### **Documentation**
+
 - **Planning Docs**: 8 (in `/docs/`)
 - **Implementation Summaries**: 5
 - **Total Documentation**: ~5,000+ lines
@@ -513,7 +525,7 @@ Only **1 item** remains from the original roadmap:
 **Lines of Code:** ~10,500+  
 **Components:** 50+  
 **API Endpoints:** 12  
-**Toast Notifications:** 13  
+**Toast Notifications:** 13
 
 ---
 
@@ -525,4 +537,3 @@ Only **1 item** remains from the original roadmap:
 **Status:** ✅ 100% Complete  
 **Theme:** Dark Gray (#0a0a0a) + Lime Green (#bfff45) 💚  
 **Next Step:** TEST IT OUT! 🚀
-

@@ -68,6 +68,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 #### UI Components (`src/components/optimizer/`)
 
 **PromptInput Component**
+
 - Responsibilities:
   - Multi-line textarea with character count
   - Input validation (10-10,000 characters)
@@ -77,6 +78,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 - State: Local editing state with debounced updates
 
 **FrameworkSelector Component**
+
 - Responsibilities:
   - Dropdown with 4 framework options (RACE, COSTAR, APE, CREATE)
   - Display framework description and use case on hover
@@ -84,6 +86,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 - Props: `selected`, `onSelect`, `frameworks[]`
 
 **TechniqueToggles Component**
+
 - Responsibilities:
   - Checkbox group for 6+ techniques
   - Show/hide advanced options (temperature, top-p)
@@ -92,6 +95,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 - Props: `enabled[]`, `onToggle`, `parameters`, `onParameterChange`
 
 **OptimizationProgress Component**
+
 - Responsibilities:
   - Real-time progress bar (1/5, 2/5, etc.)
   - Live metric display during optimization
@@ -101,6 +105,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 - Props: `sseUrl`, `onComplete`, `onError`
 
 **VersionComparison Component**
+
 - Responsibilities:
   - Side-by-side diff view with syntax highlighting
   - Metrics comparison table with delta indicators
@@ -109,6 +114,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 - Props: `version1`, `version2`, `showMetrics`
 
 **MetricsDashboard Component**
+
 - Responsibilities:
   - Line charts showing metric evolution across iterations
   - Summary cards (best version, avg improvement, etc.)
@@ -117,6 +123,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 - Props: `iterations[]`, `selectedVersion`
 
 **ExportPanel Component**
+
 - Responsibilities:
   - Format selection (JSON, Markdown, Plain Text)
   - Preview before export
@@ -127,6 +134,7 @@ PowerPrompts follows a three-tier architecture with clear separation of concerns
 #### State Management (`src/stores/optimization-store.ts`)
 
 **Zustand Store Structure:**
+
 ```typescript
 interface OptimizationStore {
   // Current optimization session
@@ -134,16 +142,16 @@ interface OptimizationStore {
   framework: Framework;
   techniques: Technique[];
   parameters: LLMParameters;
-  
+
   // Optimization state
   isOptimizing: boolean;
   currentIteration: number;
   iterations: IterationResult[];
-  
+
   // Dataset
   dataset: Dataset | null;
   isGeneratingDataset: boolean;
-  
+
   // Actions
   setPrompt: (prompt: string) => void;
   setFramework: (framework: Framework) => void;
@@ -158,6 +166,7 @@ interface OptimizationStore {
 #### API Client (`src/lib/api-client.ts`)
 
 **Responsibilities:**
+
 - HTTP client wrapper with error handling
 - Request/response type safety
 - Automatic API key injection from environment
@@ -165,6 +174,7 @@ interface OptimizationStore {
 - Request timeout management (30s default)
 
 **Core Methods:**
+
 - `optimize(request: OptimizeRequest): EventSource` - Returns SSE connection
 - `generateDataset(prompt: string): Promise<Dataset>`
 - `evaluate(prompt: string, datasetId: string): Promise<Metrics>`
@@ -175,6 +185,7 @@ interface OptimizationStore {
 #### SSE Client (`src/lib/streaming.ts`)
 
 **Responsibilities:**
+
 - EventSource wrapper with reconnection logic
 - Typed event parsing
 - Connection state management
@@ -182,6 +193,7 @@ interface OptimizationStore {
 - Error boundary integration
 
 **Event Types:**
+
 - `iteration_start`: `{ iteration: number, prompt: string }`
 - `metrics_calculated`: `{ iteration: number, metrics: Metrics }`
 - `prompt_improved`: `{ iteration: number, improved_prompt: string, critique: string }`
@@ -193,6 +205,7 @@ interface OptimizationStore {
 #### API Routes (`app/api/routes/`)
 
 **optimization.py**
+
 ```python
 @router.post("/optimize")
 async def optimize_prompt(
@@ -201,7 +214,7 @@ async def optimize_prompt(
 ) -> StreamingResponse:
     """
     Main optimization endpoint with SSE streaming.
-    
+
     Flow:
     1. Validate request and authenticate
     2. Generate dataset if not provided
@@ -213,17 +226,19 @@ async def optimize_prompt(
 ```
 
 **datasets.py**
+
 ```python
 @router.post("/generate")
 async def generate_dataset(request: DatasetRequest) -> Dataset:
     """Generate synthetic dataset for prompt testing."""
-    
+
 @router.get("/{dataset_id}")
 async def get_dataset(dataset_id: str) -> Dataset:
     """Retrieve existing dataset."""
 ```
 
 **evaluation.py**
+
 ```python
 @router.post("/evaluate")
 async def evaluate_prompt(request: EvaluateRequest) -> EvaluationResult:
@@ -231,6 +246,7 @@ async def evaluate_prompt(request: EvaluateRequest) -> EvaluationResult:
 ```
 
 **frameworks.py**
+
 ```python
 @router.get("/frameworks")
 async def list_frameworks() -> List[FrameworkInfo]:
@@ -242,6 +258,7 @@ async def list_techniques() -> List[TechniqueInfo]:
 ```
 
 **versions.py**
+
 ```python
 @router.get("/{prompt_id}/versions")
 async def get_versions(prompt_id: str) -> List[Version]:
@@ -257,6 +274,7 @@ async def export_version(request: ExportRequest) -> FileResponse:
 **OptimizationService (`optimization_service.py`)**
 
 **Responsibilities:**
+
 - Orchestrate 5-iteration optimization loop
 - Coordinate between FrameworkBuilder, TechniqueApplier, Evaluator
 - Manage SSE event emission
@@ -264,6 +282,7 @@ async def export_version(request: ExportRequest) -> FileResponse:
 - Log to Arize Phoenix for observability
 
 **Core Method:**
+
 ```python
 async def optimize(
     self,
@@ -276,7 +295,7 @@ async def optimize(
 ) -> OptimizationResult:
     """
     Execute 5-iteration optimization loop.
-    
+
     For each iteration:
     1. Apply framework structure
     2. Apply selected techniques
@@ -291,12 +310,14 @@ async def optimize(
 **FrameworkBuilder (`framework_builder.py`)**
 
 **Responsibilities:**
+
 - Transform raw prompts into structured frameworks
 - Apply XML delimiters for clear sections
 - Validate framework structure
 - Support all 4 frameworks: RACE, COSTAR, APE, CREATE
 
 **Methods:**
+
 - `build_race(prompt: str) -> str`
 - `build_costar(prompt: str) -> str`
 - `build_ape(prompt: str) -> str`
@@ -304,6 +325,7 @@ async def optimize(
 - `extract_sections(prompt: str, framework: Framework) -> Dict[str, str]`
 
 **Example RACE Output:**
+
 ```xml
 <role>
 You are an expert {domain} specialist with {years} years of experience.
@@ -331,12 +353,14 @@ You are an expert {domain} specialist with {years} years of experience.
 **TechniqueApplier (`technique_applier.py`)**
 
 **Responsibilities:**
+
 - Apply selected techniques to structured prompts
 - Implement CoT, ToT, Self-Consistency, RSIP, RAG, Prompt Chaining
 - Handle technique compatibility and ordering
 - Inject technique-specific instructions
 
 **Methods:**
+
 - `apply_chain_of_thought(prompt: str) -> str`
 - `apply_self_consistency(prompt: str, paths: int = 3) -> str`
 - `apply_tree_of_thoughts(prompt: str, depth: int = 3) -> str`
@@ -347,6 +371,7 @@ You are an expert {domain} specialist with {years} years of experience.
 **DatasetGenerator (`dataset_generator.py`)**
 
 **Responsibilities:**
+
 - Generate 10-20 diverse synthetic examples per prompt
 - Create expected outputs for each example
 - Define 5-6 domain-specific evaluation criteria
@@ -354,6 +379,7 @@ You are an expert {domain} specialist with {years} years of experience.
 - Validate generated data quality
 
 **Core Method:**
+
 ```python
 async def generate(
     self,
@@ -363,7 +389,7 @@ async def generate(
 ) -> Dataset:
     """
     Generate synthetic dataset using meta-prompting.
-    
+
     Steps:
     1. Analyze prompt to identify domain and task type
     2. Generate diverse input examples (varying difficulty, edge cases)
@@ -376,6 +402,7 @@ async def generate(
 **Evaluator (`evaluator.py`)**
 
 **Responsibilities:**
+
 - Calculate 5 core metrics for each iteration
 - Implement LLM-as-judge for subjective metrics
 - Compute aggregate scores across dataset
@@ -394,20 +421,20 @@ class Evaluator:
         criteria: List[str]
     ) -> Metrics:
         """Calculate all metrics for a single example."""
-        
+
         relevance = await self._calculate_relevance(response, expected)
         accuracy = await self._llm_as_judge_accuracy(response, expected)
         consistency = self._calculate_consistency(response, expected)
         efficiency = self._calculate_efficiency(response)
         readability = self._calculate_readability(response)
-        
+
         return Metrics(
             relevance=relevance,
             accuracy=accuracy,
             consistency=consistency,
             efficiency=efficiency,
             readability=readability,
-            aggregate=(relevance + accuracy + consistency + 
+            aggregate=(relevance + accuracy + consistency +
                       (100 - efficiency) + readability) / 5
         )
 ```
@@ -415,6 +442,7 @@ class Evaluator:
 **RAGService (`rag_service.py`)**
 
 **Responsibilities:**
+
 - Manage ChromaDB vector store
 - Generate embeddings via OpenAI Ada-002
 - Retrieve top-k relevant documents
@@ -422,6 +450,7 @@ class Evaluator:
 - Handle collection management
 
 **Methods:**
+
 - `add_documents(documents: List[Document]) -> List[str]`
 - `retrieve(query: str, top_k: int = 3) -> List[Document]`
 - `delete_collection(name: str) -> None`
@@ -432,6 +461,7 @@ class Evaluator:
 **LLMClient (`llm_client.py`)**
 
 **Responsibilities:**
+
 - Wrapper around OpenAI Python SDK
 - Unified interface for completions and embeddings
 - Automatic retry with exponential backoff
@@ -439,6 +469,7 @@ class Evaluator:
 - Streaming support for long completions
 
 **Configuration:**
+
 - Default model: `gpt-4-turbo-preview`
 - Fallback model: `gpt-3.5-turbo`
 - Max retries: 3
@@ -447,6 +478,7 @@ class Evaluator:
 **VectorStore (`vector_store.py`)**
 
 **Responsibilities:**
+
 - ChromaDB client wrapper
 - Connection management
 - Collection lifecycle management
@@ -456,6 +488,7 @@ class Evaluator:
 **ArizeClient (`arize_client.py`)**
 
 **Responsibilities:**
+
 - Arize Phoenix local integration
 - Trace optimization sessions
 - Log LLM calls with latency metrics
@@ -508,11 +541,13 @@ CREATE INDEX idx_datasets_prompt_id ON datasets(prompt_id);
 #### ChromaDB Collections
 
 **Collection: `knowledge_base`**
+
 - Purpose: Store RAG documents for retrieval
 - Metadata: `{ source, title, timestamp, domain }`
 - Embedding model: `text-embedding-ada-002`
 
 **Collection: `prompt_embeddings`**
+
 - Purpose: Store prompt embeddings for similarity search
 - Metadata: `{ prompt_id, framework, aggregate_score }`
 
@@ -583,7 +618,7 @@ Backend (FastAPI):
     ├→ Background task: optimization_loop(queue)
     ├→ Return StreamingResponse(event_generator(queue))
     └→ event_generator yields SSE formatted events
-    
+
 Frontend (Next.js):
     ├→ const eventSource = new EventSource('/api/optimize')
     ├→ eventSource.onmessage = (event) => {
@@ -597,6 +632,7 @@ Frontend (Next.js):
 ## 4. Technology Decisions and Rationale
 
 ### 4.1 Why FastAPI for Backend?
+
 - **Native async support:** Perfect for SSE streaming and concurrent LLM calls
 - **Automatic OpenAPI docs:** Built-in Swagger UI at `/docs`
 - **Pydantic integration:** Type-safe request/response validation
@@ -604,6 +640,7 @@ Frontend (Next.js):
 - **Developer experience:** Clear, intuitive API design
 
 ### 4.2 Why Next.js 15 for Frontend?
+
 - **App Router:** Modern React patterns with Server Components (future-ready)
 - **TypeScript first:** Excellent type safety and IntelliSense
 - **Developer experience:** Fast refresh, excellent error messages
@@ -611,6 +648,7 @@ Frontend (Next.js):
 - **Familiar:** User's preferred frontend framework
 
 ### 4.3 Why Base UI over ShadCN?
+
 - **Newer and actively maintained:** More frequent updates
 - **Headless architecture:** Full styling control with Tailwind
 - **MUI ecosystem:** Backed by Material-UI team
@@ -618,6 +656,7 @@ Frontend (Next.js):
 - **Performance:** Smaller bundle size than full component libraries
 
 ### 4.4 Why SSE over WebSockets?
+
 - **Simpler implementation:** Native browser EventSource API
 - **Unidirectional:** Backend → Frontend (sufficient for progress updates)
 - **Automatic reconnection:** Built-in browser support
@@ -625,6 +664,7 @@ Frontend (Next.js):
 - **Lower overhead:** No handshake protocol needed
 
 ### 4.5 Why SQLite over PostgreSQL?
+
 - **Zero configuration:** No database server to install
 - **Perfect for local:** Single-user, local-only deployment
 - **ACID compliant:** Full transaction support
@@ -632,6 +672,7 @@ Frontend (Next.js):
 - **Performance:** Fast for <1M records (way beyond requirements)
 
 ### 4.6 Why ChromaDB over FAISS?
+
 - **Developer friendly:** Simple Python API
 - **Metadata filtering:** Rich query capabilities beyond vectors
 - **Persistence:** Built-in SQLite storage
@@ -639,6 +680,7 @@ Frontend (Next.js):
 - **Active development:** Strong community and updates
 
 ### 4.7 Why Arize Phoenix over Other Observability Tools?
+
 - **Open source:** Free for local use
 - **LLM-specific:** Built for prompt engineering and LLM apps
 - **Local deployment:** No data sent to cloud
@@ -665,18 +707,20 @@ Backend Middleware:
 ### 5.2 Input Validation
 
 **Frontend Validation:**
+
 - Character limits (10-10,000)
 - Framework selection from enum
 - Technique compatibility checks
 
 **Backend Validation (Pydantic):**
+
 ```python
 class OptimizeRequest(BaseModel):
     prompt: str = Field(min_length=10, max_length=10000)
     framework: Framework  # Enum validation
     techniques: List[Technique] = Field(default_factory=list)
     parameters: LLMParameters
-    
+
     @validator('prompt')
     def sanitize_prompt(cls, v):
         # Remove potentially harmful characters
@@ -693,11 +737,13 @@ class OptimizeRequest(BaseModel):
 ## 6. Scalability Considerations
 
 ### Current Architecture (MVP):
+
 - **Single user, local deployment**
 - **Synchronous optimization:** One session at a time
 - **In-memory queue:** SSE events via asyncio.Queue
 
 ### Future Scaling Options:
+
 - **Multi-user:** Add PostgreSQL, Redis for session management
 - **Distributed:** Celery + RabbitMQ for background tasks
 - **Caching:** Redis for prompt/dataset caching
@@ -707,12 +753,14 @@ class OptimizeRequest(BaseModel):
 ## 7. Error Handling Strategy
 
 ### Frontend Error Handling:
+
 - **Network errors:** Retry with exponential backoff (3 attempts)
 - **SSE disconnection:** Auto-reconnect every 5 seconds
 - **Validation errors:** Inline form error messages
 - **API errors:** Toast notifications with error details
 
 ### Backend Error Handling:
+
 ```python
 @app.exception_handler(OpenAIError)
 async def openai_error_handler(request, exc):
@@ -729,6 +777,7 @@ async def openai_error_handler(request, exc):
 ```
 
 ### Error Categories:
+
 1. **User errors (4xx):** Invalid input, authentication failure
 2. **System errors (5xx):** LLM API failure, database error
 3. **Transient errors:** Retry automatically (rate limits, timeouts)
@@ -737,6 +786,7 @@ async def openai_error_handler(request, exc):
 ## 8. Performance Optimization
 
 ### Backend Optimizations:
+
 - **Connection pooling:** Reuse HTTP connections to OpenAI
 - **Batch processing:** Evaluate multiple examples in parallel
 - **Caching:** Cache framework templates, evaluation prompts
@@ -744,6 +794,7 @@ async def openai_error_handler(request, exc):
 - **Async everywhere:** Non-blocking I/O for all operations
 
 ### Frontend Optimizations:
+
 - **Code splitting:** Lazy load components (React.lazy)
 - **Memoization:** React.memo for expensive components
 - **Virtual scrolling:** For large version history lists
@@ -754,4 +805,3 @@ async def openai_error_handler(request, exc):
 
 **Document Status:** Approved for Implementation  
 **Next Steps:** Review API specification and data models
-

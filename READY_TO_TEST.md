@@ -9,6 +9,7 @@ Your PowerPrompts application is **100% configured** and ready for testing!
 ## 🔍 Environment Verification Summary
 
 ### ✅ Backend Configuration (`backend/.env`)
+
 ```
 OpenAI API Key:    ✓ Valid (sk-proj-...)
 Server Port:       ✓ 8000
@@ -19,12 +20,14 @@ ChromaDB Path:     ✓ ./data/chroma
 ```
 
 ### ✅ Frontend Configuration (`frontend/.env.local`)
+
 ```
 API URL:           ✓ http://localhost:8000
 API Key:           ✓ cG93ZXJwcm9tcHRz (matches backend)
 ```
 
 ### ✅ Integration Status
+
 ```
 Backend ↔ Frontend:  ✓ API keys match
 Port Configuration:  ✓ Consistent (8000)
@@ -39,12 +42,14 @@ Authentication:      ✓ Configured
 ### Step 1: Start Backend Server
 
 Open **Terminal 1** and run:
+
 ```bash
 cd backend
 npm run dev
 ```
 
 ✅ **Expected Output:**
+
 ```
 [STARTUP] PowerPrompts API Starting Up!
 [STARTUP] Version: 1.0.0
@@ -56,12 +61,14 @@ npm run dev
 ### Step 2: Start Frontend Server
 
 Open **Terminal 2** (new terminal) and run:
+
 ```bash
 cd frontend
 npm run dev
 ```
 
 ✅ **Expected Output:**
+
 ```
 ▲ Next.js 15.x.x
 - Local:        http://localhost:3000
@@ -73,6 +80,7 @@ npm run dev
 ### Step 3: Open Browser
 
 Navigate to:
+
 ```
 http://localhost:3000
 ```
@@ -82,9 +90,10 @@ http://localhost:3000
 ## 🧪 Testing Flow
 
 ### Test 1: Basic Optimization
+
 1. **Enter Prompt:** "Write a product description for eco-friendly water bottles"
 2. **Select Framework:** RACE (default)
-3. **Select Techniques:** 
+3. **Select Techniques:**
    - ✓ Few-Shot Prompting
    - ✓ Chain-of-Thought
    - ✓ RSIP (Recursive Self-Improvement)
@@ -95,6 +104,7 @@ http://localhost:3000
 6. **Watch:** Live progress updates! ⚡
 
 ### Test 2: Advanced Techniques
+
 1. **Enter Prompt:** "Explain quantum computing to a 10-year-old"
 2. **Select Framework:** COSTAR
 3. **Select Techniques:**
@@ -104,6 +114,7 @@ http://localhost:3000
 4. **Click:** "Start Optimization"
 
 ### Test 3: RAG (Optional)
+
 1. Upload a document via RAG panel
 2. Enable RAG technique
 3. Run optimization with context
@@ -113,6 +124,7 @@ http://localhost:3000
 ## 📊 What You Should See
 
 ### During Optimization:
+
 - 🟢 **Progress Bar:** Animates 0% → 100%
 - 🟢 **Iteration Updates:** Shows "Iteration 1/5", "Iteration 2/5", etc.
 - 🟢 **Live Metrics:** Relevance, Accuracy, Consistency, Efficiency, Readability
@@ -120,6 +132,7 @@ http://localhost:3000
 - 🟢 **Current Prompt Preview:** Shows optimized prompt for each iteration
 
 ### After Completion:
+
 - 🟢 **Final Results:** Best version displayed
 - 🟢 **Metrics Tab:** Charts showing improvement over iterations
 - 🟢 **Compare Tab:** Side-by-side original vs optimized
@@ -130,6 +143,7 @@ http://localhost:3000
 ## 🎨 UI Features to Test
 
 ### Input Panel
+
 - ✓ Prompt textarea with character counter
 - ✓ Framework selector with descriptions
 - ✓ Technique checkboxes with info tooltips
@@ -137,6 +151,7 @@ http://localhost:3000
 - ✓ Clear button and keyboard shortcuts (Cmd/Ctrl + Enter to submit)
 
 ### Progress Panel
+
 - ✓ Real-time progress bar with percentage
 - ✓ Time elapsed counter
 - ✓ Current iteration display
@@ -145,6 +160,7 @@ http://localhost:3000
 - ✓ Per-example breakdown table
 
 ### Results Panel
+
 - ✓ Tabbed interface (Metrics, Compare, Export)
 - ✓ Chart.js visualizations (line, radar, bar charts)
 - ✓ Version comparison with diff highlighting
@@ -158,11 +174,13 @@ http://localhost:3000
 You can also test the backend API directly:
 
 ### Health Check
+
 ```bash
 curl http://localhost:8000/health -H "X-API-Key: cG93ZXJwcm9tcHRz"
 ```
 
 Expected:
+
 ```json
 {
   "status": "healthy",
@@ -173,11 +191,13 @@ Expected:
 ```
 
 ### List Frameworks
+
 ```bash
 curl http://localhost:8000/api/frameworks -H "X-API-Key: cG93ZXJwcm9tcHRz"
 ```
 
 Expected:
+
 ```json
 {
   "frameworks": [
@@ -193,6 +213,7 @@ Expected:
 ```
 
 ### List Techniques
+
 ```bash
 curl http://localhost:8000/api/techniques -H "X-API-Key: cG93ZXJwcm9tcHRz"
 ```
@@ -202,9 +223,11 @@ curl http://localhost:8000/api/techniques -H "X-API-Key: cG93ZXJwcm9tcHRz"
 ## 🐛 Troubleshooting
 
 ### Issue: Backend Won't Start
+
 **Symptom:** Port already in use error
 
 **Solution:**
+
 ```bash
 # Windows
 netstat -ano | findstr :8000
@@ -215,27 +238,33 @@ lsof -ti :8000 | xargs kill -9
 ```
 
 ### Issue: OpenAI API Error
+
 **Symptom:** "Invalid API Key" or "Insufficient credits"
 
 **Solutions:**
+
 1. Verify key in `.env` has no extra spaces
 2. Check OpenAI dashboard: https://platform.openai.com/account/usage
 3. Ensure key has proper permissions
 4. Try a different API key if available
 
 ### Issue: Frontend Can't Connect
+
 **Symptom:** "NetworkError when attempting to fetch resource"
 
 **Solutions:**
+
 1. Verify backend is running: `curl http://localhost:8000/health`
 2. Check `NEXT_PUBLIC_API_URL` in `frontend/.env.local`
 3. Verify API keys match in both `.env` files
 4. Clear browser cache and reload
 
 ### Issue: SSE Stream Disconnects
+
 **Symptom:** Progress stops mid-optimization
 
 **Solutions:**
+
 1. Check backend terminal for errors
 2. Verify OpenAI API isn't rate-limited
 3. Check network connection
@@ -246,6 +275,7 @@ lsof -ti :8000 | xargs kill -9
 ## 📝 Testing Checklist
 
 ### Basic Functionality
+
 - [ ] Backend starts successfully
 - [ ] Frontend loads at http://localhost:3000
 - [ ] Can enter a prompt
@@ -255,6 +285,7 @@ lsof -ti :8000 | xargs kill -9
 - [ ] Can click "Start Optimization"
 
 ### Optimization Flow
+
 - [ ] Progress bar animates
 - [ ] Iteration counter updates
 - [ ] Metrics update in real-time
@@ -263,6 +294,7 @@ lsof -ti :8000 | xargs kill -9
 - [ ] Best version is selected
 
 ### Results Display
+
 - [ ] Final optimized prompt displays
 - [ ] Metrics tab shows charts
 - [ ] Compare tab shows diff
@@ -270,6 +302,7 @@ lsof -ti :8000 | xargs kill -9
 - [ ] Toast notifications appear
 
 ### Error Handling
+
 - [ ] Empty prompt shows validation error
 - [ ] Invalid API key shows auth error
 - [ ] Network errors handled gracefully
@@ -280,18 +313,21 @@ lsof -ti :8000 | xargs kill -9
 ## 💡 Tips for Best Results
 
 ### Prompt Engineering
+
 - Be specific about your desired output
 - Include context and constraints
 - Specify format preferences
 - Define success criteria
 
 ### Framework Selection
+
 - **RACE:** General-purpose, good starting point
 - **COSTAR:** Best for content creation
 - **APE:** Quick optimization for simple tasks
 - **CREATE:** Most detailed, complex scenarios
 
 ### Technique Selection
+
 - **Few-Shot:** Add examples for pattern learning
 - **Chain-of-Thought:** Enable for complex reasoning
 - **Self-Consistency:** Use for reliability-critical tasks
@@ -299,6 +335,7 @@ lsof -ti :8000 | xargs kill -9
 - **RSIP:** Always recommended for quality improvement
 
 ### Parameters
+
 - **Temperature 0.0-0.3:** Deterministic, factual
 - **Temperature 0.4-0.7:** Balanced creativity
 - **Temperature 0.8-1.0:** More creative, varied
@@ -309,6 +346,7 @@ lsof -ti :8000 | xargs kill -9
 ## 🎉 You're All Set!
 
 Everything is configured and ready:
+
 - ✅ Backend TypeScript: Zero errors
 - ✅ Frontend integration: Fully wired
 - ✅ Environment variables: Correctly set
@@ -323,6 +361,7 @@ Everything is configured and ready:
 ## 📚 Documentation
 
 For more details, see:
+
 - `backend/README.md` - Backend setup and API docs
 - `backend/CODE_QUALITY_CHECKLIST.md` - Code quality standards
 - `backend/MIGRATION_SUMMARY.md` - Migration overview
@@ -334,6 +373,7 @@ For more details, see:
 ## 💬 Need Help?
 
 If you encounter any issues:
+
 1. Check both terminal logs (backend + frontend)
 2. Check browser console (F12)
 3. Review error messages carefully
@@ -341,4 +381,3 @@ If you encounter any issues:
 5. Ensure OpenAI account has credits
 
 **Happy prompt optimizing!** 🎯✨
-

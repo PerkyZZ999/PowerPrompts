@@ -54,4 +54,3 @@ Instructions:
 5. Fix ambiguities and structural issues
 
 Generate the improved prompt with the SAME XML structure:`;
-
