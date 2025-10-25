@@ -2,24 +2,36 @@
  * Server-Sent Events (SSE) utilities for real-time streaming
  */
 
-import { FastifyReply } from 'fastify';
+import { FastifyReply } from "fastify";
 
 /**
  * SSE Event types (discriminated union)
  */
 export type SSEEvent =
-  | { type: 'optimization_start'; data: { total_iterations: number } }
-  | { type: 'dataset_generated'; data: { example_count: number; domain: string } }
-  | { type: 'iteration_start'; data: { iteration: number; prompt: string } }
-  | { type: 'executing_tests'; data: { count: number; iteration: number } }
-  | { type: 'test_progress'; data: { current: number; total: number; iteration: number } }
-  | { type: 'applying_technique'; data: { technique: string; iteration: number } }
-  | { type: 'evaluating_metrics'; data: { iteration: number } }
-  | { type: 'metrics_calculated'; data: { metrics: any; iteration: number } }
-  | { type: 'applying_rsip'; data: { iteration: number } }
-  | { type: 'prompt_improved'; data: { iteration: number; critique: string; improved_prompt: string } }
+  | { type: "optimization_start"; data: { total_iterations: number } }
   | {
-      type: 'iteration_complete';
+      type: "dataset_generated";
+      data: { example_count: number; domain: string };
+    }
+  | { type: "iteration_start"; data: { iteration: number; prompt: string } }
+  | { type: "executing_tests"; data: { count: number; iteration: number } }
+  | {
+      type: "test_progress";
+      data: { current: number; total: number; iteration: number };
+    }
+  | {
+      type: "applying_technique";
+      data: { technique: string; iteration: number };
+    }
+  | { type: "evaluating_metrics"; data: { iteration: number } }
+  | { type: "metrics_calculated"; data: { metrics: any; iteration: number } }
+  | { type: "applying_rsip"; data: { iteration: number } }
+  | {
+      type: "prompt_improved";
+      data: { iteration: number; critique: string; improved_prompt: string };
+    }
+  | {
+      type: "iteration_complete";
       data: {
         iteration: number;
         prompt_version: string;
@@ -37,7 +49,7 @@ export type SSEEvent =
       };
     }
   | {
-      type: 'optimization_complete';
+      type: "optimization_complete";
       data: {
         best_version: {
           iteration: number;
@@ -52,7 +64,7 @@ export type SSEEvent =
         total_time_seconds: number;
       };
     }
-  | { type: 'error'; data: { message: string; details?: any } };
+  | { type: "error"; data: { message: string; details?: any } };
 
 /**
  * Event queue for SSE streaming
@@ -121,20 +133,20 @@ function formatSSEEvent(event: SSEEvent): string {
   lines.push(`data: ${JSON.stringify(event.data)}`);
 
   // Empty line to separate events
-  lines.push('');
+  lines.push("");
 
-  return lines.join('\n') + '\n';
+  return lines.join("\n") + "\n";
 }
 
 /**
  * Create SSE stream from event queue
  */
 export async function* createSSEStream(
-  queue: EventQueue
+  queue: EventQueue,
 ): AsyncGenerator<string, void, unknown> {
   // Send initial connection message
   yield formatSSEEvent({
-    type: 'optimization_start',
+    type: "optimization_start",
     data: { total_iterations: 5 },
   });
 
@@ -166,7 +178,7 @@ export async function* createSSEStream(
       yield formatSSEEvent(event);
 
       // Stop streaming if optimization complete or error
-      if (event.type === 'optimization_complete' || event.type === 'error') {
+      if (event.type === "optimization_complete" || event.type === "error") {
         break;
       }
     }
@@ -180,18 +192,18 @@ export async function* createSSEStream(
  */
 export function createSSEResponse(
   reply: FastifyReply,
-  queue: EventQueue
+  queue: EventQueue,
 ): FastifyReply {
   // Set SSE headers with CORS support
   reply.raw.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache, no-transform',
-    Connection: 'keep-alive',
-    'X-Accel-Buffering': 'no', // Disable nginx buffering
-    'Access-Control-Allow-Origin': 'http://localhost:3000', // CORS for frontend
-    'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-API-Key',
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no", // Disable nginx buffering
+    "Access-Control-Allow-Origin": "http://localhost:3000", // CORS for frontend
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Key",
   });
 
   // Create stream
@@ -204,7 +216,7 @@ export function createSSEResponse(
         reply.raw.write(chunk);
       }
     } catch (error) {
-      console.error('[SSE ERROR] Stream error:', error);
+      console.error("[SSE ERROR] Stream error:", error);
     } finally {
       reply.raw.end();
     }
@@ -212,4 +224,3 @@ export function createSSEResponse(
 
   return reply;
 }
-

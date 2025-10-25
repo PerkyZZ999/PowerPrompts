@@ -26,7 +26,6 @@
 - **nanoid** - Unique ID generation
 - **date-fns** - Date utilities
 
-
 ### Frontend (Next.js TypeScript)
 
 **Why Keep This:** Your familiar stack, perfect for real-time streaming updates
@@ -36,7 +35,6 @@
 - **TailwindCSS + Base UI** - Beautiful, accessible components ( https://github.com/mui/base-ui )
 - **Zustand** - Lightweight state management
 - **Server-Sent Events (SSE)** - Real-time streaming
-
 
 ## 🎯 Integrated Frameworks from Your Guide
 
@@ -72,13 +70,11 @@
 - **When to Use:** Simple, well-understood tasks
 - **Baseline approach**
 
-
 ### Few-Shot Prompting
 
 - **Implementation:** Auto-generate 2-5 examples per task
 - **Improvement:** +6% accuracy over zero-shot
 - **When to Use:** Pattern recognition, classification tasks
-
 
 ### Chain-of-Thought (CoT)
 
@@ -86,20 +82,17 @@
 - **Improvement:** +35% in reasoning tasks, -28% math errors
 - **When to Use:** Complex reasoning, mathematical problems, logic
 
-
 ### Self-Consistency
 
 - **Implementation:** Generate 3-5 reasoning paths, select most common answer (majority voting)
 - **Improvement:** Significantly better accuracy for reliability-critical tasks
 - **When to Use:** Problems requiring high confidence
 
-
 ### Tree of Thoughts (ToT)
 
 - **Implementation:** Explore multiple reasoning paths in parallel with backtracking
 - **When to Use:** Complex problem-solving, strategic planning, puzzles
 - **Benefits:** Best for combinatorial solution spaces
-
 
 ### Recursive Self-Improvement Prompting (RSIP)
 
@@ -108,20 +101,17 @@
 - **When to Use:** Creative and technical writing, quality-critical tasks
 - **This is your secret weapon!**
 
-
 ### Retrieval-Augmented Generation (RAG)
 
 - **Implementation:** Vector database + retrieval before generation
 - **Improvement:** -42-68% hallucinations, up to 89% factual accuracy
 - **When to Use:** Factual accuracy, domain-specific knowledge, reducing hallucinations
 
-
 ### Prompt Chaining
 
 - **Implementation:** Break complex tasks into sequential subtasks
 - **Benefits:** Clear audit trail, better accuracy for multi-step tasks
 - **When to Use:** Multi-part tasks with dependencies
-
 
 ## 🔧 Optimization Techniques
 
@@ -208,7 +198,6 @@ backend/
 └── .env                             # Environment variables
 ```
 
-
 ### Frontend Structure (Next.js TypeScript)
 
 ```
@@ -237,7 +226,6 @@ prompt-optimizer-frontend/
 │       └── use-optimization.ts
 ```
 
-
 ## 🔄 5-Iteration Optimization Pipeline
 
 **USER INPUT**
@@ -253,11 +241,11 @@ prompt-optimizer-frontend/
 
 - Auto-detect task type (reasoning/creative/factual)
 - Enable appropriate techniques:
-    - CoT for reasoning
-    - Self-Consistency for reliability
-    - ToT for complex problems
-    - RAG for factual tasks
-    - RSIP for quality
+  - CoT for reasoning
+  - Self-Consistency for reliability
+  - ToT for complex problems
+  - RAG for factual tasks
+  - RSIP for quality
 
 ↓
 **STEP 3: Synthetic Dataset Generation**
@@ -322,7 +310,6 @@ For each iteration i in :
 - Version history with diffs
 - Export options (JSON, Markdown, Text)
 
-
 ## 📊 Evaluation Metrics (From Your Guide)
 
 1. **Relevance** - How well output aligns with user intent
@@ -365,7 +352,6 @@ pip install fastapi uvicorn python-dotenv openai anthropic pandas numpy pydantic
 - Configure experiments
 - Setup logging and tracing
 
-
 ### Phase 2: Frontend Setup (Week 2-3)
 
 **2.1 Initialize Next.js**
@@ -387,7 +373,6 @@ npx shadcn@latest add button card tabs textarea select slider progress table
 - Side-by-side comparison view
 - Metrics dashboard with charts
 
-
 ### Phase 3: Integration \& Testing (Week 3-4)
 
 - End-to-end optimization flow testing
@@ -395,7 +380,6 @@ npx shadcn@latest add button card tabs textarea select slider progress table
 - Performance optimization (caching, rate limiting)
 - Error handling and graceful degradation
 - UI/UX polish (loading states, dark mode)
-
 
 ## ☁️ Deployment Strategy
 
@@ -414,7 +398,6 @@ npx shadcn@latest add button card tabs textarea select slider progress table
 - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `ARIZE_API_KEY`
 - `BACKEND_URL`, `FRONTEND_URL`
 - `DATABASE_URL` (optional), `VECTOR_DB_URL` (for RAG)
-
 
 ## 💡 Key Success Factors
 
@@ -442,7 +425,6 @@ npx shadcn@latest add button card tabs textarea select slider progress table
 - □ Export optimized prompt
 - □ Basic error handling
 
-
 ## 🚀 Enhanced Features (Week 5+)
 
 - □ COSTAR/APE/CREATE frameworks
@@ -455,7 +437,6 @@ npx shadcn@latest add button card tabs textarea select slider progress table
 - □ Parameter tuning (temperature, top-p)
 - □ Prompt templates library
 - □ User authentication and history
-
 
 ## ✅ Why This Revised Plan Is Excellent
 

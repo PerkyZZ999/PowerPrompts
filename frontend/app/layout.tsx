@@ -28,8 +28,15 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "PowerPrompts - AI Prompt Optimizer",
-  description: "Optimize your AI prompts with advanced techniques and frameworks using cutting-edge AI technology",
-  keywords: ["AI", "Prompt Engineering", "Optimization", "Machine Learning", "LLM"],
+  description:
+    "Optimize your AI prompts with advanced techniques and frameworks using cutting-edge AI technology",
+  keywords: [
+    "AI",
+    "Prompt Engineering",
+    "Optimization",
+    "Machine Learning",
+    "LLM",
+  ],
 };
 
 export default function RootLayout({
@@ -48,4 +55,3 @@ export default function RootLayout({
     </html>
   );
 }
-

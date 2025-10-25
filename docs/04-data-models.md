@@ -26,6 +26,7 @@ CREATE INDEX idx_prompts_framework ON prompts(framework);
 ```
 
 **Columns:**
+
 - `id`: Unique identifier (format: `prm_{uuid}`)
 - `original_prompt`: Unmodified user input (10-10,000 chars)
 - `framework`: Selected optimization framework
@@ -51,7 +52,7 @@ CREATE TABLE versions (
     tokens_used INTEGER,                    -- Total tokens for this iteration
     duration_seconds REAL,                  -- Execution time in seconds
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     UNIQUE(prompt_id, iteration)            -- One version per iteration
 );
 
@@ -83,6 +84,7 @@ CREATE INDEX idx_versions_created_at ON versions(created_at DESC);
 ```
 
 **Columns:**
+
 - `id`: Unique identifier (format: `ver_{uuid}`)
 - `prompt_id`: Reference to parent prompt
 - `iteration`: 0 for original, 1-5 for optimized versions
@@ -141,6 +143,7 @@ CREATE INDEX idx_datasets_generated_at ON datasets(generated_at DESC);
 ```
 
 **Columns:**
+
 - `id`: Unique identifier (format: `ds_{uuid}`)
 - `prompt_id`: Optional reference to prompt (nullable)
 - `examples_json`: Array of test examples with inputs/outputs
@@ -277,12 +280,12 @@ class OptimizeRequest(BaseModel):
         default_factory=DatasetConfig,
         description="Dataset generation configuration"
     )
-    
+
     @validator('prompt')
     def sanitize_prompt(cls, v):
         """Remove leading/trailing whitespace."""
         return v.strip()
-    
+
     @validator('techniques')
     def validate_technique_compatibility(cls, v):
         """Check technique requirements."""
@@ -740,8 +743,8 @@ export interface HealthResponse {
 ```typescript
 // stores/optimization-store.ts
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 interface OptimizationState {
   // Current optimization session
@@ -749,20 +752,20 @@ interface OptimizationState {
   framework: Framework | null;
   techniques: Technique[];
   parameters: LLMParameters;
-  
+
   // Optimization state
   isOptimizing: boolean;
   currentIteration: number;
   iterations: IterationResult[];
-  
+
   // Dataset
   dataset: Dataset | null;
   isGeneratingDataset: boolean;
-  
+
   // UI state
   selectedVersion: number | null; // For comparison
   comparisonVersion: number | null; // Second version for comparison
-  
+
   // History (persisted)
   recentPrompts: Array<{
     prompt_id: string;
@@ -779,23 +782,23 @@ interface OptimizationActions {
   setFramework: (framework: Framework) => void;
   toggleTechnique: (technique: Technique) => void;
   setParameters: (params: Partial<LLMParameters>) => void;
-  
+
   // Optimization control
   startOptimization: (request: OptimizeRequest) => Promise<void>;
   addIteration: (result: IterationResult) => void;
   completeOptimization: (result: OptimizationComplete) => void;
   resetOptimization: () => void;
-  
+
   // Dataset
   setDataset: (dataset: Dataset) => void;
   setGeneratingDataset: (isGenerating: boolean) => void;
-  
+
   // UI
   setSelectedVersion: (iteration: number | null) => void;
   setComparisonVersion: (iteration: number | null) => void;
-  
+
   // History
-  addToHistory: (promptInfo: OptimizationState['recentPrompts'][0]) => void;
+  addToHistory: (promptInfo: OptimizationState["recentPrompts"][0]) => void;
 }
 
 type OptimizationStore = OptimizationState & OptimizationActions;
@@ -805,14 +808,14 @@ const useOptimizationStore = create<OptimizationStore>()(
     persist(
       (set, get) => ({
         // Initial state
-        currentPrompt: '',
+        currentPrompt: "",
         framework: null,
         techniques: [],
         parameters: {
           temperature: 0.7,
           top_p: 0.9,
           max_tokens: 2000,
-          model: 'gpt-4-turbo-preview',
+          model: "gpt-4-turbo-preview",
         },
         isOptimizing: false,
         currentIteration: 0,
@@ -822,7 +825,7 @@ const useOptimizationStore = create<OptimizationStore>()(
         selectedVersion: null,
         comparisonVersion: null,
         recentPrompts: [],
-        
+
         // Actions implementation...
         setPrompt: (prompt) => set({ currentPrompt: prompt }),
         setFramework: (framework) => set({ framework }),
@@ -835,14 +838,14 @@ const useOptimizationStore = create<OptimizationStore>()(
         // ... more actions
       }),
       {
-        name: 'optimization-storage',
+        name: "optimization-storage",
         partialize: (state) => ({
           recentPrompts: state.recentPrompts,
           parameters: state.parameters,
         }),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 export default useOptimizationStore;
@@ -915,4 +918,3 @@ prompt_embedding = {
 
 **Document Status:** Approved for Implementation  
 **Next Steps:** Review implementation roadmap and begin development
-

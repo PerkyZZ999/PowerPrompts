@@ -32,7 +32,7 @@ interface OptimizationState {
   iterations: IterationResult[];
   bestVersion: number | null;
   completedResult: OptimizationComplete | null;
-  
+
   // Detailed Progress Tracking
   currentStep: string;
   testProgress: { current: number; total: number } | null;
@@ -104,7 +104,7 @@ export const useOptimizationStore = create<OptimizationState>()(
       iterations: [],
       bestVersion: null,
       completedResult: null,
-      
+
       currentStep: "",
       testProgress: null,
       currentTechnique: null,
@@ -115,9 +115,9 @@ export const useOptimizationStore = create<OptimizationState>()(
 
       // Actions
       setPrompt: (prompt) => set({ prompt }),
-      
+
       setFramework: (framework) => set({ framework }),
-      
+
       toggleTechnique: (technique) =>
         set((state) => ({
           techniques: state.techniques.includes(technique)
@@ -200,7 +200,7 @@ export const useOptimizationStore = create<OptimizationState>()(
         }),
 
       setActiveTab: (tab) => set({ activeTab: tab }),
-      
+
       setSelectedVersions: (versions) => set({ selectedVersions: versions }),
     }),
     {
@@ -212,7 +212,6 @@ export const useOptimizationStore = create<OptimizationState>()(
         techniques: state.techniques,
         parameters: state.parameters,
       }),
-    }
-  )
+    },
+  ),
 );
-

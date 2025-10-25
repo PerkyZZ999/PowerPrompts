@@ -11,7 +11,10 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
  * Custom API error class.
  */
 export class APIError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
     super(message);
     this.name = "APIError";
   }
@@ -23,7 +26,7 @@ export class APIError extends Error {
 async function fetchWithRetry(
   url: string,
   options: RequestInit,
-  retries = 3
+  retries = 3,
 ): Promise<Response> {
   for (let i = 0; i < retries; i++) {
     try {
@@ -38,7 +41,10 @@ async function fetchWithRetry(
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new APIError(response.status, errorText || `HTTP ${response.status}`);
+        throw new APIError(
+          response.status,
+          errorText || `HTTP ${response.status}`,
+        );
       }
 
       return response;
@@ -47,12 +53,14 @@ async function fetchWithRetry(
       if (i === retries - 1 || error instanceof APIError) {
         throw error;
       }
-      
+
       // Exponential backoff: 1s, 2s, 4s
-      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, i) * 1000));
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.pow(2, i) * 1000),
+      );
     }
   }
-  
+
   throw new Error("Max retries exceeded");
 }
 
@@ -73,7 +81,11 @@ export const apiClient = {
   /**
    * Get all available frameworks with metadata.
    */
-  async getFrameworks(): Promise<{ frameworks: Record<string, FrameworkInfo>; count: number; default: string }> {
+  async getFrameworks(): Promise<{
+    frameworks: Record<string, FrameworkInfo>;
+    count: number;
+    default: string;
+  }> {
     const response = await fetchWithRetry(`${API_BASE_URL}/api/frameworks`, {
       method: "GET",
     });
@@ -109,4 +121,3 @@ export const apiClient = {
     return JSON.stringify(request);
   },
 };
-

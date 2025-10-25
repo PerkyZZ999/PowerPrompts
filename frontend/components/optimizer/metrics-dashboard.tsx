@@ -35,7 +35,9 @@ export function MetricsDashboard() {
     );
   }
 
-  const bestIteration = iterations.find((iter) => iter.iteration === bestVersion);
+  const bestIteration = iterations.find(
+    (iter) => iter.iteration === bestVersion,
+  );
   if (!bestIteration) return null;
 
   const handleCopy = () => {
@@ -75,7 +77,9 @@ export function MetricsDashboard() {
       {/* Optimized Prompt */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-zinc-400">Optimized Prompt</h4>
+          <h4 className="text-sm font-medium text-zinc-400">
+            Optimized Prompt
+          </h4>
           <button
             onClick={handleCopy}
             className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-md transition-colors text-sm"

@@ -2,8 +2,8 @@
  * CRUD operations for database entities
  */
 
-import { nanoid } from 'nanoid';
-import { query, execute } from './database.js';
+import { nanoid } from "nanoid";
+import { query, execute } from "./database.js";
 
 /**
  * Database entity types
@@ -92,21 +92,23 @@ export async function createPrompt(data: {
       JSON.stringify(data.parameters),
       now,
       now,
-    ]
+    ],
   );
 
   return id;
 }
 
 export async function getPrompt(id: string): Promise<DbPrompt | null> {
-  const results = await query<DbPrompt>('SELECT * FROM prompts WHERE id = ?', [
+  const results = await query<DbPrompt>("SELECT * FROM prompts WHERE id = ?", [
     id,
   ]);
   return results[0] || null;
 }
 
 export async function getAllPrompts(): Promise<DbPrompt[]> {
-  return await query<DbPrompt>('SELECT * FROM prompts ORDER BY created_at DESC');
+  return await query<DbPrompt>(
+    "SELECT * FROM prompts ORDER BY created_at DESC",
+  );
 }
 
 export async function updatePrompt(
@@ -114,29 +116,29 @@ export async function updatePrompt(
   data: Partial<{
     techniquesEnabled: string[];
     parameters: any;
-  }>
+  }>,
 ): Promise<void> {
   const updates: string[] = [];
   const params: any[] = [];
 
   if (data.techniquesEnabled) {
-    updates.push('techniques_enabled = ?');
+    updates.push("techniques_enabled = ?");
     params.push(JSON.stringify(data.techniquesEnabled));
   }
 
   if (data.parameters) {
-    updates.push('parameters_json = ?');
+    updates.push("parameters_json = ?");
     params.push(JSON.stringify(data.parameters));
   }
 
   if (updates.length > 0) {
-    updates.push('updated_at = ?');
+    updates.push("updated_at = ?");
     params.push(new Date().toISOString());
     params.push(id);
 
     await execute(
-      `UPDATE prompts SET ${updates.join(', ')} WHERE id = ?`,
-      params
+      `UPDATE prompts SET ${updates.join(", ")} WHERE id = ?`,
+      params,
     );
   }
 }
@@ -171,34 +173,35 @@ export async function createVersion(data: {
       data.critique || null,
       data.improvements || null,
       now,
-    ]
+    ],
   );
 
   return id;
 }
 
 export async function getVersion(id: string): Promise<DbVersion | null> {
-  const results = await query<DbVersion>('SELECT * FROM versions WHERE id = ?', [
-    id,
-  ]);
+  const results = await query<DbVersion>(
+    "SELECT * FROM versions WHERE id = ?",
+    [id],
+  );
   return results[0] || null;
 }
 
 export async function getVersionsByPrompt(
-  promptId: string
+  promptId: string,
 ): Promise<DbVersion[]> {
   return await query<DbVersion>(
-    'SELECT * FROM versions WHERE prompt_id = ? ORDER BY iteration_number ASC',
-    [promptId]
+    "SELECT * FROM versions WHERE prompt_id = ? ORDER BY iteration_number ASC",
+    [promptId],
   );
 }
 
 export async function getVersionsByPromptId(
-  promptId: string
+  promptId: string,
 ): Promise<DbVersion[]> {
   return await query<DbVersion>(
-    'SELECT * FROM versions WHERE prompt_id = ? ORDER BY iteration_number ASC',
-    [promptId]
+    "SELECT * FROM versions WHERE prompt_id = ? ORDER BY iteration_number ASC",
+    [promptId],
   );
 }
 
@@ -226,7 +229,7 @@ export async function createDataset(data: {
       JSON.stringify(data.difficultyLevels),
       JSON.stringify(data.criteria),
       now,
-    ]
+    ],
   );
 
   return id;
@@ -234,16 +237,18 @@ export async function createDataset(data: {
 
 export async function getDataset(id: string): Promise<DbDataset | null> {
   const results = await query<DbDataset>(
-    'SELECT * FROM datasets WHERE id = ?',
-    [id]
+    "SELECT * FROM datasets WHERE id = ?",
+    [id],
   );
   return results[0] || null;
 }
 
-export async function getDatasetsByPrompt(promptId: string): Promise<DbDataset[]> {
+export async function getDatasetsByPrompt(
+  promptId: string,
+): Promise<DbDataset[]> {
   return await query<DbDataset>(
-    'SELECT * FROM datasets WHERE prompt_id = ? ORDER BY created_at DESC',
-    [promptId]
+    "SELECT * FROM datasets WHERE prompt_id = ? ORDER BY created_at DESC",
+    [promptId],
   );
 }
 
@@ -271,18 +276,18 @@ export async function createExample(data: {
       data.difficulty,
       data.metadata ? JSON.stringify(data.metadata) : null,
       now,
-    ]
+    ],
   );
 
   return id;
 }
 
 export async function getExamplesByDataset(
-  datasetId: string
+  datasetId: string,
 ): Promise<DbExample[]> {
   return await query<DbExample>(
-    'SELECT * FROM examples WHERE dataset_id = ? ORDER BY difficulty, created_at ASC',
-    [datasetId]
+    "SELECT * FROM examples WHERE dataset_id = ? ORDER BY difficulty, created_at ASC",
+    [datasetId],
   );
 }
 
@@ -308,7 +313,7 @@ export async function createDocument(data: {
       data.content,
       data.metadata ? JSON.stringify(data.metadata) : null,
       now,
-    ]
+    ],
   );
 
   return id;
@@ -316,18 +321,18 @@ export async function createDocument(data: {
 
 export async function getDocument(id: string): Promise<DbDocument | null> {
   const results = await query<DbDocument>(
-    'SELECT * FROM documents WHERE id = ?',
-    [id]
+    "SELECT * FROM documents WHERE id = ?",
+    [id],
   );
   return results[0] || null;
 }
 
 export async function getDocumentsByCollection(
-  collectionName: string
+  collectionName: string,
 ): Promise<DbDocument[]> {
   return await query<DbDocument>(
-    'SELECT * FROM documents WHERE collection_name = ? ORDER BY created_at DESC',
-    [collectionName]
+    "SELECT * FROM documents WHERE collection_name = ? ORDER BY created_at DESC",
+    [collectionName],
   );
 }
 
@@ -353,28 +358,27 @@ export async function createDocumentChunk(data: {
       data.chunkText,
       data.embeddingId || null,
       now,
-    ]
+    ],
   );
 
   return id;
 }
 
 export async function getChunksByDocument(
-  documentId: string
+  documentId: string,
 ): Promise<DbDocumentChunk[]> {
   return await query<DbDocumentChunk>(
-    'SELECT * FROM document_chunks WHERE document_id = ? ORDER BY chunk_index ASC',
-    [documentId]
+    "SELECT * FROM document_chunks WHERE document_id = ? ORDER BY chunk_index ASC",
+    [documentId],
   );
 }
 
 export async function updateChunkEmbedding(
   chunkId: string,
-  embeddingId: string
+  embeddingId: string,
 ): Promise<void> {
-  await execute(
-    'UPDATE document_chunks SET embedding_id = ? WHERE id = ?',
-    [embeddingId, chunkId]
-  );
+  await execute("UPDATE document_chunks SET embedding_id = ? WHERE id = ?", [
+    embeddingId,
+    chunkId,
+  ]);
 }
-

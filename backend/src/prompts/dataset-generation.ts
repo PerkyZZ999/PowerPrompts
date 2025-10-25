@@ -66,4 +66,3 @@ Standard criteria to always include:
 Add 1-2 domain-specific criteria if relevant.
 
 Generate the criteria now as a JSON array:`;
-

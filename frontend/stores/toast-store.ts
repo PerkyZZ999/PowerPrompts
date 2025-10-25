@@ -69,16 +69,23 @@ export const useToastStore = create<ToastStore>((set) => ({
  */
 export const toast = {
   success: (title: string, message?: string, duration?: number) => {
-    useToastStore.getState().addToast({ type: "success", title, message, duration });
+    useToastStore
+      .getState()
+      .addToast({ type: "success", title, message, duration });
   },
   error: (title: string, message?: string, duration?: number) => {
-    useToastStore.getState().addToast({ type: "error", title, message, duration });
+    useToastStore
+      .getState()
+      .addToast({ type: "error", title, message, duration });
   },
   warning: (title: string, message?: string, duration?: number) => {
-    useToastStore.getState().addToast({ type: "warning", title, message, duration });
+    useToastStore
+      .getState()
+      .addToast({ type: "warning", title, message, duration });
   },
   info: (title: string, message?: string, duration?: number) => {
-    useToastStore.getState().addToast({ type: "info", title, message, duration });
+    useToastStore
+      .getState()
+      .addToast({ type: "info", title, message, duration });
   },
 };
-

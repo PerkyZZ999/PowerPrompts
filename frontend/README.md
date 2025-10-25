@@ -26,29 +26,33 @@ Beautiful, high-tech AI-inspired dark mode interface for the PowerPrompts AI Pro
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 - PowerPrompts backend running on http://localhost:8000
 
 ### Installation
 
 1. **Install Dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Configure Environment**:
+
    ```bash
    cp .env.local.example .env.local
    ```
-   
+
    Edit `.env.local` and set:
+
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:8000
    NEXT_PUBLIC_API_KEY=your-backend-api-key
    ```
 
 3. **Start Development Server**:
+
    ```bash
    npm run dev
    ```
@@ -243,4 +247,3 @@ For issues and questions, please refer to the main PowerPrompts documentation in
 ---
 
 **Built with ❤️ using Next.js 15, React 19, and TypeScript**
-

@@ -10,6 +10,7 @@
 This roadmap breaks down PowerPrompts development into 6 phases across 21 days, focusing on delivering a working MVP by Day 7, with advanced features completed by Day 21.
 
 ### Development Philosophy
+
 - **Iterative Development:** Build core features first, enhance later
 - **Test Early:** Write tests alongside implementation
 - **Integrate Continuously:** Ensure frontend-backend integration at each phase
@@ -24,6 +25,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 1: Project Setup and Configuration
 
 **Morning (4 hours):**
+
 - [x] Create backend directory structure
 - [ ] Initialize Python virtual environment (Python 3.11+)
 - [ ] Create `requirements.txt` with core dependencies:
@@ -45,6 +47,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Setup logging configuration
 
 **Afternoon (4 hours):**
+
 - [ ] Create Pydantic models in `app/api/models/`:
   - `prompt.py`: OptimizeRequest, LLMParameters, Metrics
   - `dataset.py`: Dataset, Example, EvaluationCriterion
@@ -59,6 +62,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test: Run FastAPI with `uvicorn app.main:app --reload`
 
 **Deliverables:**
+
 - ✅ Working FastAPI server on port 8000
 - ✅ Health check endpoint returning 200 OK
 - ✅ Environment configuration loading correctly
@@ -66,6 +70,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 2: Database and LLM Client Setup
 
 **Morning (4 hours):**
+
 - [ ] Create SQLite database schema in `app/db/schema.sql`
 - [ ] Implement database initialization in `app/db/database.py`:
   - Connection management with aiosqlite
@@ -79,6 +84,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Error handling with exponential backoff
 
 **Afternoon (4 hours):**
+
 - [ ] Setup ChromaDB in `app/core/vector_store.py`:
   - Initialize client (persistent mode)
   - Create "knowledge_base" collection
@@ -90,6 +96,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test database CRUD operations
 
 **Deliverables:**
+
 - ✅ SQLite database created and tables initialized
 - ✅ LLMClient can make successful OpenAI API calls
 - ✅ ChromaDB collection created successfully
@@ -98,6 +105,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 3: SSE Streaming Infrastructure
 
 **Morning (4 hours):**
+
 - [ ] Create `app/utils/streaming.py`:
   - `SSEMessage` dataclass for event formatting
   - `create_sse_response()` helper for FastAPI StreamingResponse
@@ -109,6 +117,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Background task orchestrator (stub)
 
 **Afternoon (4 hours):**
+
 - [ ] Create `app/utils/validators.py`:
   - Prompt validation (length, content)
   - Technique compatibility checks
@@ -123,6 +132,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Integration test: SSE stream with mock events
 
 **Deliverables:**
+
 - ✅ SSE endpoint streaming mock events successfully
 - ✅ Frontend can connect and receive events via EventSource
 - ✅ Arize Phoenix running and receiving traces
@@ -138,6 +148,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 4: Framework Builders
 
 **Morning (4 hours):**
+
 - [ ] Create `app/prompts/frameworks.py`:
   - RACE framework template with XML structure
   - COSTAR framework template
@@ -151,6 +162,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - `extract_sections()`: Parse existing structured prompts
 
 **Afternoon (4 hours):**
+
 - [ ] Implement framework section inference:
   - Use LLM to identify role, action, context from unstructured prompt
   - Generate examples based on prompt intent
@@ -163,6 +175,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Return FrameworkInfo for all 4 frameworks
 
 **Deliverables:**
+
 - ✅ All 4 framework builders producing valid XML output
 - ✅ Tests passing with 90%+ coverage
 - ✅ `/api/frameworks` returning framework metadata
@@ -170,6 +183,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 5: Dataset Generator and Evaluator
 
 **Morning (4 hours):**
+
 - [ ] Create `app/prompts/dataset_generation.py`:
   - Meta-prompt for generating diverse examples
   - Meta-prompt for generating expected outputs
@@ -183,6 +197,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Store in SQLite, return Dataset object
 
 **Afternoon (4 hours):**
+
 - [ ] Create `app/prompts/evaluation_prompts.py`:
   - LLM-as-judge prompts for relevance, accuracy
   - Structured output format (JSON scores)
@@ -196,6 +211,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - `aggregate_metrics()`: Average across dataset
 
 **Deliverables:**
+
 - ✅ Dataset generator creating 15+ diverse examples
 - ✅ Evaluator calculating all 5 metrics accurately
 - ✅ `/api/datasets/generate` endpoint working
@@ -203,6 +219,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 6: RSIP Meta-Optimizer
 
 **Morning (4 hours):**
+
 - [ ] Create `app/prompts/meta_optimizer.py`:
   - RSIP critique prompt: "Analyze this prompt and identify 3+ weaknesses"
   - RSIP improvement prompt: "Improve this prompt addressing the critique"
@@ -214,6 +231,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Return RSIPResult with all iterations
 
 **Afternoon (4 hours):**
+
 - [ ] Implement `/api/evaluate` endpoint:
   - Accept EvaluateRequest
   - Load dataset from database
@@ -226,6 +244,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test RSIP convergence with sample prompts
 
 **Deliverables:**
+
 - ✅ RSIP generating critiques and improved versions
 - ✅ Improved prompts maintain framework structure
 - ✅ `/api/evaluate` endpoint functional
@@ -233,6 +252,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 7: 5-Iteration Optimization Loop
 
 **Morning (4 hours):**
+
 - [ ] Implement `app/services/optimization_service.py`:
   - `optimize()`: Main orchestration method
   - For iterations 1-5:
@@ -246,6 +266,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Return OptimizationComplete
 
 **Afternoon (4 hours):**
+
 - [ ] Connect OptimizationService to `/api/optimize` endpoint:
   - Generate dataset if not provided
   - Create background task for optimization loop
@@ -259,11 +280,13 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Performance profiling and optimization
 
 **Deliverables:**
+
 - ✅ Full optimization loop working end-to-end
 - ✅ Real-time SSE streaming functional
 - ✅ Best version selection accurate
 
 **End of Phase 2 Milestone: MVP BACKEND COMPLETE** 🎉
+
 - User can submit a prompt
 - System optimizes using RACE + RSIP
 - 5 iterations with real-time progress
@@ -278,6 +301,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 8: Chain-of-Thought and Self-Consistency
 
 **Morning (4 hours):**
+
 - [ ] Extend `app/services/technique_applier.py`:
   - `apply_chain_of_thought()`: Inject "Let's think step by step" reasoning
   - Add CoT section after action/objective in framework structure
@@ -288,6 +312,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Return most common answer with confidence score
 
 **Afternoon (4 hours):**
+
 - [ ] Create `/api/techniques` endpoint implementation:
   - Return TechniqueInfo for all 6 techniques
   - Include compatibility matrix
@@ -299,6 +324,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Write tests for CoT and Self-Consistency
 
 **Deliverables:**
+
 - ✅ CoT improving reasoning task scores by 20%+
 - ✅ Self-Consistency reducing variance in outputs
 - ✅ `/api/techniques` endpoint returning metadata
@@ -306,6 +332,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 9: Tree of Thoughts
 
 **Morning (4 hours):**
+
 - [ ] Implement Tree of Thoughts in `technique_applier.py`:
   - `apply_tree_of_thoughts()`: Recursive branching
   - Generate multiple thought branches at each depth level
@@ -317,6 +344,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Store for frontend visualization (future)
 
 **Afternoon (4 hours):**
+
 - [ ] Integrate ToT into optimization loop
 - [ ] Performance optimization:
   - Parallel branch evaluation
@@ -325,6 +353,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test ToT on complex reasoning prompts
 
 **Deliverables:**
+
 - ✅ ToT exploring multiple reasoning paths
 - ✅ Best path selection working correctly
 - ✅ Performance acceptable (<5 min for depth=3, branches=3)
@@ -332,6 +361,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 10: RAG Implementation
 
 **Morning (4 hours):**
+
 - [ ] Implement `app/services/rag_service.py`:
   - `add_documents()`: Chunk, embed, store in ChromaDB
   - `retrieve()`: Query ChromaDB for top-k similar docs
@@ -344,6 +374,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Return document IDs
 
 **Afternoon (4 hours):**
+
 - [ ] Extend `technique_applier.py`:
   - `apply_rag()`: Retrieve relevant docs, inject as context
   - Add <context> section with top-3 retrieved documents
@@ -354,6 +385,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test RAG reducing hallucinations on factual prompts
 
 **Deliverables:**
+
 - ✅ RAG retrieving relevant documents accurately
 - ✅ Factual accuracy scores improving by 15%+
 - ✅ `/api/rag/upload` and `/api/rag/collections` endpoints working
@@ -369,6 +401,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 11: Next.js Project Setup
 
 **Morning (4 hours):**
+
 - [ ] Initialize Next.js 15 project:
   ```bash
   npx create-next-app@latest frontend --typescript --app --tailwind
@@ -390,6 +423,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Setup Base UI components configuration
 
 **Afternoon (4 hours):**
+
 - [ ] Create `src/lib/types.ts`:
   - Mirror all Python Pydantic types in TypeScript
   - Framework, Technique, Metrics, IterationResult, etc.
@@ -406,6 +440,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test API client with health check endpoint
 
 **Deliverables:**
+
 - ✅ Next.js dev server running on port 3000
 - ✅ API client successfully calling backend health check
 - ✅ TypeScript types matching backend models
@@ -413,6 +448,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 12: State Management and SSE Client
 
 **Morning (4 hours):**
+
 - [ ] Implement `src/stores/optimization-store.ts`:
   - Zustand store with all state and actions (see Data Models doc)
   - Devtools integration for debugging
@@ -426,6 +462,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Connection state tracking
 
 **Afternoon (4 hours):**
+
 - [ ] Create `src/hooks/use-optimization.ts`:
   - Custom hook for optimization flow
   - Manages SSE connection lifecycle
@@ -438,6 +475,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Test SSE client with backend `/api/optimize` endpoint
 
 **Deliverables:**
+
 - ✅ Zustand store managing optimization state
 - ✅ SSE client receiving and parsing events
 - ✅ useOptimization hook orchestrating flow
@@ -445,6 +483,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 13: Layout and Basic UI
 
 **Morning (4 hours):**
+
 - [ ] Create `src/app/layout.tsx`:
   - Root layout with global styles
   - Font configuration (Inter or similar)
@@ -457,6 +496,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Responsive grid with Tailwind
 
 **Afternoon (4 hours):**
+
 - [ ] Create basic UI components in `src/components/ui/`:
   - Button (Base UI)
   - Card (Base UI)
@@ -472,11 +512,13 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Connect components to Zustand store
 
 **Deliverables:**
+
 - ✅ Main layout rendering correctly
 - ✅ Basic UI components functional
 - ✅ Components reading/writing to store
 
 **End of Phase 4 Milestone: MVP FRONTEND COMPLETE**
+
 - User can input prompt and configure optimization
 - UI updates in real-time via SSE
 - Basic visualization of results
@@ -490,6 +532,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 14: Prompt Input and Configuration
 
 **Morning (4 hours):**
+
 - [ ] Enhance `PromptInput` component:
   - Character counter (current/max)
   - Autosave to localStorage (debounced 500ms)
@@ -505,6 +548,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Hover preview of structure
 
 **Afternoon (4 hours):**
+
 - [ ] Enhance `TechniqueToggles` component:
   - Technique cards with toggle switches
   - Improvement stats display ("+35% accuracy")
@@ -522,6 +566,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Smooth transitions
 
 **Deliverables:**
+
 - ✅ Polished input and configuration UI
 - ✅ User-friendly technique selection
 - ✅ Parameter tuning interface
@@ -529,6 +574,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 15: Real-Time Progress Display
 
 **Morning (4 hours):**
+
 - [ ] Implement `OptimizationProgress` component:
   - Connect to SSE via useOptimization hook
   - Overall progress bar (0-5 iterations)
@@ -544,6 +590,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
     - Collapsible details
 
 **Afternoon (4 hours):**
+
 - [ ] Create metrics visualization:
   - 5 metric gauges (0-100 with color gradient)
   - Aggregate score badge (large, prominent)
@@ -559,6 +606,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Checkmark for completed iterations
 
 **Deliverables:**
+
 - ✅ Real-time progress visualization
 - ✅ Live metric updates
 - ✅ Smooth animations and transitions
@@ -566,6 +614,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 16: Version Comparison and Metrics Dashboard
 
 **Morning (4 hours):**
+
 - [ ] Implement `VersionComparison` component:
   - Two-panel layout (left: version A, right: version B)
   - Version selectors (dropdowns for iteration 0-5)
@@ -580,6 +629,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Copy buttons for each version
 
 **Afternoon (4 hours):**
+
 - [ ] Implement `MetricsDashboard` component:
   - Summary cards at top:
     - Best version iteration
@@ -597,6 +647,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Export chart as PNG button
 
 **Deliverables:**
+
 - ✅ Side-by-side version comparison
 - ✅ Interactive metrics charts
 - ✅ Clear visual indicators of improvement
@@ -604,6 +655,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 17: Export and History
 
 **Morning (4 hours):**
+
 - [ ] Implement `ExportPanel` component:
   - Format selector (JSON, Markdown, Text)
   - Include/exclude checkboxes:
@@ -622,6 +674,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Trigger browser download with correct filename
 
 **Afternoon (4 hours):**
+
 - [ ] Implement history view (in main layout):
   - Recent prompts list (from store persistence)
   - Each item shows:
@@ -639,6 +692,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Clear history button
 
 **Deliverables:**
+
 - ✅ Export functionality for all 3 formats
 - ✅ History view for recent optimizations
 - ✅ Settings panel for configuration
@@ -654,6 +708,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 18: End-to-End Testing
 
 **Morning (4 hours):**
+
 - [ ] Backend unit tests (pytest):
   - FrameworkBuilder tests (all 4 frameworks)
   - TechniqueApplier tests (all 6 techniques)
@@ -667,6 +722,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Error handling
 
 **Afternoon (4 hours):**
+
 - [ ] Frontend unit tests (Vitest + React Testing Library):
   - Component rendering tests
   - User interaction tests (click, type, select)
@@ -679,6 +735,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - History persistence
 
 **Deliverables:**
+
 - ✅ Backend test coverage: 85%+
 - ✅ Frontend test coverage: 75%+
 - ✅ All critical paths tested
@@ -686,6 +743,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 19: Error Handling and Edge Cases
 
 **Morning (4 hours):**
+
 - [ ] Backend error handling improvements:
   - OpenAI API failure handling (rate limits, timeouts)
   - Database connection errors
@@ -699,6 +757,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Save partial progress on crash
 
 **Afternoon (4 hours):**
+
 - [ ] Frontend error handling:
   - SSE reconnection logic (exponential backoff)
   - API error display (toast notifications)
@@ -711,6 +770,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Log errors to console (or external service)
 
 **Deliverables:**
+
 - ✅ Robust error handling throughout stack
 - ✅ User-friendly error messages
 - ✅ No silent failures
@@ -718,6 +778,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 20: Performance Optimization and Arize Phoenix
 
 **Morning (4 hours):**
+
 - [ ] Backend performance optimizations:
   - Database query optimization (indexes, prepared statements)
   - Batch LLM API calls where possible
@@ -731,6 +792,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Dashboard for observability
 
 **Afternoon (4 hours):**
+
 - [ ] Frontend performance optimizations:
   - Code splitting (React.lazy for heavy components)
   - Memoization (React.memo, useMemo, useCallback)
@@ -743,6 +805,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Best practices score 95+
 
 **Deliverables:**
+
 - ✅ Backend response time <2s for non-LLM ops
 - ✅ Frontend initial load <3s
 - ✅ Arize Phoenix dashboards showing all traces
@@ -750,6 +813,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ### Day 21: Documentation and Final Polish
 
 **Morning (4 hours):**
+
 - [ ] Create comprehensive README.md:
   - Project overview and features
   - Installation instructions (backend + frontend)
@@ -767,6 +831,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
   - Type hints everywhere (Python + TypeScript)
 
 **Afternoon (4 hours):**
+
 - [ ] UI polish:
   - Consistent spacing and alignment
   - Smooth animations and transitions
@@ -783,6 +848,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Create demo video or GIF (optional)
 
 **Deliverables:**
+
 - ✅ Complete documentation
 - ✅ Polished UI with great UX
 - ✅ Production-ready codebase
@@ -794,6 +860,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ## Post-Launch Enhancements (Beyond Day 21)
 
 ### High Priority
+
 - [ ] Prompt Chaining implementation
 - [ ] Anthropic Claude integration
 - [ ] Batch processing (optimize multiple prompts)
@@ -802,6 +869,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Dataset editing interface
 
 ### Medium Priority
+
 - [ ] Multi-user support with authentication
 - [ ] Cloud deployment guide (Railway, Vercel)
 - [ ] Custom LLM model support
@@ -810,6 +878,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 - [ ] Collaboration features (sharing, comments)
 
 ### Low Priority
+
 - [ ] Mobile responsive UI
 - [ ] Internationalization (i18n)
 - [ ] Prompt marketplace
@@ -822,6 +891,7 @@ This roadmap breaks down PowerPrompts development into 6 phases across 21 days, 
 ## Success Criteria
 
 By Day 21, the project must:
+
 - ✅ Optimize prompts using all 4 frameworks
 - ✅ Apply 6 core techniques (CoT, Self-Consistency, ToT, RSIP, RAG, Prompt Chaining)
 - ✅ Generate synthetic datasets automatically
@@ -837,18 +907,17 @@ By Day 21, the project must:
 
 ## Risk Mitigation
 
-| Risk | Mitigation Strategy |
-|------|---------------------|
-| OpenAI API rate limits | Implement request queuing, exponential backoff, allow API key rotation |
-| Backend-frontend integration issues | Test integration continuously from Day 3 onwards |
-| RSIP not converging | Set max iterations, implement early stopping, use stronger critique prompts |
-| Performance bottlenecks | Profile early (Day 20), optimize hot paths, use caching |
-| Scope creep | Stick to roadmap, defer enhancements to post-launch phase |
-| Dataset quality issues | Test with diverse prompts, allow manual dataset editing (post-launch) |
+| Risk                                | Mitigation Strategy                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| OpenAI API rate limits              | Implement request queuing, exponential backoff, allow API key rotation      |
+| Backend-frontend integration issues | Test integration continuously from Day 3 onwards                            |
+| RSIP not converging                 | Set max iterations, implement early stopping, use stronger critique prompts |
+| Performance bottlenecks             | Profile early (Day 20), optimize hot paths, use caching                     |
+| Scope creep                         | Stick to roadmap, defer enhancements to post-launch phase                   |
+| Dataset quality issues              | Test with diverse prompts, allow manual dataset editing (post-launch)       |
 
 ---
 
 **Document Status:** Approved for Implementation  
 **Start Date:** To be determined  
 **Expected Completion:** 21 days from start
-

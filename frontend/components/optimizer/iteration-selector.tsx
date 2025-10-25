@@ -30,14 +30,17 @@ const ITERATIONS = [
 ];
 
 export function IterationSelector() {
-  const { iterationCount, setIterationCount, isOptimizing } = useOptimizationStore();
+  const { iterationCount, setIterationCount, isOptimizing } =
+    useOptimizationStore();
 
   return (
     <div className="space-y-3">
       {/* Label */}
       <div className="flex items-center gap-2">
         <Zap className="w-4 h-4 text-[#bfff45]" />
-        <label className="text-sm font-medium text-white">Optimization Iterations</label>
+        <label className="text-sm font-medium text-white">
+          Optimization Iterations
+        </label>
       </div>
 
       {/* Description */}
@@ -49,7 +52,7 @@ export function IterationSelector() {
       <div className="grid grid-cols-3 gap-2">
         {ITERATIONS.map((iteration) => {
           const isSelected = iterationCount === iteration.value;
-          
+
           return (
             <button
               key={iteration.value}
@@ -100,4 +103,3 @@ export function IterationSelector() {
     </div>
   );
 }
-

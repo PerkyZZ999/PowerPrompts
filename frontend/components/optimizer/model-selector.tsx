@@ -55,7 +55,8 @@ export function ModelSelector() {
   useEffect(() => {
     async function fetchModels() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8888";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8888";
         const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
 
         const response = await fetch(`${apiUrl}/api/models`, {
@@ -69,8 +70,12 @@ export function ModelSelector() {
         }
 
         const data = await response.json();
-        
-        if (data.models && Array.isArray(data.models) && data.models.length > 0) {
+
+        if (
+          data.models &&
+          Array.isArray(data.models) &&
+          data.models.length > 0
+        ) {
           setModels(data.models);
         } else {
           setModels(FALLBACK_MODELS);
@@ -224,4 +229,3 @@ export function ModelSelector() {
     </div>
   );
 }
-

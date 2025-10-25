@@ -5,12 +5,14 @@ AI-powered prompt optimization system with advanced techniques and frameworks.
 ## 🚀 Features
 
 ### Prompt Optimization Frameworks
+
 - **RACE**: Role, Action, Context, Expectation
 - **COSTAR**: Context, Objective, Style, Tone, Audience, Response
 - **APE**: Action, Purpose, Expectation
 - **CREATE**: Character, Request, Examples, Adjustments, Type, Extras
 
 ### Advanced Techniques
+
 - **Chain-of-Thought (CoT)**: Step-by-step reasoning
 - **Self-Consistency**: Multiple reasoning paths with majority voting
 - **Tree of Thoughts (ToT)**: Recursive branch exploration
@@ -19,6 +21,7 @@ AI-powered prompt optimization system with advanced techniques and frameworks.
 - **Prompt Chaining**: Sequential execution with output passing
 
 ### Core Capabilities
+
 - 🔄 5-iteration optimization loop
 - 📊 5 evaluation metrics (relevance, accuracy, consistency, efficiency, readability)
 - 🧪 Synthetic dataset generation
@@ -68,11 +71,13 @@ CHROMA_PATH=./data/chroma
 ### 3. Start the Server
 
 **Development mode:**
+
 ```bash
 npm run dev
 ```
 
 **Production mode:**
+
 ```bash
 npm run build
 npm start
@@ -83,23 +88,27 @@ Server runs on `http://localhost:8000`
 ## 📡 API Endpoints
 
 ### Health Check
+
 ```bash
 GET /health
 ```
 
 ### Frameworks
+
 ```bash
 GET /api/frameworks
 # Returns all available frameworks with metadata
 ```
 
 ### Techniques
+
 ```bash
 GET /api/techniques
 # Returns all techniques with compatibility matrix
 ```
 
 ### Optimization (SSE Streaming)
+
 ```bash
 POST /api/optimize
 Content-Type: application/json
@@ -123,6 +132,7 @@ X-API-Key: cG93ZXJwcm9tcHRz
 ```
 
 ### Versions
+
 ```bash
 GET /api/versions/:promptId
 # Get all versions for a prompt
@@ -132,6 +142,7 @@ GET /api/versions/compare/:version1Id/:version2Id
 ```
 
 ### RAG
+
 ```bash
 POST /api/rag/upload
 # Upload document to collection
@@ -242,12 +253,14 @@ X-API-Key: cG93ZXJwcm9tcHRz
 ## 🐛 Troubleshooting
 
 ### Port already in use
+
 ```bash
 # Change port in .env
 PORT=8001
 ```
 
 ### Database locked
+
 ```bash
 # Delete and reinitialize
 rm -rf data/
@@ -255,11 +268,13 @@ npm run dev
 ```
 
 ### OpenAI API errors
+
 - Check API key in `.env`
 - Verify OpenAI account has credits
 - Check rate limits
 
 ### ChromaDB errors
+
 ```bash
 # Clear vector store
 rm -rf data/chroma/
@@ -269,7 +284,7 @@ rm -rf data/chroma/
 
 - TypeScript strict mode enabled
 - ESM modules (not CommonJS)
-- Path aliases configured (@/* = src/*)
+- Path aliases configured (@/_ = src/_)
 - Zod for runtime validation
 - sql.js for cross-platform SQLite
 - Fastify plugins for modularity
@@ -277,6 +292,7 @@ rm -rf data/chroma/
 ## 🚀 Deployment
 
 For local-only use:
+
 1. Build: `npm run build`
 2. Start: `npm start`
 3. Access at `http://localhost:8000`
@@ -288,6 +304,7 @@ MIT License - see LICENSE file
 ## 🤝 Contributing
 
 This is a local-only project. For modifications:
+
 1. Create feature branch
 2. Make changes
 3. Test thoroughly

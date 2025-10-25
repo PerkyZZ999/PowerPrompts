@@ -3,20 +3,20 @@
  * Orchestrates the complete prompt optimization pipeline
  */
 
-import { frameworkBuilder } from './framework-builder.js';
-import { datasetGenerator } from './dataset-generator.js';
-import { evaluator, type Metrics } from './evaluator.js';
-import { techniqueApplier } from './technique-applier.js';
-import { llmClient } from '../core/llm-client.js';
-import { createPrompt, createVersion } from '../db/crud.js';
-import type { EventQueue } from '../utils/streaming.js';
+import { frameworkBuilder } from "./framework-builder.js";
+import { datasetGenerator } from "./dataset-generator.js";
+import { evaluator, type Metrics } from "./evaluator.js";
+import { techniqueApplier } from "./technique-applier.js";
+import { llmClient } from "../core/llm-client.js";
+import { createPrompt, createVersion } from "../db/crud.js";
+import type { EventQueue } from "../utils/streaming.js";
 
 /**
  * Optimization request interface
  */
 export interface OptimizationRequest {
   prompt: string;
-  selected_framework: 'RACE' | 'COSTAR' | 'APE' | 'CREATE';
+  selected_framework: "RACE" | "COSTAR" | "APE" | "CREATE";
   techniques_enabled: string[];
   parameters: {
     temperature: number;
@@ -57,15 +57,15 @@ export class OptimizationService {
    */
   async optimize(
     request: OptimizationRequest,
-    eventQueue: EventQueue
+    eventQueue: EventQueue,
   ): Promise<OptimizationResult> {
     const startTime = Date.now();
 
-    console.log('[OPTIMIZATION] Starting optimization pipeline...');
+    console.log("[OPTIMIZATION] Starting optimization pipeline...");
 
     // Emit start event
     eventQueue.push({
-      type: 'optimization_start',
+      type: "optimization_start",
       data: { total_iterations: 5 },
     });
 
@@ -81,18 +81,18 @@ export class OptimizationService {
       console.log(`[OPTIMIZATION] Prompt stored with ID: ${promptId}`);
 
       // Step 2: Generate synthetic dataset
-      console.log('[OPTIMIZATION] Generating synthetic dataset...');
+      console.log("[OPTIMIZATION] Generating synthetic dataset...");
       const dataset = await datasetGenerator.generate(
         promptId,
         request.prompt,
         {
           exampleCount: request.dataset_config.example_count,
           difficultyLevels: request.dataset_config.difficulty_levels,
-        }
+        },
       );
 
       eventQueue.push({
-        type: 'dataset_generated',
+        type: "dataset_generated",
         data: {
           example_count: dataset.examples.length,
           domain: dataset.domain,
@@ -100,18 +100,18 @@ export class OptimizationService {
       });
 
       // Step 3: Build initial framework-structured prompt
-      console.log('[OPTIMIZATION] Building framework-structured prompt...');
+      console.log("[OPTIMIZATION] Building framework-structured prompt...");
       let currentPrompt = await frameworkBuilder.build(
         request.prompt,
-        request.selected_framework
+        request.selected_framework,
       );
 
       // Apply initial techniques (CoT if enabled)
-      if (request.techniques_enabled.includes('cot')) {
+      if (request.techniques_enabled.includes("cot")) {
         currentPrompt = techniqueApplier.applyChainOfThought(currentPrompt);
       }
 
-      console.log('[OPTIMIZATION] Initial prompt built');
+      console.log("[OPTIMIZATION] Initial prompt built");
 
       // Step 4: Run configurable iteration optimization loop (1-3 iterations)
       const iterationCount = request.iteration_count || 1;
@@ -124,10 +124,12 @@ export class OptimizationService {
       for (let iteration = 1; iteration <= iterationCount; iteration++) {
         const iterationStart = Date.now();
 
-        console.log(`\n[OPTIMIZATION] === Iteration ${iteration}/${iterationCount} ===`);
+        console.log(
+          `\n[OPTIMIZATION] === Iteration ${iteration}/${iterationCount} ===`,
+        );
 
         eventQueue.push({
-          type: 'iteration_start',
+          type: "iteration_start",
           data: {
             iteration,
             prompt: currentPrompt,
@@ -141,7 +143,9 @@ export class OptimizationService {
           .sort(() => Math.random() - 0.5)
           .slice(0, sampleSize);
 
-        console.log(`[OPTIMIZATION] Evaluating ${sampleSize} sampled examples (out of ${dataset.examples.length} total)`);
+        console.log(
+          `[OPTIMIZATION] Evaluating ${sampleSize} sampled examples (out of ${dataset.examples.length} total)`,
+        );
 
         const outputs: string[] = [];
         const evaluationExamples: Array<{
@@ -152,7 +156,7 @@ export class OptimizationService {
 
         // Push executing_tests event
         eventQueue.push({
-          type: 'executing_tests',
+          type: "executing_tests",
           data: { count: sampleSize, iteration },
         });
 
@@ -160,40 +164,44 @@ export class OptimizationService {
           const example = sampledExamples[i];
           if (!example) continue;
 
-          console.log(`[OPTIMIZATION] Executing example ${i + 1}/${sampleSize}...`);
-          
+          console.log(
+            `[OPTIMIZATION] Executing example ${i + 1}/${sampleSize}...`,
+          );
+
           // Push progress event
           eventQueue.push({
-            type: 'test_progress',
+            type: "test_progress",
             data: { current: i + 1, total: sampleSize, iteration },
           });
-          
+
           let output: string;
 
           // Apply technique-specific execution
-          if (request.techniques_enabled.includes('self_consistency')) {
+          if (request.techniques_enabled.includes("self_consistency")) {
             // Self-consistency: Generate multiple paths and select best (3 LLM calls per example)
-            console.log(`[OPTIMIZATION] Applying self-consistency (3 paths) for example ${i + 1}...`);
-            
+            console.log(
+              `[OPTIMIZATION] Applying self-consistency (3 paths) for example ${i + 1}...`,
+            );
+
             eventQueue.push({
-              type: 'applying_technique',
-              data: { technique: 'self_consistency', iteration },
+              type: "applying_technique",
+              data: { technique: "self_consistency", iteration },
             });
-            
+
             output = await techniqueApplier.applySelfConsistency(
               currentPrompt,
               example.input,
-              3 // 3 paths
+              3, // 3 paths
             );
-          } else if (request.techniques_enabled.includes('tot')) {
+          } else if (request.techniques_enabled.includes("tot")) {
             eventQueue.push({
-              type: 'applying_technique',
-              data: { technique: 'tree_of_thoughts', iteration },
+              type: "applying_technique",
+              data: { technique: "tree_of_thoughts", iteration },
             });
-            
+
             const totResult = await techniqueApplier.applyTreeOfThoughts(
               currentPrompt,
-              example.input
+              example.input,
             );
             output = totResult.output;
           } else {
@@ -211,20 +219,20 @@ export class OptimizationService {
         }
 
         // Evaluate
-        console.log('[OPTIMIZATION] Evaluating iteration...');
-        
+        console.log("[OPTIMIZATION] Evaluating iteration...");
+
         eventQueue.push({
-          type: 'evaluating_metrics',
+          type: "evaluating_metrics",
           data: { iteration },
         });
-        
+
         const { metrics, evaluations } = await evaluator.evaluateDataset(
           currentPrompt,
-          evaluationExamples
+          evaluationExamples,
         );
-        
+
         eventQueue.push({
-          type: 'metrics_calculated',
+          type: "metrics_calculated",
           data: { metrics, iteration },
         });
 
@@ -248,7 +256,7 @@ export class OptimizationService {
 
         // Emit iteration complete
         eventQueue.push({
-          type: 'iteration_complete',
+          type: "iteration_complete",
           data: {
             iteration,
             prompt_version: currentPrompt,
@@ -259,26 +267,31 @@ export class OptimizationService {
           },
         });
 
-        console.log(`[OPTIMIZATION] Iteration ${iteration} complete in ${iterationDuration.toFixed(2)}s`);
+        console.log(
+          `[OPTIMIZATION] Iteration ${iteration} complete in ${iterationDuration.toFixed(2)}s`,
+        );
         console.log(`[OPTIMIZATION] Metrics:`, metrics);
 
         // Apply RSIP for next iteration (except on last iteration)
-        if (iteration < iterationCount && request.techniques_enabled.includes('rsip')) {
-          console.log('[OPTIMIZATION] Applying RSIP for next iteration...');
-          
+        if (
+          iteration < iterationCount &&
+          request.techniques_enabled.includes("rsip")
+        ) {
+          console.log("[OPTIMIZATION] Applying RSIP for next iteration...");
+
           eventQueue.push({
-            type: 'applying_rsip',
+            type: "applying_rsip",
             data: { iteration },
           });
-          
+
           const { improved, critique } = await techniqueApplier.applyRSIP(
             currentPrompt,
-            metrics
+            metrics,
           );
           currentPrompt = improved;
-          
+
           eventQueue.push({
-            type: 'prompt_improved',
+            type: "prompt_improved",
             data: { iteration, critique, improved_prompt: improved },
           });
         }
@@ -288,17 +301,21 @@ export class OptimizationService {
       const bestVersion = versions.reduce((best, current) =>
         current.metrics.aggregate_score > best.metrics.aggregate_score
           ? current
-          : best
+          : best,
       );
 
-      console.log(`\n[OPTIMIZATION] Best version: Iteration ${bestVersion.iteration}`);
-      console.log(`[OPTIMIZATION] Best score: ${bestVersion.metrics.aggregate_score}`);
+      console.log(
+        `\n[OPTIMIZATION] Best version: Iteration ${bestVersion.iteration}`,
+      );
+      console.log(
+        `[OPTIMIZATION] Best score: ${bestVersion.metrics.aggregate_score}`,
+      );
 
       const totalTime = (Date.now() - startTime) / 1000;
 
       // Emit completion
       eventQueue.push({
-        type: 'optimization_complete',
+        type: "optimization_complete",
         data: {
           best_version: bestVersion,
           all_versions: versions,
@@ -306,7 +323,9 @@ export class OptimizationService {
         },
       });
 
-      console.log(`[OPTIMIZATION] Pipeline complete in ${totalTime.toFixed(2)}s`);
+      console.log(
+        `[OPTIMIZATION] Pipeline complete in ${totalTime.toFixed(2)}s`,
+      );
 
       // Close queue
       eventQueue.close();
@@ -318,13 +337,13 @@ export class OptimizationService {
         total_time_seconds: totalTime,
       };
     } catch (error) {
-      console.error('[OPTIMIZATION ERROR]', error);
+      console.error("[OPTIMIZATION ERROR]", error);
 
       // Emit error event
       eventQueue.push({
-        type: 'error',
+        type: "error",
         data: {
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: error instanceof Error ? error.message : "Unknown error",
           details: error,
         },
       });
@@ -340,4 +359,3 @@ export class OptimizationService {
  * Global optimization service instance
  */
 export const optimizationService = new OptimizationService();
-

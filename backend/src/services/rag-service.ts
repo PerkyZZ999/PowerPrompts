@@ -3,13 +3,13 @@
  * Manages document storage, chunking, and retrieval for RAG
  */
 
-import { nanoid } from 'nanoid';
-import { vectorStore } from '../core/vector-store.js';
+import { nanoid } from "nanoid";
+import { vectorStore } from "../core/vector-store.js";
 import {
   createDocument,
   createDocumentChunk,
   getDocumentsByCollection,
-} from '../db/crud.js';
+} from "../db/crud.js";
 
 /**
  * RAG Service class
@@ -18,7 +18,11 @@ export class RAGService {
   /**
    * Chunk text into smaller segments
    */
-  private chunkText(text: string, chunkSize: number = 500, overlap: number = 50): string[] {
+  private chunkText(
+    text: string,
+    chunkSize: number = 500,
+    overlap: number = 50,
+  ): string[] {
     const chunks: string[] = [];
     let start = 0;
 
@@ -38,9 +42,11 @@ export class RAGService {
     collectionName: string,
     title: string,
     content: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<string> {
-    console.log(`[RAG] Uploading document "${title}" to collection "${collectionName}"...`);
+    console.log(
+      `[RAG] Uploading document "${title}" to collection "${collectionName}"...`,
+    );
 
     // Store document in database
     const documentId = await createDocument({
@@ -56,13 +62,13 @@ export class RAGService {
 
     // Store chunks and generate embeddings
     const vectorDocs = [];
-    
+
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       if (!chunk) continue; // Skip empty chunks
-      
+
       const chunkId = nanoid();
-      
+
       // Store chunk in database
       await createDocumentChunk({
         documentId,
@@ -98,14 +104,18 @@ export class RAGService {
   async search(
     collectionName: string,
     query: string,
-    topK: number = 5
-  ): Promise<Array<{
-    id: string;
-    text: string;
-    metadata: Record<string, any>;
-    distance: number;
-  }>> {
-    console.log(`[RAG] Searching collection "${collectionName}" for: "${query.substring(0, 50)}..."`);
+    topK: number = 5,
+  ): Promise<
+    Array<{
+      id: string;
+      text: string;
+      metadata: Record<string, any>;
+      distance: number;
+    }>
+  > {
+    console.log(
+      `[RAG] Searching collection "${collectionName}" for: "${query.substring(0, 50)}..."`,
+    );
 
     const results = await vectorStore.query(collectionName, query, { topK });
 
@@ -117,11 +127,13 @@ export class RAGService {
   /**
    * List all documents in a collection
    */
-  async listDocuments(collectionName: string): Promise<Array<{
-    id: string;
-    title: string;
-    created_at: string;
-  }>> {
+  async listDocuments(collectionName: string): Promise<
+    Array<{
+      id: string;
+      title: string;
+      created_at: string;
+    }>
+  > {
     const documents = await getDocumentsByCollection(collectionName);
 
     return documents.map((doc) => ({
@@ -150,4 +162,3 @@ export class RAGService {
  * Global RAG service instance
  */
 export const ragService = new RAGService();
-

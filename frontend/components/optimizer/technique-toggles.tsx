@@ -8,7 +8,17 @@ import { useOptimizationStore } from "@/stores/optimization-store";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Technique } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Brain, GitBranch, RefreshCw, BookOpen, Link2, Sparkles, Settings, ChevronDown, AlertTriangle } from "lucide-react";
+import {
+  Brain,
+  GitBranch,
+  RefreshCw,
+  BookOpen,
+  Link2,
+  Sparkles,
+  Settings,
+  ChevronDown,
+  AlertTriangle,
+} from "lucide-react";
 import { useState } from "react";
 
 const TECHNIQUE_INFO = {
@@ -66,10 +76,14 @@ const checkCompatibility = (techniques: Technique[]): string | null => {
 
 export function TechniqueToggles() {
   const techniques = useOptimizationStore((state) => state.techniques);
-  const toggleTechnique = useOptimizationStore((state) => state.toggleTechnique);
+  const toggleTechnique = useOptimizationStore(
+    (state) => state.toggleTechnique,
+  );
   const isOptimizing = useOptimizationStore((state) => state.isOptimizing);
   const parameters = useOptimizationStore((state) => state.parameters);
-  const updateParameters = useOptimizationStore((state) => state.updateParameters);
+  const updateParameters = useOptimizationStore(
+    (state) => state.updateParameters,
+  );
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const compatibilityWarning = checkCompatibility(techniques);
@@ -94,67 +108,85 @@ export function TechniqueToggles() {
 
         {/* Technique Grid */}
         <div className="grid grid-cols-2 gap-3">
-        {Object.entries(TECHNIQUE_INFO).map(([key, info]) => {
-          const isEnabled = techniques.includes(key as Technique);
-          const Icon = info.icon;
+          {Object.entries(TECHNIQUE_INFO).map(([key, info]) => {
+            const isEnabled = techniques.includes(key as Technique);
+            const Icon = info.icon;
 
-          return (
-            <button
-              key={key}
-              onClick={() => toggleTechnique(key as Technique)}
-              disabled={isOptimizing}
-              className={cn(
-                "p-4 rounded-lg border-2 transition-all duration-200",
-                "hover:scale-[1.02] active:scale-[0.98]",
-                "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-                "relative overflow-hidden",
-                isEnabled
-                  ? "border-primary/50 bg-primary/10 shadow-neon-sm"
-                  : "border-zinc-700 bg-elevated/30 hover:border-zinc-600"
-              )}
-            >
-              {/* Background gradient */}
-              <div className={cn(
-                "absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity",
-                info.color,
-                isEnabled && "opacity-100"
-              )}></div>
+            return (
+              <button
+                key={key}
+                onClick={() => toggleTechnique(key as Technique)}
+                disabled={isOptimizing}
+                className={cn(
+                  "p-4 rounded-lg border-2 transition-all duration-200",
+                  "hover:scale-[1.02] active:scale-[0.98]",
+                  "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+                  "relative overflow-hidden",
+                  isEnabled
+                    ? "border-primary/50 bg-primary/10 shadow-neon-sm"
+                    : "border-zinc-700 bg-elevated/30 hover:border-zinc-600",
+                )}
+              >
+                {/* Background gradient */}
+                <div
+                  className={cn(
+                    "absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity",
+                    info.color,
+                    isEnabled && "opacity-100",
+                  )}
+                ></div>
 
-              <div className="relative z-10">
-                {/* Icon and Checkbox */}
-                <div className="flex items-start justify-between mb-2">
-                  <Icon className={cn(
-                    "w-5 h-5 transition-colors",
-                    isEnabled ? "text-primary" : "text-zinc-400"
-                  )} />
-                  <div className={cn(
-                    "w-4 h-4 rounded border-2 flex items-center justify-center transition-all",
-                    isEnabled
-                      ? "border-primary bg-primary"
-                      : "border-zinc-600"
-                  )}>
-                    {isEnabled && (
-                      <svg className="w-3 h-3 text-background" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
+                <div className="relative z-10">
+                  {/* Icon and Checkbox */}
+                  <div className="flex items-start justify-between mb-2">
+                    <Icon
+                      className={cn(
+                        "w-5 h-5 transition-colors",
+                        isEnabled ? "text-primary" : "text-zinc-400",
+                      )}
+                    />
+                    <div
+                      className={cn(
+                        "w-4 h-4 rounded border-2 flex items-center justify-center transition-all",
+                        isEnabled
+                          ? "border-primary bg-primary"
+                          : "border-zinc-600",
+                      )}
+                    >
+                      {isEnabled && (
+                        <svg
+                          className="w-3 h-3 text-background"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Name and Description */}
-                <h4 className={cn(
-                  "text-sm font-semibold mb-1 transition-colors",
-                  isEnabled ? "text-primary" : "text-zinc-200"
-                )}>
-                  {info.name}
-                </h4>
-                <p className="text-xs text-zinc-400 leading-tight">
-                  {info.description}
-                </p>
-              </div>
-            </button>
-          );
-        })}
+                  {/* Name and Description */}
+                  <h4
+                    className={cn(
+                      "text-sm font-semibold mb-1 transition-colors",
+                      isEnabled ? "text-primary" : "text-zinc-200",
+                    )}
+                  >
+                    {info.name}
+                  </h4>
+                  <p className="text-xs text-zinc-400 leading-tight">
+                    {info.description}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Advanced Parameters Accordion */}
@@ -170,10 +202,12 @@ export function TechniqueToggles() {
                 Advanced Parameters
               </span>
             </div>
-            <ChevronDown className={cn(
-              "w-4 h-4 text-zinc-500 transition-transform",
-              showAdvanced && "rotate-180"
-            )} />
+            <ChevronDown
+              className={cn(
+                "w-4 h-4 text-zinc-500 transition-transform",
+                showAdvanced && "rotate-180",
+              )}
+            />
           </button>
 
           {showAdvanced && (
@@ -194,7 +228,11 @@ export function TechniqueToggles() {
                   max="2"
                   step="0.1"
                   value={parameters.temperature}
-                  onChange={(e) => updateParameters({ temperature: parseFloat(e.target.value) })}
+                  onChange={(e) =>
+                    updateParameters({
+                      temperature: parseFloat(e.target.value),
+                    })
+                  }
                   disabled={isOptimizing}
                   className="w-full h-2 bg-elevated rounded-lg appearance-none cursor-pointer
                     [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
@@ -205,7 +243,8 @@ export function TechniqueToggles() {
                     disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <p className="text-xs text-zinc-500 mt-1">
-                  Controls randomness. Higher values = more creative, lower = more focused
+                  Controls randomness. Higher values = more creative, lower =
+                  more focused
                 </p>
               </div>
 
@@ -225,7 +264,9 @@ export function TechniqueToggles() {
                   max="1"
                   step="0.05"
                   value={parameters.top_p}
-                  onChange={(e) => updateParameters({ top_p: parseFloat(e.target.value) })}
+                  onChange={(e) =>
+                    updateParameters({ top_p: parseFloat(e.target.value) })
+                  }
                   disabled={isOptimizing}
                   className="w-full h-2 bg-elevated rounded-lg appearance-none cursor-pointer
                     [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
@@ -251,7 +292,9 @@ export function TechniqueToggles() {
                   max="8000"
                   step="100"
                   value={parameters.max_tokens}
-                  onChange={(e) => updateParameters({ max_tokens: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    updateParameters({ max_tokens: parseInt(e.target.value) })
+                  }
                   disabled={isOptimizing}
                   className="w-full px-3 py-2 bg-elevated border border-zinc-700 rounded-lg text-zinc-100 font-mono text-sm
                     focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all
@@ -268,4 +311,3 @@ export function TechniqueToggles() {
     </Card>
   );
 }
-

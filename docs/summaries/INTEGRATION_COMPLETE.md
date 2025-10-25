@@ -9,6 +9,7 @@ All backend services are now properly wired to the frontend, and all advanced te
 ## 🔧 What Was Fixed
 
 ### 1. **Optimization Service Integration** ✅
+
 **File:** `backend/app/services/optimization_service.py`
 
 - ✅ **Chain-of-Thought (CoT)** - Now applies step-by-step reasoning XML wrappers to prompts
@@ -18,6 +19,7 @@ All backend services are now properly wired to the frontend, and all advanced te
 - ✅ **RSIP (Recursive Self-Improvement)** - Iterative prompt refinement based on metrics
 
 **Changes Made:**
+
 ```python
 # Now properly applies techniques based on user selection:
 - CoT: Wraps prompt with reasoning structure
@@ -28,6 +30,7 @@ All backend services are now properly wired to the frontend, and all advanced te
 ```
 
 ### 2. **SSE Event Structure** ✅
+
 **File:** `backend/app/services/optimization_service.py`
 
 Fixed `iteration_complete` event to send complete data matching frontend TypeScript interface:
@@ -45,9 +48,11 @@ Fixed `iteration_complete` event to send complete data matching frontend TypeScr
 ```
 
 ### 3. **Frontend SSE Handler** ✅
+
 **File:** `frontend/hooks/use-optimization.ts`
 
 Added handler for new `applying_technique` event:
+
 ```typescript
 case "applying_technique":
   console.log(`Applying technique: ${event.data.technique}`);
@@ -61,6 +66,7 @@ case "applying_technique":
 ### **1. Frontend → Backend**
 
 **Request Structure:**
+
 ```typescript
 OptimizeRequest {
   prompt: string
@@ -80,6 +86,7 @@ OptimizeRequest {
 ```
 
 **API Endpoint:**
+
 ```
 POST http://localhost:8000/api/optimize
 Headers: X-API-Key: your-api-key
@@ -139,20 +146,20 @@ Body: OptimizeRequest (JSON)
 
 **Event Types and Handlers:**
 
-| Event | Data | Frontend Action |
-|-------|------|----------------|
-| `dataset_generated` | `{dataset_id, example_count, criteria}` | Store dataset info |
-| `iteration_start` | `{iteration, prompt}` | Update UI |
-| `applying_framework` | `{framework, message}` | Show status |
-| `framework_applied` | `{framework, structured_prompt}` | Preview prompt |
-| `applying_technique` | `{technique, message}` | Show technique status |
-| `executing_tests` | `{iteration, example_count, techniques_applied}` | Show progress |
-| `metrics_calculated` | `{iteration, metrics}` | Display metrics |
-| `iteration_complete` | `{iteration, version_id, prompt_version, metrics, evaluation_details, techniques, duration_seconds}` | **Add to iterations array** |
-| `improving_prompt` | `{technique, message}` | Show RSIP status |
-| `prompt_improved` | `{iteration, improvement_note, technique}` | Show critique |
-| `optimization_complete` | `{prompt_id, best_version, improvement_percentage, total_duration_seconds, final_metrics}` | **Show results** |
-| `error` | `{error, message, phase}` | Show error & reset |
+| Event                   | Data                                                                                                 | Frontend Action             |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------- |
+| `dataset_generated`     | `{dataset_id, example_count, criteria}`                                                              | Store dataset info          |
+| `iteration_start`       | `{iteration, prompt}`                                                                                | Update UI                   |
+| `applying_framework`    | `{framework, message}`                                                                               | Show status                 |
+| `framework_applied`     | `{framework, structured_prompt}`                                                                     | Preview prompt              |
+| `applying_technique`    | `{technique, message}`                                                                               | Show technique status       |
+| `executing_tests`       | `{iteration, example_count, techniques_applied}`                                                     | Show progress               |
+| `metrics_calculated`    | `{iteration, metrics}`                                                                               | Display metrics             |
+| `iteration_complete`    | `{iteration, version_id, prompt_version, metrics, evaluation_details, techniques, duration_seconds}` | **Add to iterations array** |
+| `improving_prompt`      | `{technique, message}`                                                                               | Show RSIP status            |
+| `prompt_improved`       | `{iteration, improvement_note, technique}`                                                           | Show critique               |
+| `optimization_complete` | `{prompt_id, best_version, improvement_percentage, total_duration_seconds, final_metrics}`           | **Show results**            |
+| `error`                 | `{error, message, phase}`                                                                            | Show error & reset          |
 
 ---
 
@@ -168,14 +175,14 @@ Body: OptimizeRequest (JSON)
   techniques: Technique[]
   parameters: LLMParameters
   datasetConfig: DatasetConfig
-  
+
   // Optimization State
   isOptimizing: boolean
   currentIteration: number
   iterations: IterationResult[]  // ← Populated by iteration_complete events
   bestVersion: number | null
   completedResult: OptimizationComplete | null  // ← Populated by optimization_complete
-  
+
   // Actions
   startOptimization()
   updateIteration(iteration: IterationResult)  // ← Called on iteration_complete
@@ -221,6 +228,7 @@ Body: OptimizeRequest (JSON)
 ### **Backend Setup**
 
 1. **Install Dependencies:**
+
 ```bash
 cd backend
 python -m venv venv
@@ -229,22 +237,26 @@ pip install -r requirements.txt
 ```
 
 2. **Configure Environment:**
+
 ```bash
 cp .env.example .env
 # Edit .env and add your OPENAI_API_KEY
 ```
 
 3. **Initialize Database:**
+
 ```bash
 python -c "import asyncio; from app.db.database import init_db; asyncio.run(init_db())"
 ```
 
 4. **Start Backend Server:**
+
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
 5. **Verify Backend:**
+
 - Open http://localhost:8000/docs
 - Check `/health` endpoint returns `{"status": "ok"}`
 - Check `/api/frameworks` returns framework list
@@ -255,12 +267,14 @@ uvicorn app.main:app --reload --port 8000
 ### **Frontend Setup**
 
 1. **Install Dependencies:**
+
 ```bash
 cd frontend
 npm install
 ```
 
 2. **Configure Environment:**
+
 ```bash
 cp .env.local.example .env.local
 # Edit .env.local:
@@ -269,11 +283,13 @@ NEXT_PUBLIC_API_KEY=your-api-key-here
 ```
 
 3. **Start Frontend Server:**
+
 ```bash
 npm run dev
 ```
 
 4. **Access Application:**
+
 - Open http://localhost:3000
 - You should see the PowerPrompts UI
 
@@ -321,6 +337,7 @@ npm run dev
 ## 🚀 What's Working Now
 
 ### ✅ **Fully Integrated Backend**
+
 - All 6 techniques (CoT, Self-Consistency, ToT, RSIP, RAG, Prompt Chaining) wired
 - Framework application (RACE, COSTAR, APE, CREATE)
 - Dataset generation and evaluation
@@ -330,6 +347,7 @@ npm run dev
 - ChromaDB for RAG vector storage
 
 ### ✅ **Fully Integrated Frontend**
+
 - Real-time SSE updates
 - Live metrics visualization
 - Chart.js dashboards (line, radar, bar charts)
@@ -340,6 +358,7 @@ npm run dev
 - Beautiful lime green + dark gray UI
 
 ### ✅ **No Linting Errors**
+
 - ✅ Frontend: Zero ESLint/TypeScript errors
 - ✅ Backend: Zero Python syntax errors
 - ✅ All files formatted and clean
@@ -356,6 +375,7 @@ npm run dev
 4. Start optimizing! 🚀
 
 **Note:** Make sure you have:
+
 - OpenAI API key in `backend/.env`
 - API key configured in `frontend/.env.local`
 - Both servers running simultaneously
@@ -380,4 +400,3 @@ Everything else is **complete and working**! 🎉
 **Backend:** Python FastAPI with all techniques integrated  
 **Frontend:** Next.js 15 with Chart.js visualizations  
 **Color Scheme:** Dark Gray (#0a0a0a) + Lime Green (#bfff45) 💚
-

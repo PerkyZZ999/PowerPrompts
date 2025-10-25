@@ -76,7 +76,7 @@ function ToastItem({ toast }: { toast: ToastType }) {
         "animate-in slide-in-from-right-full duration-300",
         "min-w-[320px] max-w-[420px]",
         colors.bg,
-        colors.border
+        colors.border,
       )}
     >
       <div className="flex items-start gap-3">
@@ -126,4 +126,3 @@ export function ToastContainer() {
     </div>
   );
 }
-

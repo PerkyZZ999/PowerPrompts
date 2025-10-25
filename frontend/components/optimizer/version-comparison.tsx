@@ -8,13 +8,23 @@ import { useOptimizationStore } from "@/stores/optimization-store";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { GitCompare, ChevronDown, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import {
+  GitCompare,
+  ChevronDown,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+} from "lucide-react";
 import { useState, useMemo } from "react";
 
 export function VersionComparison() {
   const iterations = useOptimizationStore((state) => state.iterations);
-  const selectedVersions = useOptimizationStore((state) => state.selectedVersions);
-  const setSelectedVersions = useOptimizationStore((state) => state.setSelectedVersions);
+  const selectedVersions = useOptimizationStore(
+    (state) => state.selectedVersions,
+  );
+  const setSelectedVersions = useOptimizationStore(
+    (state) => state.setSelectedVersions,
+  );
   const [showFullPrompts, setShowFullPrompts] = useState(false);
 
   // Get the two versions to compare
@@ -87,10 +97,12 @@ export function VersionComparison() {
             onClick={() => setShowFullPrompts(!showFullPrompts)}
             className="text-xs"
           >
-            <ChevronDown className={cn(
-              "w-4 h-4 mr-1 transition-transform",
-              showFullPrompts && "rotate-180"
-            )} />
+            <ChevronDown
+              className={cn(
+                "w-4 h-4 mr-1 transition-transform",
+                showFullPrompts && "rotate-180",
+              )}
+            />
             {showFullPrompts ? "Collapse" : "Expand"} Prompts
           </Button>
         </CardTitle>
@@ -100,10 +112,17 @@ export function VersionComparison() {
         {/* Version Selectors */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-500 block mb-2">Version 1</label>
+            <label className="text-xs text-zinc-500 block mb-2">
+              Version 1
+            </label>
             <select
               value={selectedVersions[0]}
-              onChange={(e) => setSelectedVersions([parseInt(e.target.value), selectedVersions[1]])}
+              onChange={(e) =>
+                setSelectedVersions([
+                  parseInt(e.target.value),
+                  selectedVersions[1],
+                ])
+              }
               className="w-full px-3 py-2 bg-elevated border border-zinc-700 rounded-lg text-zinc-100 text-sm
                 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all cursor-pointer"
             >
@@ -116,10 +135,17 @@ export function VersionComparison() {
           </div>
 
           <div>
-            <label className="text-xs text-zinc-500 block mb-2">Version 2</label>
+            <label className="text-xs text-zinc-500 block mb-2">
+              Version 2
+            </label>
             <select
               value={selectedVersions[1]}
-              onChange={(e) => setSelectedVersions([selectedVersions[0], parseInt(e.target.value)])}
+              onChange={(e) =>
+                setSelectedVersions([
+                  selectedVersions[0],
+                  parseInt(e.target.value),
+                ])
+              }
               className="w-full px-3 py-2 bg-elevated border border-zinc-700 rounded-lg text-zinc-100 text-sm
                 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all cursor-pointer"
             >
@@ -135,8 +161,10 @@ export function VersionComparison() {
         {/* Metrics Comparison */}
         {version1 && version2 && metricDiffs && (
           <div className="glass-elevated rounded-lg p-4 space-y-3">
-            <h4 className="text-sm font-semibold text-zinc-300">Metric Changes</h4>
-            
+            <h4 className="text-sm font-semibold text-zinc-300">
+              Metric Changes
+            </h4>
+
             <div className="grid grid-cols-2 gap-4">
               {/* Aggregate */}
               <div className="space-y-1">
@@ -212,8 +240,10 @@ export function VersionComparison() {
         {/* Technique Comparison */}
         {version1 && version2 && (
           <div className="glass-elevated rounded-lg p-4 space-y-3">
-            <h4 className="text-sm font-semibold text-zinc-300">Techniques Used</h4>
-            
+            <h4 className="text-sm font-semibold text-zinc-300">
+              Techniques Used
+            </h4>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="text-xs text-zinc-500">Version 1</div>
@@ -239,7 +269,7 @@ export function VersionComparison() {
                         "px-2 py-0.5 text-[10px] font-medium rounded-full",
                         version1.techniques.includes(tech)
                           ? "bg-zinc-700 text-zinc-300"
-                          : "bg-primary/10 text-primary border border-primary/30"
+                          : "bg-primary/10 text-primary border border-primary/30",
                       )}
                     >
                       {tech}
@@ -254,8 +284,10 @@ export function VersionComparison() {
         {/* Side-by-Side Prompt Comparison */}
         {showFullPrompts && version1 && version2 && (
           <div className="glass-elevated rounded-lg p-4 space-y-3">
-            <h4 className="text-sm font-semibold text-zinc-300">Prompt Comparison</h4>
-            
+            <h4 className="text-sm font-semibold text-zinc-300">
+              Prompt Comparison
+            </h4>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="text-xs text-zinc-500">Version 1 Prompt</div>
@@ -280,26 +312,31 @@ export function VersionComparison() {
 
         {/* Winner Indicator */}
         {version1 && version2 && metricDiffs && (
-          <div className={cn(
-            "p-3 rounded-lg border-2 text-center",
-            metricDiffs.aggregate > 0.5
-              ? "border-primary/50 bg-primary/5"
-              : metricDiffs.aggregate < -0.5
-              ? "border-red-500/50 bg-red-500/5"
-              : "border-zinc-700 bg-elevated/30"
-          )}>
+          <div
+            className={cn(
+              "p-3 rounded-lg border-2 text-center",
+              metricDiffs.aggregate > 0.5
+                ? "border-primary/50 bg-primary/5"
+                : metricDiffs.aggregate < -0.5
+                  ? "border-red-500/50 bg-red-500/5"
+                  : "border-zinc-700 bg-elevated/30",
+            )}
+          >
             <div className="text-sm font-semibold">
               {metricDiffs.aggregate > 0.5 ? (
                 <span className="text-primary">
-                  Version 2 performs {metricDiffs.aggregate.toFixed(1)} points better
+                  Version 2 performs {metricDiffs.aggregate.toFixed(1)} points
+                  better
                 </span>
               ) : metricDiffs.aggregate < -0.5 ? (
                 <span className="text-red-400">
-                  Version 1 performs {Math.abs(metricDiffs.aggregate).toFixed(1)} points better
+                  Version 1 performs{" "}
+                  {Math.abs(metricDiffs.aggregate).toFixed(1)} points better
                 </span>
               ) : (
                 <span className="text-zinc-400">
-                  Performance is similar (±{Math.abs(metricDiffs.aggregate).toFixed(1)} points)
+                  Performance is similar (±
+                  {Math.abs(metricDiffs.aggregate).toFixed(1)} points)
                 </span>
               )}
             </div>
@@ -309,4 +346,3 @@ export function VersionComparison() {
     </Card>
   );
 }
-

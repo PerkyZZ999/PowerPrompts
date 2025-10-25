@@ -93,6 +93,7 @@ Included optimizations used by PowerPrompts:
   - Key components: prompt input, framework selector, technique toggles, iteration progress, version comparison, metrics dashboard
 
 Project layout (excerpt from plan):
+
 - backend/
   - src/
 - prompt-optimizer-frontend/
@@ -106,15 +107,17 @@ This repo contains a backend and frontend (see ProjectOverview.md). The commands
 
 Note: adjust paths/scripts if your package.json uses different names.
 
-1) Clone
+1. Clone
+
 ```bash
 git clone https://github.com/PerkyZZ999/PowerPrompts.git
 cd PowerPrompts
 ```
 
-2) Install dependencies
+2. Install dependencies
 
 - npm (recommended)
+
 ```bash
 # Root (if monorepo bootstrap not used)
 cd backend
@@ -129,6 +132,7 @@ npm run dev
 ```
 
 - pnpm
+
 ```bash
 # Install pnpm if needed: npm i -g pnpm
 cd backend
@@ -142,6 +146,7 @@ pnpm dev
 ```
 
 - bun
+
 ```bash
 # Install bun (https://bun.sh) then:
 cd backend
@@ -155,6 +160,7 @@ bun run dev
 ```
 
 Typical npm scripts (if following the plan):
+
 - backend: `dev` (Fastify server), `build`, `start`
 - frontend: `dev` (Next.js), `build`, `start`
 
@@ -221,4 +227,5 @@ This project is licensed under the MIT License. See LICENSE for the full text.
 ---
 
 Maintainer
+
 - Charles W. — https://github.com/PerkyZZ999

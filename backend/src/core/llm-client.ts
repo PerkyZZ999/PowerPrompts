@@ -3,9 +3,9 @@
  * Handles retry logic and error handling
  */
 
-import OpenAI from 'openai';
-import { encoding_for_model, type TiktokenModel } from 'tiktoken';
-import { appConfig } from '../config.js';
+import OpenAI from "openai";
+import { encoding_for_model, type TiktokenModel } from "tiktoken";
+import { appConfig } from "../config.js";
 
 /**
  * Retry configuration
@@ -33,18 +33,18 @@ export class LLMClient {
 
   constructor(retryConfig: Partial<RetryConfig> = {}) {
     // Configure client based on provider
-    if (appConfig.llmProvider === 'openrouter') {
-      console.log('[LLM CLIENT] Initializing OpenRouter client');
+    if (appConfig.llmProvider === "openrouter") {
+      console.log("[LLM CLIENT] Initializing OpenRouter client");
       this.client = new OpenAI({
-        baseURL: 'https://openrouter.ai/api/v1',
+        baseURL: "https://openrouter.ai/api/v1",
         apiKey: appConfig.openrouterApiKey,
         defaultHeaders: {
-          'HTTP-Referer': 'https://powerprompts.app', // Optional for OpenRouter rankings
-          'X-Title': 'PowerPrompts', // Optional for OpenRouter rankings
+          "HTTP-Referer": "https://powerprompts.app", // Optional for OpenRouter rankings
+          "X-Title": "PowerPrompts", // Optional for OpenRouter rankings
         },
       });
     } else {
-      console.log('[LLM CLIENT] Initializing OpenAI client');
+      console.log("[LLM CLIENT] Initializing OpenAI client");
       this.client = new OpenAI({
         apiKey: appConfig.openaiApiKey,
       });
@@ -67,7 +67,7 @@ export class LLMClient {
       maxTokens?: number;
       topP?: number;
       stop?: string[];
-    } = {}
+    } = {},
   ): Promise<string> {
     const {
       model = appConfig.defaultModel,
@@ -79,14 +79,17 @@ export class LLMClient {
 
     // OpenRouter Provider Preferences: Optimize for high throughput + mid-price
     // Targets providers like Google Vertex, Groq, SambaNova that have excellent throughput/price ratio
-    const providerPreferences = appConfig.llmProvider === 'openrouter' ? {
-      sort: 'throughput', // Prioritize high throughput (Google Vertex: 547.8 TPS, Groq: 674.3 TPS)
-      allow_fallbacks: true, // Allow backup providers for reliability
-      max_price: {
-        prompt: appConfig.openrouterMaxPromptPrice, // Max input price per 1M tokens
-        completion: appConfig.openrouterMaxCompletionPrice, // Max output price per 1M tokens
-      },
-    } : undefined;
+    const providerPreferences =
+      appConfig.llmProvider === "openrouter"
+        ? {
+            sort: "throughput", // Prioritize high throughput (Google Vertex: 547.8 TPS, Groq: 674.3 TPS)
+            allow_fallbacks: true, // Allow backup providers for reliability
+            max_price: {
+              prompt: appConfig.openrouterMaxPromptPrice, // Max input price per 1M tokens
+              completion: appConfig.openrouterMaxCompletionPrice, // Max output price per 1M tokens
+            },
+          }
+        : undefined;
 
     let lastError: Error | null = null;
     let delay = this.retryConfig.initialDelay;
@@ -96,17 +99,20 @@ export class LLMClient {
         console.log(`[LLM CLIENT] Attempting completion with model: ${model}`);
         console.log(`[LLM CLIENT] Request details:`, {
           provider: appConfig.llmProvider,
-          baseURL: appConfig.llmProvider === 'openrouter' ? 'https://openrouter.ai/api/v1' : 'https://api.openai.com/v1',
+          baseURL:
+            appConfig.llmProvider === "openrouter"
+              ? "https://openrouter.ai/api/v1"
+              : "https://api.openai.com/v1",
           model,
           promptLength: prompt.length,
           temperature,
           maxTokens,
-          providerPreferences: providerPreferences || 'none',
+          providerPreferences: providerPreferences || "none",
         });
-        
+
         const response = await this.client.chat.completions.create({
           model,
-          messages: [{ role: 'user', content: prompt }],
+          messages: [{ role: "user", content: prompt }],
           temperature,
           max_tokens: maxTokens,
           top_p: topP,
@@ -118,7 +124,7 @@ export class LLMClient {
         const content = message?.content;
         const reasoning = (message as any)?.reasoning; // GPT-5/O1/O3 reasoning models
 
-        console.log('[LLM CLIENT] Response received:', {
+        console.log("[LLM CLIENT] Response received:", {
           id: response.id,
           model: response.model,
           choices: response.choices?.length,
@@ -129,13 +135,20 @@ export class LLMClient {
 
         // For reasoning models (GPT-5, O1, O3), use reasoning field as fallback
         if (!content && reasoning) {
-          console.log('[LLM CLIENT] Using reasoning field for reasoning model (content was empty)');
+          console.log(
+            "[LLM CLIENT] Using reasoning field for reasoning model (content was empty)",
+          );
           return reasoning.trim();
         }
 
         if (!content) {
-          console.error('[LLM CLIENT] Empty response - Full response:', JSON.stringify(response, null, 2));
-          throw new Error(`Empty response from LLM. Model: ${model}, Response ID: ${response.id}`);
+          console.error(
+            "[LLM CLIENT] Empty response - Full response:",
+            JSON.stringify(response, null, 2),
+          );
+          throw new Error(
+            `Empty response from LLM. Model: ${model}, Response ID: ${response.id}`,
+          );
         }
 
         return content.trim();
@@ -143,7 +156,7 @@ export class LLMClient {
         lastError = error;
 
         // Log detailed error information including OpenRouter-specific error structure
-        console.error('[LLM CLIENT] Error during completion:', {
+        console.error("[LLM CLIENT] Error during completion:", {
           attempt: attempt + 1,
           model,
           message: error.message,
@@ -153,7 +166,11 @@ export class LLMClient {
           // OpenRouter-specific error metadata
           metadata: error.metadata,
           // Full error object for debugging
-          fullError: JSON.stringify(error, Object.getOwnPropertyNames(error), 2),
+          fullError: JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error),
+            2,
+          ),
         });
 
         // Check if error is retryable
@@ -162,16 +179,16 @@ export class LLMClient {
 
         if (!isRetryable || isLastAttempt) {
           // Throw a more descriptive error for OpenRouter
-          const errorMessage = error.message || 'Unknown error';
-          const statusCode = error.status || 'unknown';
+          const errorMessage = error.message || "Unknown error";
+          const statusCode = error.status || "unknown";
           throw new Error(
-            `[LLM Client] ${errorMessage} (Status: ${statusCode}, Model: ${model}, Provider: ${appConfig.llmProvider})`
+            `[LLM Client] ${errorMessage} (Status: ${statusCode}, Model: ${model}, Provider: ${appConfig.llmProvider})`,
           );
         }
 
         // Log retry attempt
         console.log(
-          `[LLM CLIENT] Retry attempt ${attempt + 1}/${this.retryConfig.maxRetries} after ${delay}ms`
+          `[LLM CLIENT] Retry attempt ${attempt + 1}/${this.retryConfig.maxRetries} after ${delay}ms`,
         );
 
         // Wait before retrying
@@ -180,12 +197,12 @@ export class LLMClient {
         // Exponential backoff
         delay = Math.min(
           delay * this.retryConfig.backoffMultiplier,
-          this.retryConfig.maxDelay
+          this.retryConfig.maxDelay,
         );
       }
     }
 
-    throw lastError || new Error('LLM completion failed');
+    throw lastError || new Error("LLM completion failed");
   }
 
   /**
@@ -195,9 +212,9 @@ export class LLMClient {
     text: string,
     options: {
       model?: string;
-    } = {}
+    } = {},
   ): Promise<number[]> {
-    const { model = 'text-embedding-ada-002' } = options;
+    const { model = "text-embedding-ada-002" } = options;
 
     try {
       const response = await this.client.embeddings.create({
@@ -207,7 +224,7 @@ export class LLMClient {
 
       return response.data[0]?.embedding || [];
     } catch (error) {
-      console.error('[LLM CLIENT ERROR] Embedding generation failed:', error);
+      console.error("[LLM CLIENT ERROR] Embedding generation failed:", error);
       throw error;
     }
   }
@@ -215,7 +232,7 @@ export class LLMClient {
   /**
    * Count tokens in text
    */
-  countTokens(text: string, model: string = 'gpt-4'): number {
+  countTokens(text: string, model: string = "gpt-4"): number {
     try {
       const encoding = encoding_for_model(model as TiktokenModel);
       const tokens = encoding.encode(text);
@@ -242,7 +259,7 @@ export class LLMClient {
     }
 
     // Retry on timeout errors
-    if (error?.code === 'ECONNRESET' || error?.code === 'ETIMEDOUT') {
+    if (error?.code === "ECONNRESET" || error?.code === "ETIMEDOUT") {
       return true;
     }
 
@@ -267,4 +284,3 @@ export class LLMClient {
  * Global LLM client instance
  */
 export const llmClient = new LLMClient();
-

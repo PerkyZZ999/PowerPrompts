@@ -12,8 +12,8 @@ const config: Config = {
       colors: {
         background: "#0a0a0a", // true dark gray
         foreground: "#f5f5f5", // light gray
-        surface: "#1a1a1a",    // dark gray surface
-        elevated: "#2a2a2a",   // elevated gray
+        surface: "#1a1a1a", // dark gray surface
+        elevated: "#2a2a2a", // elevated gray
         primary: {
           DEFAULT: "#bfff45",
           light: "#d4ff70",
@@ -30,8 +30,10 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "grid-pattern": "linear-gradient(rgba(160, 160, 160, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(160, 160, 160, 0.05) 1px, transparent 1px)",
-        "radial-glow": "radial-gradient(circle at center, rgba(191, 255, 69, 0.15), transparent 70%)",
+        "grid-pattern":
+          "linear-gradient(rgba(160, 160, 160, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(160, 160, 160, 0.05) 1px, transparent 1px)",
+        "radial-glow":
+          "radial-gradient(circle at center, rgba(191, 255, 69, 0.15), transparent 70%)",
       },
       boxShadow: {
         "neon-sm": "0 0 10px rgba(191, 255, 69, 0.3)",
@@ -42,7 +44,7 @@ const config: Config = {
       animation: {
         "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "scan-line": "scan-line 2s linear infinite",
-        "shimmer": "shimmer 2s linear infinite",
+        shimmer: "shimmer 2s linear infinite",
       },
       keyframes: {
         "pulse-glow": {
@@ -53,7 +55,7 @@ const config: Config = {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(100%)" },
         },
-        "shimmer": {
+        shimmer: {
           "0%": { backgroundPosition: "-1000px 0" },
           "100%": { backgroundPosition: "1000px 0" },
         },
@@ -64,4 +66,3 @@ const config: Config = {
 };
 
 export default config;
-
