@@ -35,13 +35,6 @@ enabled = true
     "nodejs",
     "browser"
   ]
-  dialect = "typescript"
-  skip_doc_coverage = [
-    "node_modules/**",
-    "**/*.config.js",
-    "**/*.config.ts"
-  ]
-  style_guide = "airbnb"
 
 # Test Coverage Analyzer
 [[analyzers]]
