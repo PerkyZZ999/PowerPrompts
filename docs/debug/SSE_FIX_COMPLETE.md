@@ -3,9 +3,11 @@
 ## ✅ Problem Identified and Resolved
 
 ### **Root Cause**
+
 The SSE client was using the browser's `EventSource` API, which **only supports GET requests**. However, the backend's `/api/optimize` endpoint requires a **POST request with a JSON body** containing the optimization configuration.
 
 This mismatch caused:
+
 1. ❌ `JSON.parse: unexpected character` - Backend wasn't receiving the request properly
 2. ❌ `SSE connection error` - Connection failed immediately
 3. ❌ `Max reconnection attempts reached` - Client kept retrying unsuccessfully
@@ -17,17 +19,20 @@ This mismatch caused:
 ### **Rewrote SSE Client** (`frontend/lib/streaming.ts`)
 
 **Before:**
+
 - Used `EventSource` API (GET only)
 - Couldn't send POST body
 - Failed to connect to backend
 
 **After:**
+
 - Uses **Fetch API** with streaming response
 - Supports **POST requests with JSON body**
 - Manually parses SSE event stream
 - Proper error handling and reconnection logic
 
 **Key Changes:**
+
 ```typescript
 // OLD: EventSource (GET only)
 this.eventSource = new EventSource(this.url);
@@ -45,6 +50,7 @@ const response = await fetch(this.url, {
 ```
 
 **SSE Stream Parsing:**
+
 - Reads response body as stream
 - Decodes chunks with `TextDecoder`
 - Parses SSE format (`event:`, `data:`, blank line)
@@ -76,12 +82,14 @@ const response = await fetch(this.url, {
 ## 🧪 Testing the Fix
 
 ### **Step 1: Hard Refresh Browser**
+
 - **Windows/Linux**: `Ctrl + Shift + R`
 - **Mac**: `Cmd + Shift + R`
 
 ### **Step 2: Try an Optimization**
 
 1. Enter a prompt:
+
    ```
    Explain quantum computing to a 5-year-old
    ```
@@ -114,14 +122,17 @@ const response = await fetch(this.url, {
 For the optimization to actually work (not just connect), you need:
 
 **Edit `backend/.env`:**
+
 ```env
 OPENAI_API_KEY=sk-your-actual-openai-api-key-here
 ```
 
 **Get your key:**
+
 - https://platform.openai.com/api-keys
 
 **Why it's needed:**
+
 - Generates synthetic test dataset
 - Executes prompts with different frameworks
 - Applies advanced techniques (CoT, RAG, etc.)
@@ -134,6 +145,7 @@ OPENAI_API_KEY=sk-your-actual-openai-api-key-here
 ### **If you still see connection errors:**
 
 **Check Backend Logs:**
+
 ```powershell
 # Look at backend terminal for errors
 # Should see:
@@ -142,20 +154,23 @@ INFO:     Accepted connection
 ```
 
 **Check Frontend Console:**
+
 ```javascript
 // Open DevTools (F12) > Console
 // Should see:
-"SSE connection opened"
-"SSE Event: dataset_generated {...}"
-"SSE Event: iteration_complete {...}"
+"SSE connection opened";
+"SSE Event: dataset_generated {...}";
+"SSE Event: iteration_complete {...}";
 ```
 
 **Check API Key Match:**
+
 - Frontend: `frontend/.env.local` → `NEXT_PUBLIC_API_KEY=cG93ZXJwcm9tcHRz`
 - Backend: `backend/.env` → `API_KEY=cG93ZXJwcm9tcHRz`
 - Both should match! ✅
 
 **Check Network Tab:**
+
 1. Open DevTools > Network
 2. Start optimization
 3. Look for `/api/optimize` request
@@ -169,6 +184,7 @@ INFO:     Accepted connection
 ## 📝 Files Modified
 
 ### **Frontend**
+
 - ✅ `frontend/lib/streaming.ts` - Complete rewrite
   - Changed from EventSource to Fetch API
   - Added POST support with body
@@ -176,9 +192,11 @@ INFO:     Accepted connection
   - Improved error handling
 
 ### **Backend**
+
 - ✅ `backend/.env` - API key updated to match frontend
 
 ### **Environment**
+
 - ✅ `frontend/.env.local` - API configuration
 - ✅ `backend/.env` - API key matches frontend
 
@@ -226,4 +244,3 @@ Now that SSE is working, you can:
 **Status:** SSE Connection FIXED ✅  
 **Action Required:** Add OpenAI key + Browser refresh  
 **Expected Result:** Real-time optimization with live progress! 🎉
-

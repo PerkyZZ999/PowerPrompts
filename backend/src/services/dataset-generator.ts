@@ -3,12 +3,12 @@
  * Generates synthetic test datasets for prompt evaluation
  */
 
-import { llmClient } from '../core/llm-client.js';
+import { llmClient } from "../core/llm-client.js";
 import {
   DATASET_GENERATION_PROMPT,
   CRITERIA_GENERATION_PROMPT,
-} from '../prompts/dataset-generation.js';
-import { createDataset, createExample } from '../db/crud.js';
+} from "../prompts/dataset-generation.js";
+import { createDataset, createExample } from "../db/crud.js";
 
 /**
  * Example interface
@@ -16,7 +16,7 @@ import { createDataset, createExample } from '../db/crud.js';
 export interface Example {
   input: string;
   expected_output: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   tags?: string[];
 }
 
@@ -67,14 +67,14 @@ Domain:`;
   private async generateExamples(
     prompt: string,
     exampleCount: number,
-    difficultyLevels: string[]
+    difficultyLevels: string[],
   ): Promise<Example[]> {
     const metaPrompt = DATASET_GENERATION_PROMPT.replace(
-      '{user_prompt}',
-      prompt
+      "{user_prompt}",
+      prompt,
     )
-      .replace('{example_count}', exampleCount.toString())
-      .replace('{difficulty_levels}', difficultyLevels.join(', '));
+      .replace("{example_count}", exampleCount.toString())
+      .replace("{difficulty_levels}", difficultyLevels.join(", "));
 
     const response = await llmClient.complete(metaPrompt, {
       temperature: 0.8,
@@ -85,19 +85,19 @@ Domain:`;
       // Extract JSON from response
       const jsonMatch = response.match(/\[[\s\S]*\]/);
       if (!jsonMatch) {
-        throw new Error('No JSON array found in response');
+        throw new Error("No JSON array found in response");
       }
 
       const examples: Example[] = JSON.parse(jsonMatch[0]);
 
       // Validate examples
       if (!Array.isArray(examples) || examples.length === 0) {
-        throw new Error('Invalid examples format');
+        throw new Error("Invalid examples format");
       }
 
       return examples;
     } catch (error) {
-      console.error('[DATASET GENERATOR] Failed to parse examples:', error);
+      console.error("[DATASET GENERATOR] Failed to parse examples:", error);
       // Return fallback examples
       return this.getFallbackExamples(prompt, exampleCount);
     }
@@ -108,12 +108,12 @@ Domain:`;
    */
   private async generateCriteria(
     prompt: string,
-    domain: string
+    domain: string,
   ): Promise<Criterion[]> {
     const metaPrompt = CRITERIA_GENERATION_PROMPT.replace(
-      '{user_prompt}',
-      prompt
-    ).replace('{domain}', domain);
+      "{user_prompt}",
+      prompt,
+    ).replace("{domain}", domain);
 
     const response = await llmClient.complete(metaPrompt, {
       temperature: 0.5,
@@ -124,19 +124,19 @@ Domain:`;
       // Extract JSON from response
       const jsonMatch = response.match(/\[[\s\S]*\]/);
       if (!jsonMatch) {
-        throw new Error('No JSON array found in response');
+        throw new Error("No JSON array found in response");
       }
 
       const criteria: Criterion[] = JSON.parse(jsonMatch[0]);
 
       // Validate criteria
       if (!Array.isArray(criteria) || criteria.length === 0) {
-        throw new Error('Invalid criteria format');
+        throw new Error("Invalid criteria format");
       }
 
       return criteria;
     } catch (error) {
-      console.error('[DATASET GENERATOR] Failed to parse criteria:', error);
+      console.error("[DATASET GENERATOR] Failed to parse criteria:", error);
       // Return default criteria
       return this.getDefaultCriteria();
     }
@@ -151,9 +151,11 @@ Domain:`;
     config: {
       exampleCount: number;
       difficultyLevels: string[];
-    }
+    },
   ): Promise<DatasetResult> {
-    console.log(`[DATASET GENERATOR] Generating dataset for prompt ${promptId}...`);
+    console.log(
+      `[DATASET GENERATOR] Generating dataset for prompt ${promptId}...`,
+    );
 
     // Identify domain
     const domain = await this.identifyDomain(userPrompt);
@@ -163,7 +165,7 @@ Domain:`;
     const examples = await this.generateExamples(
       userPrompt,
       config.exampleCount,
-      config.difficultyLevels
+      config.difficultyLevels,
     );
     console.log(`[DATASET GENERATOR] Generated ${examples.length} examples`);
 
@@ -184,17 +186,20 @@ Domain:`;
     for (let i = 0; i < examples.length; i++) {
       const example = examples[i];
       if (!example) continue; // Skip undefined examples
-      
+
       await createExample({
         datasetId,
-        inputText: example.input || 'No input provided',
-        expectedOutput: example.expected_output || 'No expected output provided',
-        difficulty: example.difficulty || 'medium',
+        inputText: example.input || "No input provided",
+        expectedOutput:
+          example.expected_output || "No expected output provided",
+        difficulty: example.difficulty || "medium",
         metadata: { tags: example.tags || [] },
       });
     }
 
-    console.log(`[DATASET GENERATOR] Dataset ${datasetId} created successfully`);
+    console.log(
+      `[DATASET GENERATOR] Dataset ${datasetId} created successfully`,
+    );
 
     return {
       id: datasetId,
@@ -207,23 +212,20 @@ Domain:`;
   /**
    * Get fallback examples if generation fails
    */
-  private getFallbackExamples(
-    prompt: string,
-    count: number
-  ): Example[] {
+  private getFallbackExamples(prompt: string, count: number): Example[] {
     const examples: Example[] = [];
-    const difficulties: Array<'easy' | 'medium' | 'hard'> = [
-      'easy',
-      'medium',
-      'hard',
+    const difficulties: Array<"easy" | "medium" | "hard"> = [
+      "easy",
+      "medium",
+      "hard",
     ];
 
     for (let i = 0; i < count; i++) {
       examples.push({
         input: `Test case ${i + 1} for: ${prompt.substring(0, 50)}...`,
-        expected_output: 'Expected output for this test case',
-        difficulty: difficulties[i % 3] || 'medium',
-        tags: ['fallback'],
+        expected_output: "Expected output for this test case",
+        difficulty: difficulties[i % 3] || "medium",
+        tags: ["fallback"],
       });
     }
 
@@ -236,28 +238,28 @@ Domain:`;
   private getDefaultCriteria(): Criterion[] {
     return [
       {
-        name: 'relevance',
-        description: 'How well the output addresses the input',
+        name: "relevance",
+        description: "How well the output addresses the input",
         weight: 1.0,
       },
       {
-        name: 'accuracy',
-        description: 'Factual correctness of the output',
+        name: "accuracy",
+        description: "Factual correctness of the output",
         weight: 1.2,
       },
       {
-        name: 'consistency',
-        description: 'Uniformity and coherence across outputs',
+        name: "consistency",
+        description: "Uniformity and coherence across outputs",
         weight: 0.8,
       },
       {
-        name: 'efficiency',
-        description: 'Conciseness without sacrificing quality',
+        name: "efficiency",
+        description: "Conciseness without sacrificing quality",
         weight: 0.9,
       },
       {
-        name: 'readability',
-        description: 'Clarity and structure of the output',
+        name: "readability",
+        description: "Clarity and structure of the output",
         weight: 1.0,
       },
     ];
@@ -268,4 +270,3 @@ Domain:`;
  * Global dataset generator instance
  */
 export const datasetGenerator = new DatasetGenerator();
-
